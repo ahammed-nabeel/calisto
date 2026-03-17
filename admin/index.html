@@ -255,15 +255,119 @@
     .empty-state p { font-size: 0.8rem; }
     .chip { display: inline-flex; align-items: center; gap: 0.2rem; background: var(--accent-bg); color: var(--accent); border-radius: 20px; padding: 2px 8px; font-size: 0.7rem; font-weight: 700; }
 
-    @media (max-width: 1200px) { .panel-layout { grid-template-columns: 1fr; } }
-    @media (max-width: 768px) { .sidebar { width: 100%; height: auto; position: relative; } .main-content { margin-left: 0; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    /* ── Mobile hamburger button (hidden on desktop) ── */
+    .mob-menu-btn {
+      display: none; background: none; border: none; cursor: pointer;
+      padding: 6px; border-radius: var(--radius); color: var(--ink2);
+      transition: background 0.15s;
+    }
+    .mob-menu-btn:hover { background: var(--bg); }
+    .mob-menu-btn svg { width: 20px; height: 20px; fill: currentColor; display: block; }
+
+    /* ── Sidebar overlay (mobile) ── */
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(15,23,42,0.35); z-index: 99;
+      backdrop-filter: blur(2px);
+    }
+    .sidebar-overlay.open { display: block; }
+
+    /* ── ≤ 1200px: collapse panel layout ── */
+    @media (max-width: 1200px) {
+      .panel-layout { grid-template-columns: 1fr; }
+    }
+
+    /* ── ≤ 900px: sidebar becomes a slide-in drawer ── */
+    @media (max-width: 900px) {
+      /* Sidebar as off-canvas drawer */
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 200;
+        width: 240px;
+        box-shadow: none;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(15,23,42,0.12);
+      }
+
+      /* Main content fills full width */
+      .main-content { margin-left: 0; }
+
+      /* Show hamburger in topbar */
+      .mob-menu-btn { display: flex; }
+
+      /* Topbar adjustments */
+      .topbar { padding: 0 1rem; gap: 0.5rem; }
+      .topbar h1 { font-size: 0.9rem; }
+
+      /* Hide text labels on secondary topbar buttons, keep icons */
+      #topbar-save .btn-label-text { display: none; }
+
+      /* User info — show avatar only */
+      .user-name, .user-role-badge,
+      #user-info-btn > svg:last-child { display: none; }
+      .user-info { padding: 0.3rem; border-radius: var(--radius); }
+
+      /* Pages */
+      .page { padding: 1rem; }
+
+      /* Stats: 2 columns */
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+      .stat-value { font-size: 1.5rem; }
+
+      /* Tabs: scrollable row */
+      .tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+      .tab { white-space: nowrap; flex-shrink: 0; }
+
+      /* Tree + detail: stacked */
+      .panel-layout { grid-template-columns: 1fr; gap: 1rem; }
+
+      /* Form rows: stack on mobile */
+      .form-row { grid-template-columns: 1fr; gap: 0.75rem; }
+
+      /* Users table: hide less critical columns */
+      .users-table th:nth-child(3),
+      .users-table td:nth-child(3),
+      .users-table th:nth-child(5),
+      .users-table td:nth-child(5) { display: none; }
+
+      /* Modals */
+      .modal { width: 95%; padding: 1.25rem; margin: 0 auto; }
+      .perm-grid { grid-template-columns: 1fr; }
+      .modal .form-row { grid-template-columns: 1fr; gap: 0.75rem; }
+
+      /* Toast */
+      .toast { left: 1rem; right: 1rem; bottom: 1rem; }
+    }
+
+    /* ── ≤ 480px: single-column everything ── */
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+      .stat-card { padding: 0.85rem; }
+      .stat-icon { width: 30px; height: 30px; margin-bottom: 0.6rem; }
+      .stat-value { font-size: 1.3rem; }
+
+      /* Users table: minimal columns */
+      .users-table th:nth-child(4),
+      .users-table td:nth-child(4) { display: none; }
+      .table-actions { flex-direction: column; }
+      .table-actions .btn { font-size: 0.68rem; padding: 0.28rem 0.5rem; }
+
+      /* Topbar */
+      .topbar-actions .btn-secondary { display: none; }
+    }
   </style>
 </head>
 <body>
 
 <div class="admin-layout">
+  <!-- Mobile sidebar overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
   <!-- Sidebar -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <img src="../assets/logo-calisto.svg" alt="Calisto" onerror="this.style.display='none'">
       <span>Calisto Admin</span>
@@ -303,7 +407,12 @@
   <!-- Main -->
   <div class="main-content">
     <div class="topbar">
-      <h1 id="page-title">Dashboard</h1>
+      <div style="display:flex;align-items:center;gap:0.75rem;">
+        <button class="mob-menu-btn" onclick="openSidebar()" aria-label="Open menu">
+          <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        </button>
+        <h1 id="page-title">Dashboard</h1>
+      </div>
       <div class="topbar-actions">
         <button class="btn btn-secondary btn-sm" onclick="window.open('../index.html', '_blank')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
@@ -311,7 +420,7 @@
         </button>
         <button class="btn btn-primary btn-sm" onclick="saveAll()" id="topbar-save" style="display:none">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V7l-4-4zm-5 16a3 3 0 110-6 3 3 0 010 6zm3-10H5V5h10v4z"/></svg>
-          Save Changes
+          <span class="btn-label-text">Save Changes</span>
         </button>
         <div class="user-info" onclick="toggleUserDropdown()" id="user-info-btn">
           <div class="user-avatar" id="topbar-avatar" style="background:#005cb9">--</div>
@@ -643,6 +752,19 @@
     if (id === 'seo') renderSEOPage();
     if (id === 'forms') renderFormsPage();
     if (id === 'profile') renderProfilePage();
+    closeSidebar(); // close drawer on mobile after nav
+  }
+
+  // ── Mobile sidebar drawer ──
+  function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebar-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('open');
+    document.body.style.overflow = '';
   }
 
   // ============================================================

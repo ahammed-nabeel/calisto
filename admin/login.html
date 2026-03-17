@@ -110,9 +110,19 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (max-width: 860px) {
-      .wrap { grid-template-columns: 1fr; }
+      .wrap { grid-template-columns: 1fr; min-height: 100vh; }
       .left { display: none; }
-      .right { max-width: 100%; padding: 2.5rem 1.5rem; }
+      .right {
+        max-width: 100%; min-height: 100vh;
+        padding: 2rem 1.25rem;
+        justify-content: flex-start;
+        padding-top: 3rem;
+      }
+      #mobile-logo { display: block !important; }
+    }
+    @media (max-width: 400px) {
+      .right { padding: 1.5rem 1rem; }
+      .form-heading { font-size: 1.5rem; }
     }
   </style>
 </head>
@@ -138,7 +148,10 @@
   </div>
 
   <div class="right">
-    <div class="form-eyebrow">Calisto Admin</div>
+    <div class="form-eyebrow" style="display:flex;align-items:center;gap:0.6rem;">
+      <img src="../assets/logo-calisto.svg" alt="Calisto" style="height:18px;display:none" id="mobile-logo" onerror="this.style.display='none'">
+      Calisto Admin
+    </div>
     <div class="form-heading">Sign in</div>
     <p class="form-sub">Enter your credentials to access the dashboard.</p>
 
