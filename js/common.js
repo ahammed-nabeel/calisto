@@ -17,6 +17,12 @@ const headerHTML = `
         <li><a href="${basePath}index.html#partner">Partners</a></li>
         <li><a href="${basePath}about.html">About</a></li>
         <li><a href="${basePath}contact.html">Contact</a></li>
+        <li class="nav-login-item">
+          <a href="${basePath}admin/login.html" class="nav-login-btn" aria-label="Admin login">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+            Login
+          </a>
+        </li>
       </ul>
     </nav>
 

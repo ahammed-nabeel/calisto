@@ -108,7 +108,43 @@ nav a:hover:after {
   width: 100%
 }
 
-.hamburger {
+/* Login button in navbar */
+.nav-login-item { list-style: none; }
+
+.nav-login-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.42rem 1rem;
+  border: 1.5px solid currentColor;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: inherit;
+  opacity: 0.85;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.nav-login-btn::after { display: none !important; }
+
+.nav-login-btn:hover {
+  opacity: 1;
+  background: rgba(255,255,255,0.12);
+}
+
+#navbar.scrolled .nav-login-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  opacity: 1;
+}
+
+
   display: none;
   flex-direction: column;
   gap: 6px;
@@ -173,6 +209,17 @@ nav a:hover:after {
 
   .mobile-close-btn:hover {
     background: var(--accent);
+    color: #fff;
+  }
+
+  .nav-login-btn {
+    border-color: var(--line);
+    color: var(--primary-dark);
+    align-self: flex-start;
+  }
+  .nav-login-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
     color: #fff;
   }
 }
