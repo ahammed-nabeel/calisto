@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Calisto Automation</title>
+    <meta name="description"
+        content="Contact Calisto Automation for product inquiries, technical support, and global partner information. Headquartered in Taiwan.">
+    <meta name="keywords"
+        content="contact calisto, automation support, gate opener technical support, dealer network, global partners">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <link rel="canonical" href="https://calistotech.com/contact.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://calistotech.com/contact.html">
+    <meta property="og:title" content="Contact Us | Calisto Automation">
+    <meta property="og:description"
+        content="Get in touch with our global team for support, sales, and partnership opportunities.">
+    <meta property="og:image" content="https://calistotech.com/assets/og-contact.jpg">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://calistotech.com/contact.html">
+    <meta name="twitter:title" content="Contact Us | Calisto Automation">
+    <meta name="twitter:description" content="Connect with Calisto Automation worldwide.">
+    <meta name="twitter:image" content="https://calistotech.com/assets/og-contact.jpg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Raleway:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/common.css">
+
+    <!-- OpenLayers Map CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.5.1/ol.css">
+
+    <!-- OpenLayers Map JS -->
+    <script src="https://cdn.jsdelivr.net/npm/ol@v7.5.1/dist/ol.js"></script>
+
+    <style>
+        /* OpenLayers Overrides */
+        .ol-zoom {
+            top: auto !important;
+            left: auto !important;
+            bottom: 20px !important;
+            right: 20px !important;
+        }
+    </style>
+
+    <style>
+        /* Contact Page Specific Styles - Aprimatic Replica */
+        :root {
+            --input-border: #e6e6e6;
+            --input-focus: var(--accent);
+            --icon-circle-size: 100px;
+        }
+
+        body {
+            display: block;
+            /* Override flex */
+            background: #fff;
+        }
+
+        /* Ensure placeholder doesn't take space */
+        #header-placeholder {
+            display: block;
+            height: 0;
+            margin: 0;
+        }
+
+        /* 1. Top Map Section */
+        .map-header {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 60vh;
+            min-height: 500px;
+            margin-top: 0;
+            overflow: hidden;
+            background: #f0f0f0;
+            /* Fallback color */
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            /* Maps have internal z-indexes, this base level is fine */
+            display: block;
+        }
+
+        /* 2. Layout Container */
+        .page-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 80px 4vw;
+            background: #fff;
+            position: relative;
+            z-index: 10;
+            /* Sits above the map if scrolled */
+        }
+
+        /* 3. Icons Row */
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            text-align: center;
+            margin-bottom: 6rem;
+        }
+
+        .method-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .icon-circle {
+            width: var(--icon-circle-size);
+            height: var(--icon-circle-size);
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .icon-circle svg {
+            width: 40px;
+            height: 40px;
+            fill: none;
+            stroke: #666;
+            /* Dark gray stroke like screenshot */
+            stroke-width: 1.5;
+        }
+
+        .method-item:hover .icon-circle {
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .method-item:hover .icon-circle svg {
+            stroke: var(--accent);
+        }
+
+        .method-title {
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .method-details {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .method-details a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .method-details a:hover {
+            color: var(--accent);
+        }
+
+        .info-blue {
+            color: #005cb9;
+            /* Blue email link in screenshot */
+        }
+
+        /* 4. Contact Form Section */
+        .form-section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .form-section-title h2 {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .form-section-title p {
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        .contact-form {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            color: #555;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            background: #fff;
+            border: 1px solid var(--input-border);
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            color: #333;
+            border-radius: 2px;
+            /* Screenshot has sharper corners */
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #999;
+        }
+
+        textarea.form-control {
+            min-height: 180px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            margin: 2rem 0;
+            font-size: 0.85rem;
+            color: #666;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-send {
+            display: block;
+            margin: 0 auto;
+            /* Centered button */
+            background: var(--accent);
+            /* Using Calisto Brand Color instead of Red */
+            color: #fff;
+            font-family: var(--font-body);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 14px 50px;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-send:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Responsive */
+        @media(max-width: 768px) {
+            .contact-methods {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .form-grid-3 {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .map-header {
+                height: 40vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+
+    <!-- 1. Map Section (Top) -->
+    <div class="map-header">
+        <div id="map" style="width: 100%; height: 100%;"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="page-container">
+
+        <!-- 2. Icons Section -->
+        <section class="contact-methods">
+            <!-- Address -->
+            <div class="method-item">
+                <div class="icon-circle">
+                    <!-- Location Icon -->
+                    <svg viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 21.7C17.3 17 20 13 20 9a8 8 0 1 0-16 0c0 4 2.7 8 8 12.7z" />
+                        <circle cx="12" cy="9" r="2.5" />
+                    </svg>
+                </div>
+                <h3 class="method-title">Calisto Automation</h3>
+                <div class="method-details">
+                    <p>No. 123, Zhongshan Road</p>
+                    <p>Kaohsiung, Taiwan</p>
+                </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="method-item">
+                <div class="icon-circle">
+                    <!-- Phone Icon -->
+                    <svg viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5l1.5-2.5 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" />
+                    </svg>
+                </div>
+                <h3 class="method-title">Contacts</h3>
+                <div class="method-details">
+                    <p>Tel: <a href="tel:+886222190785">+886 2 2219 0785</a></p>
+                    <p>Fax: +886 2 2219 0786</p>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="method-item">
+                <div class="icon-circle">
+                    <!-- Mail Icon -->
+                    <svg viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <h3 class="method-title">Email</h3>
+                <div class="method-details">
+                    <p><a href="mailto:info@calistotech.com" class="info-blue"
+                            style="color:#005cb9;">info@calistotech.com</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Form Section -->
+        <section class="contact-form-section">
+            <div class="form-section-title">
+                <h2>Request information</h2>
+                <p>Use the form to contact us</p>
+            </div>
+
+            <form class="contact-form" onsubmit="handleSubmit(event)">
+                <!-- Row 1: Name, Email, Subject -->
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label for="name">Name *</label>
+                        <input type="text" id="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" class="form-control">
+                    </div>
+                </div>
+
+                <!-- Row 2: Message -->
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" class="form-control"></textarea>
+                </div>
+
+                <!-- Privacy Checkbox -->
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="privacy" required>
+                        <label for="privacy" style="margin:0; font-weight:400;">I accept the terms of the data
+                            processing</label>
+                    </div>
+                    <p style="margin-left: 24px; font-size: 0.75rem; color:#999;">
+                        I have read the Privacy Policy and consent to the processing of my personal data for the
+                        purposes indicated in art. 13 of Regulation (EU) 2016/579.
+                    </p>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn-send">Send</button>
+
+                <!-- Success Message -->
+                <div id="form-success"
+                    style="display:none; text-align:center; margin-top:2rem; padding:1rem; background:#d4edda; color:#155724; border-radius:4px;">
+                    Thank you! Your message has been sent successfully.
+                </div>
+            </form>
+        </section>
+
+        <!-- 4. Global Network Section -->
+        <section class="global-network-section" style="margin-top: 5rem;">
+            <div class="form-section-title">
+                <h2>Calisto Around the World</h2>
+                <p>Find our authorized dealers and partners globally</p>
+            </div>
+
+            <style>
+                .centres-grid {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 2rem;
+                    align-items: start;
+                }
+
+                .region-item {
+                    border: 1px solid #e6e6e6;
+                    margin-bottom: 1rem;
+                    background: #fff;
+                    border-radius: 2px;
+                }
+
+                .region-header {
+                    padding: 15px 20px;
+                    background: #f9f9f9;
+                    color: #555;
+                    font-family: var(--font-body);
+                    font-weight: 700;
+                    cursor: pointer;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    transition: all 0.3s;
+                }
+
+                .region-header:hover {
+                    background: #eee;
+                }
+
+                .region-header.active {
+                    background: var(--accent);
+                    /* Brand color */
+                    color: #fff;
+                }
+
+                .region-header .arrow {
+                    font-size: 0.8rem;
+                    transition: transform 0.3s;
+                }
+
+                .region-header.active .arrow {
+                    transform: rotate(180deg);
+                }
+
+                .region-content {
+                    display: none;
+                    padding: 20px;
+                    border-top: 1px solid #e6e6e6;
+                }
+
+                .region-content.open {
+                    display: block;
+                }
+
+                .centre-city {
+                    color: var(--accent);
+                    font-weight: 700;
+                    margin-bottom: 5px;
+                    font-size: 0.95rem;
+                }
+
+                .centre-name {
+                    font-weight: 700;
+                    color: #333;
+                    margin-bottom: 8px;
+                    font-size: 0.9rem;
+                }
+
+                .centre-details p {
+                    margin: 4px 0;
+                    font-size: 0.85rem;
+                    color: #666;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                .centre-details svg {
+                    width: 14px;
+                    height: 14px;
+                    fill: none;
+                    stroke: var(--accent);
+                    stroke-width: 2;
+                }
+
+                .continent-title {
+                    font-family: var(--font-head);
+                    font-size: 1.2rem;
+                    color: #333;
+                    margin-bottom: 1rem;
+                    padding-bottom: 0.5rem;
+                    border-bottom: 2px solid #eee;
+                    font-weight: 700;
+                }
+
+                @media(max-width: 900px) {
+                    .centres-grid {
+                        grid-template-columns: 1fr;
+                        gap: 1rem;
+                    }
+                }
+            </style>
+
+            <div class="centres-grid">
+                <!-- Column 1: Europe -->
+                <div class="col-1">
+                    <h3 class="continent-title">Europe</h3>
+
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span>France</span> <span class="arrow">▼</span>
+                        </div>
+                        <div class="region-content">
+                            <div class="centre-city">Paris</div>
+                            <div class="centre-name">Calisto France SAS</div>
+                            <div class="centre-details">
+                                <p><svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg> contact@calisto.fr</p>
+                                <p><svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                                    </svg> +33 1 23 45 67 89</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span>Germany</span> <span class="arrow">▼</span>
+                        </div>
+                        <div class="region-content">
+                            <div class="centre-city">Munich</div>
+                            <div class="centre-name">AutoTeck GmbH</div>
+                            <div class="centre-details">
+                                <p><svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg> info@autoteck.de</p>
+                                <p><svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                                    </svg> +49 89 123456</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span>United Kingdom</span> <span class="arrow">▼</span>
+                        </div>
+                        <div class="region-content">
+                            <div class="centre-city">London</div>
+                            <div class="centre-name">Calisto UK Ltd</div>
+                            <div class="centre-details">
+                                <p><svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg> sales@calisto.co.uk</p>
+                                <p><svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                                    </svg> +44 20 7123 4567</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column 2: Americas -->
+                <div class="col-2">
+                    <h3 class="continent-title">Americas</h3>
+
+                    <div class="region-item">
+                        <div class="region-header active" onclick="toggleRegion(this)">
+                            <span>USA</span> <span class="arrow">▼</span>
+                        </div>
+                        <div class="region-content open">
+                            <div class="centre-city">New York</div>
+                            <div class="centre-name">Calisto North America Inc.</div>
+                            <div class="centre-details">
+                                <p><svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg> usa@calistotech.com</p>
+                                <p><svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                                    </svg> +1 212 555 0199</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span>Canada</span> <span class="arrow">▼</span>
+                        </div>
+                        <div class="region-content">
+                            <div class="centre-city">Toronto</div>
+                            <div class="centre-name">Maple Automation</div>
+                            <div class="centre-details">
+                                <p><svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg> info@mapleauto.ca</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span>Brazil</span> <span class="arrow">▼</span>
+                        </div>
+                        <div class="region-content">
+                            <div class="centre-city">São Paulo</div>
+                            <div class="centre-name">Calisto Brasil Ltda</div>
+                            <div class="centre-details">
+                                <p><svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg> contato@calistobrasil.com.br</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column 3: Asia & Pacific -->
+                <div class="col-3">
+                    <h3 class="continent-title">Asia & Pacific</h3>
+
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span>Australia</span> <span class="arrow">▼</span>
+                        </div>
+                        <div class="region-content">
+                            <div class="centre-city">Sydney</div>
+                            <div class="centre-name">Oz Automation Pty Ltd</div>
+                            <div class="centre-details">
+                                <p><svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg> sales@ozautomation.com.au</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="region-item">
+                        <div class="region-header active" onclick="toggleRegion(this)">
+                            <span>Japan</span> <span class="arrow">▼</span>
+                        </div>
+                        <div class="region-content open">
+                            <div class="centre-city">Tokyo</div>
+                            <div class="centre-name">Calisto Japan KK</div>
+                            <div class="centre-details">
+                                <p><svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg> info@calisto.jp</p>
+                                <p><svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                                    </svg> +81 3 1234 5678</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="region-item">
+                        <div class="region-header" onclick="toggleRegion(this)">
+                            <span>India</span> <span class="arrow">▼</span>
+                        </div>
+                        <div class="region-content">
+                            <div class="centre-city">Bangalore</div>
+                            <div class="centre-name">Calisto India</div>
+                            <div class="centre-details">
+                                <p><svg viewBox="0 0 24 24">
+                                        <path
+                                            d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg> support@calisto.in</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function toggleRegion(header) {
+                    header.classList.toggle('active');
+                    const content = header.nextElementSibling;
+                    content.classList.toggle('open');
+                }
+            </script>
+        </section>
+
+    </div>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script src="js/common.js"></script>
+    <script>
+        // OpenLayers Map Initialization (Global Network)
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof ol === 'undefined') {
+                console.error('OpenLayers library not loaded');
+                document.getElementById('map').innerHTML = '<p style="text-align:center; padding-top:20px;">Map could not be loaded.</p>';
+                return;
+            }
+
+            // Global Locations Data
+            // Countries to highlight
+            const highlightCountries = [
+                "Taiwan",
+                "France",
+                "Germany",
+                "United Kingdom",
+                "United States of America",
+                "Canada",
+                "Brazil",
+                "Australia",
+                "Japan",
+                "India"
+            ];
+
+            // Define Styles
+            const styleProject = function (feature) {
+                const name = feature.get('name');
+                const isHighlighted = highlightCountries.includes(name);
+
+                return new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: isHighlighted ? '#005cb9' : '#e0e0e0' // Blue or Light Gray
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: '#ffffff',
+                        width: 1
+                    })
+                });
+            };
+
+            // Vector Source (World Countries)
+            const vectorSource = new ol.source.Vector({
+                url: 'https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json',
+                format: new ol.format.GeoJSON()
+            });
+
+            // Initialize Map (Center on World)
+            const map = new ol.Map({
+                target: 'map',
+                layers: [
+                    new ol.layer.Vector({
+                        source: vectorSource,
+                        style: styleProject
+                    })
+                ],
+                view: new ol.View({
+                    center: ol.proj.fromLonLat([0, 20]),
+                    zoom: 2,
+                    minZoom: 1,
+                    maxZoom: 6
+                })
+            });
+
+            // Force update sizes
+            setTimeout(function () {
+                map.updateSize();
+            }, 200);
+
+        });
+
+        function handleSubmit(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+
+            btn.innerText = 'SENDING...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+
+            setTimeout(() => {
+                document.getElementById('form-success').style.display = 'block';
+                btn.style.display = 'none';
+                window.scrollTo({
+                    top: document.querySelector('.contact-form-section').offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>

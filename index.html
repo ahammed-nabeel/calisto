@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Basic page setup -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calisto Automation | Premium Entrance Automation</title>
+  <meta name="description"
+    content="Calisto Automation delivers premium entrance automation systems for rolling shutters, tubular motors, and swing gates. Engineered in Taiwan for global durability and safety.">
+  <meta name="keywords"
+    content="entrance automation, rolling shutter motors, tubular motors, swing gate openers, industrial automation, residential gate systems, Calisto Tech">
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+  <link rel="canonical" href="https://calistotech.com/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://calistotech.com/">
+  <meta property="og:title" content="Calisto Automation | Premium Entrance Solutions">
+  <meta property="og:description"
+    content="Discover premium automation systems for residential and industrial applications. Engineered for durability, safety, and seamless integration.">
+  <meta property="og:image" content="https://calistotech.com/assets/og-home.jpg">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://calistotech.com/">
+  <meta name="twitter:title" content="Calisto Automation | Premium Entrance Solutions">
+  <meta name="twitter:description"
+    content="Premium entrance automation systems engineered for reliability and performance.">
+  <meta name="twitter:image" content="https://calistotech.com/assets/og-home.jpg">
+
+  <!-- Replace font link with this -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Raleway:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="css/common.css?v=2">
+
+  <!-- Removed redundant styles now in common.css (and remaining page-specific styles) -->
+  <style>
+    /* ... (Page specific styles remain, e.g. hero overlay adjustment if needed) ... */
+    /* Only keeping what wasn't moved to common.css or is specific to this page layout */
+
+    /* Re-declaring critical variables if not loading common.css fast enough (optional, but good practice) */
+    :root {
+      /* Matching common.css variables for fallback/initial render */
+      --primary-dark: #0f172a;
+      --primary-light: #F6F7FB;
+      --surface: #ffffff;
+      --line: rgba(15, 23, 42, .10);
+      --accent: #005cb9;
+      --text-body: #334155;
+      --muted: #64748b;
+      --font-body: "Lato", system-ui, sans-serif;
+      --font-head: "Raleway", system-ui, sans-serif;
+      --container-padding: 6vw;
+      --transition: all .35s ease;
+      --shadow: 0 16px 40px rgba(2, 6, 23, .10);
+      --shadow2: 0 10px 24px rgba(2, 6, 23, .08);
+      --radius: 18px;
+    }
+
+    /* Global Typography Refinements */
+    body {
+      font-size: 1.05rem;
+      /* Slight bump for readability/premium feel */
+    }
+
+    h1,
+    h2,
+    h3 {
+      letter-spacing: -0.02em;
+      /* Tighter titling */
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 90vh;
+      min-height: 600px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+      background: url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
+      margin-bottom: 0;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      /* Strong blue gradient as requested */
+      background: linear-gradient(to bottom, rgba(0, 50, 100, 0.85) 0%, rgba(0, 92, 185, 0.6) 100%);
+      mix-blend-mode: multiply;
+      /* Optional: blends nicely with image */
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      padding: 0 20px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+      font-family: var(--font-head);
+      color: #fff;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-header h2 {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      /* Increased from 1.8-2.6rem */
+      letter-spacing: .2px;
+      font-weight: 800;
+    }
+
+    .hero p {
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      margin-bottom: 2.5rem;
+      opacity: 0.9;
+      font-weight: 400;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-hero {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+      box-shadow: 0 10px 30px rgba(0, 92, 185, 0.3);
+    }
+
+    .btn-hero:hover {
+      background: #fff;
+      color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 15px 40px rgba(255, 255, 255, 0.15);
+    }
+
+    /* Minimal reset for page flow */
+    body {
+      padding: 0;
+      margin: 0;
+      font-family: var(--font-body);
+      background: var(--primary-light);
+      text-align: center;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* Solutions Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+      /* Increased gap */
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .product-card {
+      background: #fff;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow2);
+    }
+
+    .product-image {
+      height: 220px;
+      overflow: hidden;
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .product-card:hover .product-image img {
+      transform: scale(1.05);
+    }
+
+    .product-info {
+      padding: 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Sections */
+    .section-padding {
+      padding: 8rem var(--container-padding);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 5.5rem;
+    }
+
+    .product-info h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary-dark);
+    }
+
+    .product-info p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Partner Strip Premium Styles */
+    .partner-strip {
+      background: linear-gradient(180deg, var(--accent) 0%, #ffffff 100%);
+      padding: 6rem 20px;
+      color: #fff;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .partner-strip h3 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      color: #fff;
+      margin-bottom: 1.5rem;
+      font-weight: 800;
+      position: relative;
+      z-index: 2;
+    }
+
+    .partner-strip p {
+      color: rgba(255, 255, 255, 0.85);
+      max-width: 700px;
+      margin: 0 auto 3rem;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      position: relative;
+      z-index: 2;
+    }
+
+    .btn-luxury {
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .btn-luxury.accent-fill {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-luxury.accent-fill:hover {
+      background: #fff;
+      color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-luxury.outline-light {
+      background: transparent;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+    }
+
+    .btn-luxury.outline-light:hover {
+      border-color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-3px);
+    }
+  </style>
+
+</head>
+
+<body>
+  <!-- HEADER -->
+  <div id="header-placeholder"></div>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1>Premium Entrance Automation</h1>
+      <p>Engineered for durability, safety, and seamless integration in residential and industrial environments.</p>
+      <a href="#solutions" class="btn-hero">Explore Solutions</a>
+    </div>
+  </section>
+
+  <main id="top">
+
+
+
+
+    <!-- INTRO / SOLUTIONS -->
+    <section id="solutions" class="section-padding" style="background:#fff;">
+      <div class="section-header">
+        <h2><em>Entrance automation</em> for every application</h2>
+        <div class="divider"></div>
+        <p>
+          From commercial rolling shutters to smart tubular motors and advanced swing gate openers, Calisto systems are
+          built around
+          secure braking, robust mechanics, and installer-friendly setup.
+        </p>
+      </div>
+
+      <div class="product-grid" id="main-grid">
+        <!-- Card 1 -->
+        <a href="automation.html" class="product-card" style="text-decoration:none; color:inherit; display:block;">
+          <div class="product-image">
+            <img src="https://t3.ftcdn.net/jpg/18/76/93/94/360_F_1876939405_E0MWk4ShI8f5E1OfW6nCBYx3iW81C7nw.jpg"
+              alt="Calisto automation" />
+          </div>
+          <div class="product-info">
+            <!-- Automation Icon -->
+            <svg style="width:32px;height:32px;fill:var(--accent);display:block;margin:0 auto 8px;" viewBox="0 0 24 24">
+              <polygon class="cls-1" points="13.44 13.77 8.63 13.8 10.61 10.26 15.41 10.23 13.44 13.77" />
+
+              <path class="cls-2" d="M6.82,19.46l.95,1.65h9.49L22,12.89,20.1,9.6l-4.74,8.21H7.77Z" />
+
+              <path class="cls-2" d="M17.18,4.54l-.95-1.65H6.74L2,11.11,3.9,14.4,8.64,6.19h7.59Z" />
+            </svg>
+            <h3>Automation Operators</h3>
+            <p>Shutters • Gates • Barriers</p>
+          </div>
+        </a>
+
+        <!-- Card 2 -->
+        <a href="hardware.html" class="product-card" style="text-decoration:none; color:inherit; display:block;">
+          <div class="product-image">
+            <img
+              src="https://media.istockphoto.com/id/2208802495/photo/metal-roller-brackets-and-pulleys-for-sliding-gates.jpg?s=612x612&w=0&k=20&c=rTFgdf-hRI-yc8LyU6-umSm4w7VP3UMmZ3Hl7JUoeHQ="
+              alt="Calisto hardware" />
+          </div>
+          <div class="product-info">
+            <!-- Hardware Icon -->
+            <svg style="width:32px;height:32px;fill:var(--accent);display:block;margin:0 auto 8px;" viewBox="0 0 24 24">
+              <path
+                d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z" />
+            </svg>
+            <h3>Hardware & Components</h3>
+            <p>Springs • Slats • Guides</p>
+          </div>
+        </a>
+
+        <!-- Card 3 -->
+        <a href="controls.html" class="product-card" style="text-decoration:none; color:inherit; display:block;">
+          <div class="product-image">
+            <img
+              src="https://img.freepik.com/premium-photo/automatic-pick-place-machine-quickly-installs-components-generic-circuit-board-electronics_629685-4733.jpg"
+              alt="Calisto controls" />
+          </div>
+          <div class="product-info">
+            <!-- Controls Icon -->
+            <svg
+              style="width:32px;height:32px;fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"
+              viewBox="0 0 24 24">
+              <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+              <rect x="9" y="9" width="6" height="6"></rect>
+              <line x1="9" y1="1" x2="9" y2="4"></line>
+              <line x1="15" y1="1" x2="15" y2="4"></line>
+              <line x1="9" y1="20" x2="9" y2="23"></line>
+              <line x1="15" y1="20" x2="15" y2="23"></line>
+              <line x1="20" y1="9" x2="23" y2="9"></line>
+              <line x1="20" y1="14" x2="23" y2="14"></line>
+              <line x1="1" y1="9" x2="4" y2="9"></line>
+              <line x1="1" y1="14" x2="4" y2="14"></line>
+            </svg>
+            <h3>Controls & Accessories</h3>
+            <p>Remotes • Sensors</p>
+          </div>
+        </a>
+
+
+
+      </div>
+    </section>
+
+    <!-- PRODUCTS (theme-like grid + inline expansion) -->
+    <section id="products" class="section-padding" style="background:#FDFDFD;">
+      <div class="section-header">
+        <h2><em>Why choose</em> Calisto</h2>
+        <div class="divider"></div>
+        <p>
+          The trusted choice for installers and distributors worldwide.
+        </p>
+      </div>
+
+      <style>
+        .why-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 24px;
+          max-width: 1200px;
+          margin: 0 auto;
+          gap: 3rem;
+          /* Increased gap for neatness */
+        }
+
+        .why-card {
+          padding: 24px;
+          background: var(--surface);
+          border: 1px solid var(--line);
+          border-radius: var(--radius);
+          box-shadow: var(--shadow2);
+          text-align: center;
+        }
+
+        .why-card h4 {
+          margin-bottom: 0.5rem;
+          color: var(--primary-dark);
+          font-size: 1.1rem;
+        }
+
+        .why-card p {
+          font-size: 0.85rem;
+          line-height: 1.6;
+          color: var(--muted);
+          font-weight: 500;
+        }
+
+        @media (max-width: 1024px) {
+          .why-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+
+        @media (max-width: 600px) {
+          .why-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      </style>
+
+      <div class="why-grid">
+        <div class="why-card">
+          <svg style="width:36px;height:36px;fill:var(--accent);display:block;margin:0 auto 10px;" viewBox="0 0 24 24">
+            <path
+              d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />
+          </svg>
+          <h4>Trust</h4>
+          <p>A proven brand reputation built on long-term partnerships and global reliability.</p>
+        </div>
+        <div class="why-card">
+          <svg style="width:36px;height:36px;fill:var(--accent);display:block;margin:0 auto 10px;" viewBox="0 0 24 24">
+            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+          </svg>
+          <h4>Quality</h4>
+          <p>Certified automation solutions engineered to meet rigorous standards.</p>
+        </div>
+        <div class="why-card">
+          <svg style="width:36px;height:36px;fill:var(--accent);display:block;margin:0 auto 10px;" viewBox="0 0 24 24">
+            <path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z" />
+          </svg>
+          <h4>Diversity</h4>
+          <p>A comprehensive portfolio of products and accessories to suit varied applications and markets.</p>
+        </div>
+        <div class="why-card">
+          <svg style="width:36px;height:36px;fill:var(--accent);display:block;margin:0 auto 10px;" viewBox="0 0 24 24">
+            <path
+              d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z" />
+          </svg>
+          <h4>Stock</h4>
+          <p>Strong availability supported by ongoing investment in production, logistics, and warehousing.</p>
+        </div>
+        <div class="why-card">
+          <svg style="width:36px;height:36px;fill:var(--accent);display:block;margin:0 auto 10px;" viewBox="0 0 24 24">
+            <path
+              d="M21 12.22C21 6.73 16.96 3 12 3 7.04 3 3 6.73 3 12.22c0 1.36.24 2.65.67 3.84L2.08 20.6c-.16.51.27.99.78.88l4.47-.99c1.4.52 2.92.81 4.5.81 5.09 0 9.23-3.73 9.23-9.08zM17 13h-1.7c-.46 0-.83.37-.83.83v2.33c0 .46.37.83.83.83h1.7v-4zm-8 4H7.3c-.46 0-.83-.37-.83-.83v-2.33c0-.46.37-.83.83-.83H9v4z" />
+          </svg>
+          <h4>Support</h4>
+          <p>Professional technical guidance to ensure correct installation, performance, and satisfaction.</p>
+        </div>
+        <div class="why-card">
+          <svg style="width:36px;height:36px;fill:var(--accent);display:block;margin:0 auto 10px;" viewBox="0 0 24 24">
+            <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z" />
+          </svg>
+          <h4>Training</h4>
+          <p>Structured partner training aligned to team capability and knowledge requirements.</p>
+        </div>
+        <div class="why-card">
+          <svg style="width:36px;height:36px;fill:var(--accent);display:block;margin:0 auto 10px;" viewBox="0 0 24 24">
+            <path
+              d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" />
+          </svg>
+          <h4>Sharing</h4>
+          <p>Access a connected partner ecosystem that unlocks collaboration and new business opportunities.</p>
+        </div>
+        <div class="why-card">
+          <svg style="width:36px;height:36px;fill:var(--accent);display:block;margin:0 auto 10px;" viewBox="0 0 24 24">
+            <path
+              d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z" />
+          </svg>
+          <h4>Innovation</h4>
+          <p>Continually advancing solutions to help you exceed expectations with modern automation.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARTNER STRIP -->
+    <section id="partner" class="partner-strip">
+      <div style="position: relative; z-index: 2;">
+        <h3>Become a Calisto Certified Partner Installer</h3>
+        <p>
+          Join a professional network with training & technical updates, priority support channels, partner marketing
+          resources,
+          and stronger visibility in your territory.
+        </p>
+        <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
+          <a class="btn-luxury accent-fill" href="#contact">Apply now</a>
+          <button class="btn-luxury outline-light" onclick="openBrochureForm()">Get partner kit</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARTICLES -->
+    <section id="articles" class="section-padding" style="background:#fff;">
+      <div class="section-header">
+        <h2><em>Latest</em> Articles</h2>
+        <div class="divider"></div>
+        <p>
+          Insights, news, and technical updates from the world of automation.
+        </p>
+      </div>
+
+      <style>
+        .articles-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 24px;
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+
+        .article-card {
+          border: 1px solid #eee;
+          background: #fff;
+          border-radius: var(--radius);
+          overflow: hidden;
+          box-shadow: var(--shadow);
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .article-card:hover {
+          transform: translateY(-5px);
+          box-shadow: var(--shadow2);
+        }
+
+        .article-img {
+          height: 180px;
+          width: 100%;
+          object-fit: cover;
+          background: #f0f0f0;
+        }
+
+        .article-content {
+          padding: 1.2rem;
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .article-date {
+          font-size: 0.75rem;
+          color: var(--accent);
+          font-weight: 600;
+          margin-bottom: 0.5rem;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+
+        h4 {
+          font-family: var(--font-body);
+          color: var(--accent);
+          font-weight: 800;
+          letter-spacing: .6px;
+          text-transform: uppercase;
+          font-size: 1.15rem;
+          /* Increased from .85rem */
+        }
+
+        .article-title {
+          font-size: 1.1rem;
+          font-family: var(--font-head);
+          margin-bottom: 0.6rem;
+          color: var(--primary-dark);
+          line-height: 1.3;
+        }
+
+        .article-desc {
+          font-size: 0.9rem;
+          color: #666;
+          margin-bottom: 1.2rem;
+          line-height: 1.6;
+          flex-grow: 1;
+        }
+
+        .read-more {
+          font-size: 0.85rem;
+          font-weight: 700;
+          color: var(--accent);
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          text-decoration: none;
+          align-self: flex-start;
+        }
+
+        .read-more:hover {
+          color: var(--primary-dark);
+          text-decoration: none;
+        }
+
+        @media (max-width: 1024px) {
+          .articles-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+
+        @media (max-width: 600px) {
+          .articles-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      </style>
+
+      <div class="articles-grid">
+        <!-- Article 1 -->
+        <article class="article-card">
+          <img src="https://images.unsplash.com/photo-1558002038-1091a16606f3?auto=format&fit=crop&w=600&q=80"
+            alt="Smart Gate Automation" class="article-img">
+          <div class="article-content">
+            <div class="article-date">Oct 24, 2025</div>
+            <h3 class="article-title">The Future of Smart Gate Automation</h3>
+            <p class="article-desc">Discover how AI and IoT connectivity are transforming residential access control
+              systems.</p>
+            <a href="blog.html#smart-automation" class="read-more">Read more &rarr;</a>
+          </div>
+        </article>
+
+        <!-- Article 2 -->
+        <article class="article-card">
+          <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=600&q=80"
+            alt="Industrial Shutters" class="article-img">
+          <div class="article-content">
+            <div class="article-date">Sep 15, 2025</div>
+            <h3 class="article-title">Choosing the Right Motor for Industrial Shutters</h3>
+            <p class="article-desc">A comprehensive guide to selecting robust drives for heavy-duty commercial
+              applications.</p>
+            <a href="blog.html#industrial-motors" class="read-more">Read more &rarr;</a>
+          </div>
+        </article>
+
+        <!-- Article 3 -->
+        <article class="article-card">
+          <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80"
+            alt="Tubular Series" class="article-img">
+          <div class="article-content">
+            <div class="article-date">Aug 02, 2025</div>
+            <h3 class="article-title">Calisto Launches New Tubular Series</h3>
+            <p class="article-desc">Introducing our quietest, most energy-efficient tubular motors yet, designed for
+              modern homes.</p>
+            <a href="blog.html#tubular-series" class="read-more">Read more &rarr;</a>
+          </div>
+        </article>
+
+        <!-- Article 4 -->
+        <article class="article-card">
+          <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=600&q=80"
+            alt="Partner Training" class="article-img">
+          <div class="article-content">
+            <div class="article-date">Jul 10, 2025</div>
+            <h3 class="article-title">Partner Training Events 2025</h3>
+            <p class="article-desc">Join us for upcoming technical workshops and certification programs in your region.
+            </p>
+            <a href="blog.html#partner-training" class="read-more">Read more &rarr;</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div id="footer-placeholder"></div>
+
+    <script src="js/common.js"></script>
+
+    <script>
+      // Header scrolled style (same logic as the theme)
+      window.addEventListener("scroll", () => {
+        const header = document.getElementById("navbar");
+        if (window.scrollY > 50) header.classList.add("scrolled");
+        else header.classList.remove("scrolled");
+      });
+
+      // Mobile nav open/close
+      function toggleMenu() {
+        document.getElementById("nav-links").classList.toggle("active");
+      }
+
+      // Inline expansion panel (theme-like interaction)
+      function openCategoryPanel(card) {
+        const panel = document.getElementById("inline-expansion-panel");
+        const grid = document.getElementById("main-grid");
+
+        document.getElementById("panel-title").innerText = card.getAttribute("data-title") || "";
+        document.getElementById("panel-subtitle").innerText = card.getAttribute("data-subtitle") || "";
+        document.getElementById("panel-desc").innerText = card.getAttribute("data-desc") || "";
+        document.getElementById("panel-img").src = card.getAttribute("data-image") || "";
+
+        // Specs: "k: v | k: v"
+        const specsStr = card.getAttribute("data-specs") || "";
+        const specsContainer = document.getElementById("panel-specs");
+        specsContainer.innerHTML = "";
+        if (specsStr) {
+          specsStr.split("|").forEach(pair => {
+            const parts = pair.split(":");
+            if (parts.length < 2) return;
+            const k = parts[0].trim();
+            const v = parts.slice(1).join(":").trim();
+            const div = document.createElement("div");
+            div.className = "spec-item";
+            div.innerHTML = `<span class="spec-label">${k}</span><span class="spec-value">${v}</span>`;
+            specsContainer.appendChild(div);
+          });
+        }
+
+        // Insert panel after the row where the card sits (same idea as your theme)
+        const cols = window.innerWidth > 1024 ? 3 : window.innerWidth > 768 ? 2 : 1;
+        const items = Array.from(grid.children).filter(el => el.classList.contains("product-card"));
+        const idx = items.indexOf(card);
+        const rowEndIdx = Math.ceil((idx + 1) / cols) * cols - 1;
+        const insertIdx = Math.min(rowEndIdx, items.length - 1);
+
+        if (items[insertIdx] && items[insertIdx].nextSibling) grid.insertBefore(panel, items[insertIdx].nextSibling);
+        else grid.appendChild(panel);
+
+        panel.classList.remove("active");
+        panel.style.height = "0px";
+        void panel.offsetWidth; // reflow
+        panel.classList.add("active");
+        panel.style.height = panel.scrollHeight + "px";
+
+        setTimeout(() => {
+          const yOffset = -120;
+          const y = panel.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: "smooth" });
+        }, 250);
+      }
+
+      function closeProduct() {
+        const panel = document.getElementById("inline-expansion-panel");
+        panel.classList.remove("active");
+        panel.style.height = "0px";
+      }
+
+      // Brochure modal (theme pattern)
+      function openBrochureForm() {
+        const modal = document.getElementById("brochure-modal");
+        document.getElementById("brochure-form-wrapper").style.display = "block";
+        document.getElementById("brochure-success").style.display = "none";
+        modal.style.display = "flex";
+        setTimeout(() => modal.classList.add("active"), 10);
+      }
+      function closeBrochureForm() {
+        const modal = document.getElementById("brochure-modal");
+        modal.classList.remove("active");
+        setTimeout(() => { modal.style.display = "none"; }, 400);
+      }
+      function handleBrochureSubmit(e) {
+        e.preventDefault();
+        document.getElementById("brochure-form-wrapper").style.display = "none";
+        document.getElementById("brochure-success").style.display = "block";
+      }
+
+      // Year
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

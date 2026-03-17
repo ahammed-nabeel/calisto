@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Basic page setup -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calisto Automation | Automations</title>
+    <meta name="description"
+        content="Discover Calisto's full range of automation solutions for gates, rolling shutters, window systems, and automatic doors.">
+    <meta name="keywords" content="automation, gates, rolling shutters, window systems, automatic doors, Calisto Tech">
+    <meta name="robots" content="index, follow">
+
+    <link rel="canonical" href="https://calistotech.com/automation.html">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Raleway:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/common.css?v=2">
+
+    <style>
+        :root {
+            --primary-dark: #0f172a;
+            --primary-light: #F6F7FB;
+            --surface: #ffffff;
+            --line: rgba(15, 23, 42, .10);
+            --accent: #005cb9;
+            /* Using Calisto Blue as accent */
+            --text-body: #334155;
+            --muted: #64748b;
+            --font-body: "Lato", system-ui, sans-serif;
+            --font-head: "Raleway", system-ui, sans-serif;
+            --container-padding: 6vw;
+            --transition: all .35s ease;
+            --shadow: 0 16px 40px rgba(2, 6, 23, .10);
+            --shadow2: 0 10px 24px rgba(2, 6, 23, .08);
+            --radius: 18px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--primary-light);
+            margin: 0;
+            padding: 0;
+            color: var(--text-body);
+        }
+
+        /* Hero Section - Simple Text Based */
+        .page-hero {
+            background: linear-gradient(to bottom, rgba(0, 50, 100, 0.85) 0%, rgba(0, 92, 185, 0.6) 100%), url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            padding: 120px 20px 80px;
+            text-align: center;
+            color: white;
+        }
+
+        .page-hero h1 {
+            font-family: var(--font-head);
+            font-size: 3rem;
+            margin: 0;
+        }
+
+        .section-padding {
+            padding: 6rem var(--container-padding);
+        }
+
+        .solutions-header {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 5rem;
+        }
+
+        .solutions-header h2 {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            color: var(--muted);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .solutions-header h2 span {
+            display: block;
+            color: var(--primary-dark);
+            /* Or slightly darker */
+        }
+
+        .solutions-header p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        /* Automation Grid */
+        .automation-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .automation-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            /* Using rounded corners as per theme, reference has sharp/light border */
+            padding: 3rem 1.5rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: var(--transition);
+            box-shadow: var(--shadow2);
+            position: relative;
+        }
+
+        .automation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-color: var(--accent);
+        }
+
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 2rem;
+            /* Icon color will be handled via fill in SVG */
+        }
+
+        .automation-card h3 {
+            font-family: var(--font-head);
+            font-size: 1.4rem;
+            color: var(--primary-dark);
+            /* Or a specific red if following reference exactly, but theme is blue */
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Reference uses red for icons and titles? User said "fill color should match the theme". Theme is blue.
+       But reference image has red icons. Existing site has blue theme. I will stick to theme (blue) unless "match the theme" implies match the reference's theme?
+       "fill color should match the theme" -> implies the website's theme (blue).
+    */
+
+        .automation-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--muted);
+            flex-grow: 1;
+        }
+
+        .automation-list li {
+            margin-bottom: 0.25rem;
+        }
+
+        .explore-link {
+            display: inline-block;
+            margin-top: auto;
+            padding: 0.75rem 1.8rem;
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .explore-link:hover {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 6px 15px rgba(0, 92, 185, 0.25);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1024px) {
+            .automation-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .automation-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-hero h1 {
+                font-size: 2rem;
+            }
+
+        }
+
+        /* Hero Carousel Styles */
+        .hero-carousel {
+            position: relative;
+            height: 80vh;
+            min-height: 600px;
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 0;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .carousel-slide::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.4));
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+            max-width: 900px;
+            padding: 0 20px;
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.8s ease-out 0.3s;
+        }
+
+        .carousel-slide.active .hero-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .hero-title {
+            font-family: var(--font-head);
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            margin-bottom: 1rem;
+            font-weight: 800;
+            line-height: 1.1;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            font-weight: 400;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-slide {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            border: 2px solid var(--accent);
+        }
+
+        .btn-slide:hover {
+            background: transparent;
+            border-color: #fff;
+            color: #fff;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- HEADER -->
+    <div id="header-placeholder"></div>
+    <!-- HERO CAROUSEL -->
+    <section class="hero-carousel" id="home">
+        <!-- Slide 1: Gates -->
+        <div class="carousel-slide active"
+            style="background-image: url('https://images.unsplash.com/photo-1558002038-1091a16606f3?auto=format&fit=crop&w=1920&q=80');">
+            <div class="hero-content">
+                <h1 class="hero-title">Advanced Gate Automation</h1>
+                <p class="hero-subtitle">Powerful, silent, and reliable systems for every type of residential and
+                    industrial gate.</p>
+                <a href="#gates" class="btn-slide">View Systems</a>
+            </div>
+        </div>
+        <!-- Slide 2: Shutters -->
+        <div class="carousel-slide"
+            style="background-image: url('https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1920&q=80');">
+            <div class="hero-content">
+                <h1 class="hero-title">Smart Rolling Shutters</h1>
+                <p class="hero-subtitle">Seamless control for your windows and blinds with our cutting-edge tubular
+                    motors.</p>
+                <a href="#shutters" class="btn-slide">Discover More</a>
+            </div>
+        </div>
+        <!-- Slide 3: Doors -->
+        <div class="carousel-slide"
+            style="background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80');">
+            <div class="hero-content">
+                <h1 class="hero-title">Automatic Door Solutions</h1>
+                <p class="hero-subtitle">Hygienic, touch-free access for modern commercial buildings and public spaces.
+                </p>
+                <a href="#doors" class="btn-slide">Explore Range</a>
+            </div>
+        </div>
+    </section>
+    <main>
+        <section class="section-padding">
+            <div class="solutions-header">
+                <h2>Complete Automation Systems,
+                    <span>Engineered for Ease.</span>
+                </h2>
+                <p>From residential gates and garage doors to industrial rolling shutters and automatic
+                    entrances,
+                    Calisto offers a specialized solution for every application. Our products are developed to
+                    meet the rigorous demands of daily use while ensuring a seamless installation process for
+                    professionals,
+                    featuring our signature comprehensive installation kits. </p>
+            </div>
+            <div class="automation-grid">
+                <!-- Card 1: Gates -->
+                <div class="automation-card">
+                    <div class="icon-box">
+                        <!-- reusing swing-auto.svg logic -->
+                        <svg viewBox="0 0 109.87 109.84" style="width:100%; height:100%; fill: var(--accent);">
+                            <polygon points="24.51 9.22 24.51 100.58 30.47 103.61 30.47 6.2 24.51 9.22" />
+                            <polygon points="0 21.62 0 88.12 5.96 91.14 5.96 18.6 0 21.62" />
+                            <polygon points="12.26 15.42 12.26 94.34 18.21 97.38 18.21 12.4 12.26 15.42" />
+                            <polyline
+                                points="42.7 109.84 42.6 109.79 42.72 109.79 42.72 0 36.77 3.01 36.77 106.82 42.6 109.79" />
+                            <rect x="0" y="51.66" width="42.72" height="5.96" />
+                            <polygon points="85.36 9.22 85.36 100.58 79.4 103.61 79.4 6.2 85.36 9.22" />
+                            <polygon points="109.87 21.62 109.87 88.12 103.91 91.14 103.91 18.6 109.87 21.62" />
+                            <polygon points="97.62 15.42 97.62 94.34 91.66 97.38 91.66 12.4 97.62 15.42" />
+                            <polyline
+                                points="67.17 109.84 67.27 109.79 67.15 109.79 67.15 0 73.11 3.01 73.11 106.82 67.27 109.79" />
+                            <rect x="67.15" y="51.66" width="42.72" height="5.96" />
+                        </svg>
+                    </div>
+                    <h3>Gates</h3>
+                    <ul class="automation-list">
+                        <li>Swing, Sliding & Garage Systems</li>
+                        <li>Sectional & Folding Doors</li>
+                        <li>Traffic Barriers</li>
+                        <li>Safety Accessories</li>
+                    </ul>
+                    <a href="gates.html" class="explore-link">EXPLORE</a>
+                </div>
+                <!-- Card 2: Rolling shutters -->
+                <div class="automation-card">
+                    <div class="icon-box">
+                        <!-- shutter-auto.svg -->
+                        <svg viewBox="0 0 87.49 111.39" style="width:100%; height:100%; fill: var(--accent);">
+                            <rect x="23.97" y="95.94" width="5.96" height="15.45"
+                                transform="translate(53.9 207.33) rotate(180)" />
+                            <rect x="27.34" y="80.64" width="5.96" height="15.45"
+                                transform="translate(114.24 129.41) rotate(135)" />
+                            <rect x="20.61" y="80.64" width="5.96" height="15.45"
+                                transform="translate(-22.22 167.53) rotate(-135)" />
+                            <rect x="56.61" y="80.8" width="5.96" height="15.45" />
+                            <rect x="53.25" y="96.1" width="5.96" height="15.45"
+                                transform="translate(-56.94 70.17) rotate(-45)" />
+                            <rect x="59.98" y="96.1" width="5.96" height="15.45"
+                                transform="translate(91.85 -14.11) rotate(45)" />
+                            <rect width="87.49" height="5" />
+                            <rect y="13.87" width="87.49" height="5" />
+                            <rect y="27.74" width="87.49" height="5" />
+                            <rect y="41.62" width="87.49" height="5" />
+                            <rect y="55.49" width="87.49" height="5" />
+                            <rect y="69.36" width="87.49" height="5" />
+                        </svg>
+                    </div>
+                    <h3>Rolling shutters</h3>
+                    <ul class="automation-list">
+                        <li>Commercial & Residential Shutters</li>
+                        <li>Automated Blinds</li>
+                        <li>Control Systems</li>
+                    </ul>
+                    <a href="rolling-shutters.html" class="explore-link">EXPLORE</a>
+                </div>
+                <!-- Card 3: Window systems -->
+                <div class="automation-card">
+                    <div class="icon-box">
+                        <!-- window-auto.svg -->
+                        <svg viewBox="0 0 112.67 109.01" style="width:100%; height:100%; fill: var(--accent);">
+                            <path d="m112.67,109.01H0V0h112.67v109.01Zm-107.57-5.1h102.48V5.1H5.09v98.82Z" />
+                            <path
+                                d="m57.95,108.96c-1.38,0-2.5-1.12-2.5-2.5V2.55c0-1.38,1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5v103.92c0,1.38-1.12,2.5-2.5,2.5Z" />
+                            <path
+                                d="m31.99,108.96c-1.38,0-2.5-1.12-2.5-2.5V2.55c0-1.38,1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5v103.92c0,1.38-1.12,2.5-2.5,2.5Z" />
+                            <path
+                                d="m83.91,108.96c-1.38,0-2.5-1.12-2.5-2.5V2.55c0-1.38,1.12-2.5,2.5-2.5s2.5,1.12,2.5,2.5v103.92c0,1.38-1.12,2.5-2.5,2.5Z" />
+                            <path
+                                d="m31.99,15.52H2.55C1.17,15.52.05,14.4.05,13.02s1.12-2.5,2.5-2.5h29.45c1.38,0,2.5,1.12,2.5,2.5s-1.12,2.5-2.5,2.5Z" />
+                            <path
+                                d="m31.99,27.5H2.55c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5h29.45c1.38,0,2.5,1.12,2.5,2.5s-1.12,2.5-2.5,2.5Z" />
+                            <path
+                                d="m31.99,39.49H2.55c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5h29.45c1.38,0,2.5,1.12,2.5,2.5s-1.12,2.5-2.5,2.5Z" />
+                            <path
+                                d="m31.99,51.48H2.55c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5h29.45c1.38,0,2.5,1.12,2.5,2.5s-1.12,2.5-2.5,2.5Z" />
+                            <path
+                                d="m31.99,63.47H2.55c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5h29.45c1.38,0,2.5,1.12,2.5,2.5s-1.12,2.5-2.5,2.5Z" />
+                            <path
+                                d="m31.99,75.46H2.55c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5h29.45c1.38,0,2.5,1.12,2.5,2.5s-1.12,2.5-2.5,2.5Z" />
+                            <path
+                                d="m31.99,87.44H2.55c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5h29.45c1.38,0,2.5,1.12,2.5,2.5s-1.12,2.5-2.5,2.5Z" />
+                            <path
+                                d="m31.99,99.43H2.55c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5h29.45c1.38,0,2.5,1.12,2.5,2.5s-1.12,2.5-2.5,2.5Z" />
+                            <path
+                                d="m110.12,15.38h-26.21c-1.3,0-2.36-1.06-2.36-2.36s1.06-2.36,2.36-2.36h26.21c1.3,0,2.36,1.06,2.36,2.36s-1.06,2.36-2.36,2.36Z" />
+                            <path
+                                d="m110.12,27.36h-26.21c-1.3,0-2.36-1.06-2.36-2.36s1.06-2.36,2.36-2.36h26.21c1.3,0,2.36,1.06,2.36,2.36s-1.06,2.36-2.36,2.36Z" />
+                            <path
+                                d="m110.12,39.35h-26.21c-1.3,0-2.36-1.06-2.36-2.36s1.06-2.36,2.36-2.36h26.21c1.3,0,2.36,1.06,2.36,2.36s-1.06,2.36-2.36,2.36Z" />
+                            <path
+                                d="m110.12,51.34h-26.21c-1.3,0-2.36-1.06-2.36-2.36s1.06-2.36,2.36-2.36h26.21c1.3,0,2.36,1.06,2.36,2.36s-1.06,2.36-2.36,2.36Z" />
+                            <path
+                                d="m110.12,63.33h-26.21c-1.3,0-2.36-1.06-2.36-2.36s1.06-2.36,2.36-2.36h26.21c1.3,0,2.36,1.06,2.36,2.36s-1.06,2.36-2.36,2.36Z" />
+                            <path
+                                d="m110.12,75.31h-26.21c-1.3,0-2.36-1.06-2.36-2.36s1.06-2.36,2.36-2.36h26.21c1.3,0,2.36,1.06,2.36,2.36s-1.06,2.36-2.36,2.36Z" />
+                            <path
+                                d="m110.12,87.3h-26.21c-1.3,0-2.36-1.06-2.36-2.36s1.06-2.36,2.36-2.36h26.21c1.3,0,2.36,1.06,2.36,2.36s-1.06,2.36-2.36,2.36Z" />
+                            <path
+                                d="m110.12,99.29h-26.21c-1.3,0-2.36-1.06-2.36-2.36s1.06-2.36,2.36-2.36h26.21c1.3,0,2.36,1.06,2.36,2.36s-1.06,2.36-2.36,2.36Z" />
+                            <path
+                                d="m50.46,67.63c-.6,0-1.21-.23-1.67-.69-.92-.92-.92-2.42,0-3.34l15.15-15.15c.92-.92,2.42-.92,3.34,0,.92.92.92,2.42,0,3.34l-15.15,15.15c-.46.46-1.06.69-1.67.69Z" />
+                        </svg>
+                    </div>
+                    <h3>Window systems</h3>
+                    <ul class="automation-list">
+                        <li>Roller Shutters</li>
+                        <li>Windows & Awnings</li>
+                        <li>Smart Sensors</li>
+                    </ul>
+                    <a href="window-systems.html" class="explore-link">EXPLORE</a>
+                </div>
+                <!-- Card 4: Automatic doors -->
+                <div class="automation-card">
+                    <div class="icon-box">
+                        <!-- door-auto.svg -->
+                        <svg viewBox="0 0 111.21 108.92" style="width:100%; height:100%; fill: var(--accent);">
+                            <path d="m111.21,108.92H0V0h111.21v108.92Zm-106.21-5h101.21V5H5v98.92Z" />
+                            <rect x="2.5" y="21.53" width="106.21" height="5" />
+                            <rect x="53.11" y="24.03" width="5" height="82.38" />
+                            <rect x="80.43" y="24.03" width="5" height="22.47" />
+                            <rect x="80.43" y="83.01" width="5" height="23.4" />
+                            <rect x="72.38" y="57.5" width="5.96" height="15.45"
+                                transform="translate(10.13 140.58) rotate(-90)" />
+                            <rect x="87.67" y="60.87" width="5.96" height="15.45"
+                                transform="translate(106.25 181.19) rotate(-135)" />
+                            <rect x="87.67" y="54.13" width="5.96" height="15.45"
+                                transform="translate(-17.19 82.22) rotate(-45)" />
+                            <rect x="26.39" y="24.03" width="5" height="22.47" />
+                            <rect x="26.39" y="83.01" width="5" height="23.4" />
+                            <rect x="33.48" y="57.5" width="5.96" height="15.45"
+                                transform="translate(-28.77 101.68) rotate(-90)" />
+                            <rect x="18.18" y="60.87" width="5.96" height="15.45"
+                                transform="translate(-42.3 35.05) rotate(-45)" />
+                            <rect x="18.18" y="54.13" width="5.96" height="15.45"
+                                transform="translate(-7.62 120.56) rotate(-135)" />
+                            <path
+                                d="m63.27,16.38h-15.32c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5h15.32c1.38,0,2.5,1.12,2.5,2.5s-1.12,2.5-2.5,2.5Z" />
+                        </svg>
+                    </div>
+                    <h3>Automatic doors</h3>
+                    <ul class="automation-list">
+                        <li>Pedestrian Sliding Doors</li>
+                        <li>Swing Door Operators</li>
+                        <li>Access Control</li>
+                    </ul>
+                    <a href="automatic-doors.html" class="explore-link">EXPLORE</a>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- FOOTER -->
+    <div id="footer-placeholder"></div>
+    <script src="js/common.js"></script>
+    <script>
+        // Hero Carousel Logic
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        let slideInterval;
+
+        function updateSlides() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function moveSlide(direction) {
+            currentSlide = (currentSlide + direction + slides.length) % slides.length;
+            updateSlides();
+        }
+
+        function startTimer() {
+            slideInterval = setInterval(() => moveSlide(1), 5000);
+        }
+
+        // Initialize
+        startTimer();
+    </script>
+</body>
+
+</html>

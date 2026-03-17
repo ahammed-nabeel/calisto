@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="b" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 111.21 108.92">
+  <defs>
+    <style>
+      .d {
+        fill: #4064af;
+      }
+    </style>
+  </defs>
+  <g id="c" data-name="Layer 2">
+    <g>
+      <path class="d" d="m111.21,108.92H0V0h111.21v108.92Zm-106.21-5h101.21V5H5v98.92Z"/>
+      <rect class="d" x="2.5" y="21.53" width="106.21" height="5"/>
+      <rect class="d" x="53.11" y="24.03" width="5" height="82.38"/>
+      <rect class="d" x="80.43" y="24.03" width="5" height="22.47"/>
+      <rect class="d" x="80.43" y="83.01" width="5" height="23.4"/>
+      <g>
+        <rect class="d" x="72.38" y="57.5" width="5.96" height="15.45" transform="translate(10.13 140.58) rotate(-90)"/>
+        <g>
+          <rect class="d" x="87.67" y="60.87" width="5.96" height="15.45" transform="translate(106.25 181.19) rotate(-135)"/>
+          <rect class="d" x="87.67" y="54.13" width="5.96" height="15.45" transform="translate(-17.19 82.22) rotate(-45)"/>
+        </g>
+      </g>
+      <rect class="d" x="26.39" y="24.03" width="5" height="22.47"/>
+      <rect class="d" x="26.39" y="83.01" width="5" height="23.4"/>
+      <g>
+        <rect class="d" x="33.48" y="57.5" width="5.96" height="15.45" transform="translate(-28.77 101.68) rotate(-90)"/>
+        <g>
+          <rect class="d" x="18.18" y="60.87" width="5.96" height="15.45" transform="translate(-42.3 35.05) rotate(-45)"/>
+          <rect class="d" x="18.18" y="54.13" width="5.96" height="15.45" transform="translate(-7.62 120.56) rotate(-135)"/>
+        </g>
+      </g>
+      <path class="d" d="m63.27,16.38h-15.32c-1.38,0-2.5-1.12-2.5-2.5s1.12-2.5,2.5-2.5h15.32c1.38,0,2.5,1.12,2.5,2.5s-1.12,2.5-2.5,2.5Z"/>
+    </g>
+  </g>
+</svg>
