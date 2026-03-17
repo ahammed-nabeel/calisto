@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calisto Admin — Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:     #0a0f1e;
+      --ink2:    #1e293b;
+      --muted:   #64748b;
+      --line:    rgba(255,255,255,0.08);
+      --accent:  #005cb9;
+      --accent2: #3b82f6;
+      --glass:   rgba(255,255,255,0.04);
+      --glass2:  rgba(255,255,255,0.08);
+      --danger:  #ef4444;
+      --success: #22c55e;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--ink);
+      color: #fff;
+      overflow: hidden;
+    }
+
+    /* ── Background canvas ── */
+    #bg-canvas {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Grid overlay ── */
+    .grid-overlay {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* ── Layout ── */
+    .page-wrap {
+      position: relative; z-index: 10;
+      display: grid;
+      grid-template-columns: 1fr 520px;
+      height: 100vh;
+    }
+
+    /* ── Left panel ── */
+    .left-panel {
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+      padding: 3rem;
+      border-right: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .brand-logo {
+      width: 44px; height: 44px;
+      background: var(--accent);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .brand-logo svg { width: 24px; height: 24px; fill: #fff; }
+    .brand-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem; font-weight: 700; letter-spacing: 0.5px;
+    }
+    .brand-tag {
+      font-size: 0.7rem; color: var(--muted);
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+
+    .hero-text { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .hero-text h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 4vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 1.5rem;
+    }
+    .hero-text h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent2), #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-text p {
+      color: var(--muted); font-size: 1rem; line-height: 1.7;
+      max-width: 400px;
+    }
+
+    .feature-pills {
+      display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 2.5rem;
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--glass2); border: 1px solid var(--line);
+      padding: 0.4rem 0.9rem; border-radius: 30px;
+      font-size: 0.78rem; color: #94a3b8;
+    }
+    .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent2); }
+
+    .left-footer { color: var(--muted); font-size: 0.78rem; }
+
+    /* ── Right panel (form) ── */
+    .right-panel {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 3rem 3.5rem;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      overflow-y: auto;
+    }
+
+    .form-header { margin-bottom: 2.5rem; }
+    .form-header h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.75rem; font-weight: 700; margin-bottom: 0.4rem;
+    }
+    .form-header p { color: var(--muted); font-size: 0.9rem; }
+
+    /* Input fields */
+    .field { margin-bottom: 1.25rem; }
+    .field label {
+      display: block; margin-bottom: 0.5rem;
+      font-size: 0.78rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1px; color: #94a3b8;
+    }
+    .input-wrap { position: relative; }
+    .input-wrap svg.field-icon {
+      position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+      width: 18px; height: 18px; fill: var(--muted); pointer-events: none;
+      transition: fill 0.2s;
+    }
+    .field input {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.9rem;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, background 0.2s;
+      outline: none;
+    }
+    .field input::placeholder { color: #475569; }
+    .field input:focus {
+      border-color: var(--accent2);
+      background: rgba(59,130,246,0.06);
+    }
+    .field input:focus + .field-icon,
+    .input-wrap:focus-within svg.field-icon { fill: var(--accent2); }
+
+    /* Password toggle */
+    .pw-toggle {
+      position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; padding: 4px;
+      color: var(--muted); transition: color 0.2s;
+    }
+    .pw-toggle:hover { color: #fff; }
+    .pw-toggle svg { width: 18px; height: 18px; fill: currentColor; display: block; }
+
+    /* Error */
+    .error-msg {
+      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25);
+      color: #fca5a5; border-radius: 8px; padding: 0.75rem 1rem;
+      font-size: 0.85rem; margin-bottom: 1.25rem;
+      display: none; align-items: center; gap: 0.5rem;
+    }
+    .error-msg.show { display: flex; }
+    .error-msg svg { width: 16px; height: 16px; fill: #fca5a5; flex-shrink: 0; }
+
+    /* Submit button */
+    .btn-submit {
+      width: 100%; padding: 1rem;
+      background: var(--accent);
+      color: #fff; border: none; border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer; margin-top: 0.5rem;
+      transition: all 0.25s;
+      position: relative; overflow: hidden;
+      letter-spacing: 0.5px;
+    }
+    .btn-submit::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.1));
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .btn-submit:hover { background: #004a94; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,92,185,0.35); }
+    .btn-submit:hover::before { opacity: 1; }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit.loading { pointer-events: none; }
+    .btn-submit .btn-label { transition: opacity 0.2s; }
+    .btn-submit .spinner {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 20px; height: 20px; opacity: 0; transition: opacity 0.2s;
+    }
+    .btn-submit.loading .btn-label { opacity: 0; }
+    .btn-submit.loading .spinner { opacity: 1; }
+    .spinner circle {
+      fill: none; stroke: #fff; stroke-width: 2.5;
+      stroke-dasharray: 40; stroke-dashoffset: 40;
+      animation: spin-dash 0.8s ease infinite;
+      transform-origin: center; stroke-linecap: round;
+    }
+    @keyframes spin-dash {
+      0% { stroke-dashoffset: 40; transform: rotate(0deg); }
+      50% { stroke-dashoffset: 10; }
+      100% { stroke-dashoffset: 40; transform: rotate(360deg); }
+    }
+
+    .form-footer {
+      margin-top: 2rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--line);
+      text-align: center; color: var(--muted); font-size: 0.8rem;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .right-panel { animation: fadeUp 0.5s ease both 0.1s; }
+    .left-panel .hero-text { animation: fadeUp 0.6s ease both 0.05s; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .page-wrap { grid-template-columns: 1fr; overflow-y: auto; }
+      .left-panel { display: none; }
+      .right-panel { min-height: 100vh; padding: 2.5rem 2rem; }
+      html, body { overflow: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="grid-overlay"></div>
+
+<div class="page-wrap">
+  <!-- Left: branding -->
+  <div class="left-panel">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">Calisto</div>
+        <div class="brand-tag">Admin Portal</div>
+      </div>
+    </div>
+
+    <div class="hero-text">
+      <h1>Manage your<br><em>product catalog</em><br>with confidence.</h1>
+      <p>A secure control panel for your team. Add products, manage categories, control SEO — all from one place.</p>
+      <div class="feature-pills">
+        <span class="pill"><span class="pill-dot"></span>Product Catalog</span>
+        <span class="pill"><span class="pill-dot"></span>Category Management</span>
+        <span class="pill"><span class="pill-dot"></span>SEO Controls</span>
+        <span class="pill"><span class="pill-dot"></span>Role-based Access</span>
+        <span class="pill"><span class="pill-dot"></span>Contact Form Inbox</span>
+      </div>
+    </div>
+
+    <div class="left-footer">© 2025 Calisto Automation. All rights reserved.</div>
+  </div>
+
+  <!-- Right: form -->
+  <div class="right-panel">
+    <div class="form-header">
+      <h2>Welcome back</h2>
+      <p>Sign in to your admin account to continue.</p>
+    </div>
+
+    <div class="error-msg" id="error-msg">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
+      <span id="error-text">Invalid username or password.</span>
+    </div>
+
+    <div class="field">
+      <label>Username</label>
+      <div class="input-wrap">
+        <svg class="field-icon" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        <input type="text" id="username" placeholder="Enter your username" autocomplete="username" autofocus>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Password</label>
+      <div class="input-wrap">
+        <svg class="field-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+        <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+        <button class="pw-toggle" type="button" onclick="togglePw()" id="pw-btn" title="Show/hide password">
+          <svg id="pw-icon-show" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+          <svg id="pw-icon-hide" viewBox="0 0 24 24" style="display:none"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn-submit" id="login-btn" onclick="handleLogin()">
+      <span class="btn-label">Sign In</span>
+      <svg class="spinner" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>
+    </button>
+
+    <div class="form-footer">
+      Protected admin area · <strong style="color:#fff">Calisto Automation</strong>
+    </div>
+  </div>
+</div>
+
+<script src="auth.js"></script>
+<script>
+  // ── Animated background ──
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function makeParticle() {
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.5 + 0.3,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      a: Math.random() * 0.4 + 0.1
+    };
+  }
+  for (let i = 0; i < 80; i++) particles.push(makeParticle());
+
+  function drawFrame() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Subtle gradient orbs
+    const g1 = ctx.createRadialGradient(W*0.15, H*0.3, 0, W*0.15, H*0.3, W*0.35);
+    g1.addColorStop(0, 'rgba(0,92,185,0.12)');
+    g1.addColorStop(1, 'transparent');
+    ctx.fillStyle = g1; ctx.fillRect(0,0,W,H);
+
+    const g2 = ctx.createRadialGradient(W*0.85, H*0.7, 0, W*0.85, H*0.7, W*0.3);
+    g2.addColorStop(0, 'rgba(59,130,246,0.08)');
+    g2.addColorStop(1, 'transparent');
+    ctx.fillStyle = g2; ctx.fillRect(0,0,W,H);
+
+    // Particles + connections
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(148,163,184,${p.a})`;
+      ctx.fill();
+    });
+
+    particles.forEach((a, i) => {
+      particles.slice(i+1).forEach(b => {
+        const d = Math.hypot(a.x-b.x, a.y-b.y);
+        if (d < 120) {
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = `rgba(59,130,246,${0.06 * (1 - d/120)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      });
+    });
+
+    requestAnimationFrame(drawFrame);
+  }
+  drawFrame();
+
+  // ── Password toggle ──
+  function togglePw() {
+    const inp = document.getElementById('password');
+    const showIcon = document.getElementById('pw-icon-show');
+    const hideIcon = document.getElementById('pw-icon-hide');
+    const isHidden = inp.type === 'password';
+    inp.type = isHidden ? 'text' : 'password';
+    showIcon.style.display = isHidden ? 'none' : 'block';
+    hideIcon.style.display = isHidden ? 'block' : 'none';
+  }
+
+  // ── Enter key ──
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleLogin();
+  });
+
+  // ── Login handler ──
+  function handleLogin() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const btn = document.getElementById('login-btn');
+    const err = document.getElementById('error-msg');
+
+    err.classList.remove('show');
+    btn.classList.add('loading');
+
+    setTimeout(() => {
+      const result = authLogin(username, password);
+      btn.classList.remove('loading');
+
+      if (result.success) {
+        btn.style.background = '#16a34a';
+        btn.querySelector('.btn-label').textContent = 'Redirecting…';
+        btn.classList.remove('loading');
+        btn.querySelector('.btn-label').style.opacity = 1;
+        setTimeout(() => { window.location.href = 'index.html'; }, 600);
+      } else {
+        document.getElementById('error-text').textContent = result.message || 'Invalid credentials.';
+        err.classList.add('show');
+        document.getElementById('password').value = '';
+        document.getElementById('password').focus();
+      }
+    }, 700);
+  }
+</script>
+</body>
+</html>

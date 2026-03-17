@@ -6,6 +6,7 @@
   <title>Calisto Admin Panel</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Raleway:wght@500;700;900&display=swap" rel="stylesheet">
+  <script src="auth.js"></script>
   <style>
     :root {
       --primary: #0f172a;
@@ -206,6 +207,65 @@
 
     .chip { display: inline-flex; align-items: center; gap: 0.25rem; background: var(--accent-light); color: var(--accent); border-radius: 20px; padding: 3px 10px; font-size: 0.75rem; font-weight: 700; }
     .section-title { font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); color: var(--primary); }
+
+    /* ── User avatar/profile in topbar ── */
+    .user-info { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; transition: background 0.2s; position: relative; }
+    .user-info:hover { background: var(--bg); }
+    .user-avatar { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.72rem; color: #fff; flex-shrink: 0; }
+    .user-name { font-size: 0.82rem; font-weight: 600; }
+    .user-role-badge { font-size: 0.68rem; padding: 2px 7px; border-radius: 20px; font-weight: 700; }
+    .user-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 8px 24px rgba(0,0,0,0.1); min-width: 180px; z-index: 200; display: none; overflow: hidden; }
+    .user-dropdown.open { display: block; }
+    .user-dropdown-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1rem; font-size: 0.85rem; cursor: pointer; transition: background 0.15s; border: none; background: none; width: 100%; text-align: left; }
+    .user-dropdown-item:hover { background: var(--bg); }
+    .user-dropdown-item svg { width: 16px; height: 16px; fill: var(--muted); }
+    .user-dropdown-item.danger { color: var(--danger); }
+    .user-dropdown-item.danger svg { fill: var(--danger); }
+    .user-dropdown-divider { height: 1px; background: var(--border); }
+
+    /* ── User management page ── */
+    .users-table-wrap { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+    .users-table { width: 100%; border-collapse: collapse; }
+    .users-table th { background: #fafbfc; padding: 0.85rem 1.25rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-weight: 700; border-bottom: 1px solid var(--border); }
+    .users-table td { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); font-size: 0.88rem; vertical-align: middle; }
+    .users-table tr:last-child td { border-bottom: none; }
+    .users-table tr:hover td { background: #fafbfc; }
+    .user-cell { display: flex; align-items: center; gap: 0.75rem; }
+    .role-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .status-dot.active { background: var(--success); }
+    .status-dot.inactive { background: #cbd5e1; }
+    .perm-list { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .perm-chip { font-size: 0.68rem; padding: 2px 7px; background: var(--accent-light); color: var(--accent); border-radius: 20px; font-weight: 700; }
+    .table-actions { display: flex; gap: 0.4rem; }
+
+    /* ── SEO page ── */
+    .seo-page-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .seo-page-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    .seo-page-header { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; cursor: pointer; transition: background 0.15s; }
+    .seo-page-header:hover { background: #fafbfc; }
+    .seo-page-url { flex: 1; font-size: 0.85rem; font-weight: 600; }
+    .seo-page-url span { color: var(--muted); font-weight: 400; }
+    .seo-chevron { width: 18px; height: 18px; fill: var(--muted); transition: transform 0.2s; }
+    .seo-page-header.open .seo-chevron { transform: rotate(180deg); }
+    .seo-page-body { display: none; padding: 1.25rem; border-top: 1px solid var(--border); background: #fafbfc; }
+    .seo-page-body.open { display: block; }
+    .seo-char-count { font-size: 0.72rem; color: var(--muted); float: right; }
+    .seo-char-count.warn { color: var(--warning); }
+    .seo-char-count.over { color: var(--danger); }
+
+    /* Permission checkboxes */
+    .perm-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-top: 0.75rem; }
+    .perm-item { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.75rem; background: #fafbfc; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+    .perm-item:hover { border-color: var(--accent); background: var(--accent-light); }
+    .perm-item input[type=checkbox] { accent-color: var(--accent); width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; cursor: pointer; }
+    .perm-item-label { font-size: 0.82rem; font-weight: 600; }
+    .perm-item-desc { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+    /* Locked nav items */
+    .nav-item.locked { opacity: 0.35; cursor: not-allowed; }
+    .nav-item.locked:hover { background: none; }
+    .lock-icon { width: 14px; height: 14px; fill: var(--muted); margin-left: auto; }
   </style>
 </head>
 <body>
@@ -225,13 +285,26 @@
         Dashboard
       </button>
       <div class="nav-section-label">Products</div>
-      <button class="nav-item" onclick="showPage('products')">
+      <button class="nav-item" id="nav-products" onclick="showPage('products')">
         <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.35 0-2.56-2.07-4.65-4.62-4.65-1.39 0-2.66.6-3.56 1.56L9 3l-.82-.44C7.28 1.6 5.99 1 4.62 1 2.07 1 0 3.09 0 5.65 0 6.12.11 6.56.18 7H2v13h16V7h2V6zm-7.7-3.74C12.93 1.83 13.8 1.5 14.62 1.5c1.53 0 2.88 1.35 2.88 3.15 0 .65-.2 1.25-.5 1.85H7c-.3-.6-.5-1.2-.5-1.85 0-1.8 1.35-3.15 2.88-3.15.82 0 1.69.33 2.32.81L12 3.2l.3-.94z"/></svg>
         Product Catalog
       </button>
-      <button class="nav-item" onclick="showPage('export')">
+      <button class="nav-item" id="nav-seo" onclick="showPage('seo')">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        SEO Details
+      </button>
+      <button class="nav-item" id="nav-forms" onclick="showPage('forms')">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/></svg>
+        Contact Forms
+      </button>
+      <button class="nav-item" id="nav-export" onclick="showPage('export')">
         <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
         Export / Deploy
+      </button>
+      <div class="nav-section-label" id="nav-section-admin" style="display:none">Admin</div>
+      <button class="nav-item" id="nav-users" onclick="showPage('users')" style="display:none">
+        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        User Management
       </button>
     </nav>
   </aside>
@@ -245,10 +318,29 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
           View Site
         </button>
-        <button class="btn btn-primary btn-sm" onclick="saveAll()">
+        <button class="btn btn-primary btn-sm" onclick="saveAll()" id="topbar-save" style="display:none">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V7l-4-4zm-5 16a3 3 0 110-6 3 3 0 010 6zm3-10H5V5h10v4z"/></svg>
           Save Changes
         </button>
+        <div class="user-info" onclick="toggleUserDropdown()" id="user-info-btn">
+          <div class="user-avatar" id="topbar-avatar" style="background:#005cb9">--</div>
+          <div>
+            <div class="user-name" id="topbar-name">Loading...</div>
+            <div class="user-role-badge" id="topbar-role" style="background:#eff6ff;color:#005cb9">-</div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#64748b"><path d="M7 10l5 5 5-5z"/></svg>
+          <div class="user-dropdown" id="user-dropdown">
+            <button class="user-dropdown-item" onclick="showPage('profile'); closeUserDropdown()">
+              <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+              My Profile
+            </button>
+            <div class="user-dropdown-divider"></div>
+            <button class="user-dropdown-item danger" onclick="authLogout()">
+              <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+              Sign Out
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -347,6 +439,81 @@
         </div>
       </div>
     </div>
+
+    <!-- User Management Page -->
+    <div class="page" id="page-users">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+        <div>
+          <div style="font-family:'Raleway',sans-serif;font-weight:700;font-size:1.1rem;">Team Members</div>
+          <div style="color:var(--muted);font-size:0.85rem;margin-top:2px;">Manage who can access the admin panel and what they can do.</div>
+        </div>
+        <button class="btn btn-primary" onclick="openUserModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          Add User
+        </button>
+      </div>
+      <div class="users-table-wrap">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Role</th>
+              <th>Permissions</th>
+              <th>Status</th>
+              <th>Added</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="users-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SEO Page -->
+    <div class="page" id="page-seo">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+        <div>
+          <div style="font-family:'Raleway',sans-serif;font-weight:700;font-size:1.1rem;">SEO Details</div>
+          <div style="color:var(--muted);font-size:0.85rem;margin-top:2px;">Manage meta titles, descriptions and keywords for each page.</div>
+        </div>
+        <button class="btn btn-primary" onclick="saveSEO()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V7l-4-4zm-5 16a3 3 0 110-6 3 3 0 010 6zm3-10H5V5h10v4z"/></svg>
+          Save SEO
+        </button>
+      </div>
+      <div class="seo-page-list" id="seo-page-list"></div>
+    </div>
+
+    <!-- Contact Forms Page -->
+    <div class="page" id="page-forms">
+      <div style="margin-bottom:1.5rem;">
+        <div style="font-family:'Raleway',sans-serif;font-weight:700;font-size:1.1rem;">Contact Form Submissions</div>
+        <div style="color:var(--muted);font-size:0.85rem;margin-top:2px;">View enquiries submitted through the website contact form.</div>
+      </div>
+      <div id="forms-list"></div>
+    </div>
+
+    <!-- Profile Page -->
+    <div class="page" id="page-profile">
+      <div style="max-width:500px;">
+        <div style="background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:2rem;box-shadow:var(--shadow);">
+          <div class="section-title">My Profile</div>
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">Display Name</label>
+            <input class="form-input" id="profile-name" style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;">
+          </div>
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">Email</label>
+            <input class="form-input" id="profile-email" type="email" style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;">
+          </div>
+          <div class="form-group" style="margin-bottom:1.5rem;">
+            <label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">New Password <span style="font-weight:400;text-transform:none">(leave blank to keep current)</span></label>
+            <input class="form-input" id="profile-pw" type="password" placeholder="••••••••" style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;">
+          </div>
+          <button class="btn btn-primary" onclick="saveProfile()">Save Profile</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -379,14 +546,75 @@
   //  STATE
   // ============================================================
   let data = loadProductsData();
-  let selectedNode = null; // { type: 'category'|'subcat'|'item', catIdx, subcatIdx, itemIdx }
+  let selectedNode = null;
+  let currentSession = null;
 
   // ============================================================
   //  INIT
   // ============================================================
   document.addEventListener('DOMContentLoaded', () => {
+    // Auth guard
+    currentSession = requireAuth();
+    if (!currentSession) return;
+
+    // Populate topbar user info
+    const roleColors = { superadmin:'#7c3aed', editor:'#0891b2', viewer:'#16a34a', seo_manager:'#d97706', custom:'#64748b' };
+    document.getElementById('topbar-avatar').textContent = currentSession.avatar;
+    document.getElementById('topbar-avatar').style.background = roleColors[currentSession.role] || '#005cb9';
+    document.getElementById('topbar-name').textContent = currentSession.name;
+    document.getElementById('topbar-role').textContent = (ROLE_PRESETS[currentSession.role] || {label: currentSession.role}).label;
+
+    // Role-aware nav visibility
+    const p = currentSession.permissions;
+    applyNavPermissions(p);
+
+    // Show save button only if they can manage products
+    if (p.includes('manage_products') || p.includes('export_data')) {
+      document.getElementById('topbar-save').style.display = '';
+    }
+
     updateStats();
     renderTree();
+    renderSEOPage();
+    renderFormsPage();
+    renderProfilePage();
+  });
+
+  function applyNavPermissions(perms) {
+    const map = {
+      'nav-products': 'manage_products',
+      'nav-seo':      'manage_seo',
+      'nav-forms':    'view_forms',
+      'nav-export':   'export_data',
+      'nav-users':    'manage_users',
+    };
+    Object.entries(map).forEach(([navId, perm]) => {
+      const el = document.getElementById(navId);
+      if (!el) return;
+      if (navId === 'nav-users') {
+        el.style.display = perms.includes(perm) ? '' : 'none';
+        document.getElementById('nav-section-admin').style.display = perms.includes('manage_users') ? '' : 'none';
+      } else if (!perms.includes(perm)) {
+        el.classList.add('locked');
+        el.onclick = () => showToast('You don\'t have permission to access this module.', 'error');
+        const lockSvg = document.createElement('svg');
+        lockSvg.setAttribute('viewBox','0 0 24 24');
+        lockSvg.classList.add('lock-icon');
+        lockSvg.innerHTML = '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>';
+        el.appendChild(lockSvg);
+      }
+    });
+  }
+
+  // User dropdown toggle
+  function toggleUserDropdown() {
+    document.getElementById('user-dropdown').classList.toggle('open');
+  }
+  function closeUserDropdown() {
+    document.getElementById('user-dropdown').classList.remove('open');
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#user-info-btn')) closeUserDropdown();
   });
 
   function updateStats() {
@@ -412,13 +640,18 @@
   function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('page-' + id).classList.add('active');
-    const titles = { dashboard: 'Dashboard', products: 'Product Catalog', export: 'Export / Deploy' };
+    const pageEl = document.getElementById('page-' + id);
+    if (pageEl) pageEl.classList.add('active');
+    const titles = { dashboard:'Dashboard', products:'Product Catalog', export:'Export / Deploy', users:'User Management', seo:'SEO Details', forms:'Contact Forms', profile:'My Profile' };
     document.getElementById('page-title').textContent = titles[id] || id;
     document.querySelectorAll('.nav-item').forEach(n => {
       if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + id + "'")) n.classList.add('active');
     });
     if (id === 'products') renderTree();
+    if (id === 'users') renderUsersTable();
+    if (id === 'seo') renderSEOPage();
+    if (id === 'forms') renderFormsPage();
+    if (id === 'profile') renderProfilePage();
   }
 
   // ============================================================
@@ -1093,6 +1326,334 @@ function loadProductsData() {
     document.getElementById('toast-msg').textContent = msg;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => { t.classList.remove('show'); }, 2500);
+  }
+
+  // ============================================================
+  //  USER MANAGEMENT
+  // ============================================================
+  function renderUsersTable() {
+    const users = getAllUsers();
+    const tbody = document.getElementById('users-table-body');
+    const roleColors = { superadmin:'#7c3aed', editor:'#0891b2', viewer:'#16a34a', seo_manager:'#d97706', custom:'#64748b' };
+
+    tbody.innerHTML = users.map(u => {
+      const perms = getUserPermissions(u);
+      const role = ROLE_PRESETS[u.role] || ROLE_PRESETS.custom;
+      const color = roleColors[u.role] || '#64748b';
+      const isSA = u.id === 'superadmin';
+      const isMe = currentSession && u.id === currentSession.id;
+      return `<tr>
+        <td>
+          <div class="user-cell">
+            <div class="user-avatar" style="width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;color:#fff;background:${color};flex-shrink:0">${u.avatar || u.name.slice(0,2).toUpperCase()}</div>
+            <div>
+              <div style="font-weight:600;font-size:0.88rem">${escHtml(u.name)} ${isMe ? '<span style="color:var(--accent);font-size:0.72rem">(you)</span>' : ''}</div>
+              <div style="color:var(--muted);font-size:0.78rem">@${escHtml(u.username)}${u.email ? ' · ' + escHtml(u.email) : ''}</div>
+            </div>
+          </div>
+        </td>
+        <td><span class="role-badge" style="background:${color}18;color:${color}">${role.label}</span></td>
+        <td>
+          <div class="perm-list">
+            ${perms.map(p => `<span class="perm-chip">${PERMISSIONS[p] ? PERMISSIONS[p].label : p}</span>`).join('')}
+            ${perms.length === 0 ? '<span style="color:var(--muted);font-size:0.78rem">No permissions</span>' : ''}
+          </div>
+        </td>
+        <td>
+          <span class="status-dot ${u.active !== false ? 'active' : 'inactive'}"></span>
+          ${u.active !== false ? 'Active' : 'Inactive'}
+        </td>
+        <td style="color:var(--muted);font-size:0.82rem">${u.createdAt || '—'}</td>
+        <td>
+          <div class="table-actions">
+            ${!isSA ? `<button class="btn btn-secondary btn-sm" onclick="openUserModal('${u.id}')">Edit</button>` : ''}
+            ${!isSA && !isMe ? `<button class="btn btn-secondary btn-sm" onclick="toggleUserStatus('${u.id}')">${u.active !== false ? 'Deactivate' : 'Activate'}</button>` : ''}
+            ${!isSA && !isMe ? `<button class="btn btn-danger btn-sm" onclick="confirmDeleteUser('${u.id}', '${escHtml(u.name)}')">Delete</button>` : ''}
+            ${isSA ? '<span style="color:var(--muted);font-size:0.78rem">Protected</span>' : ''}
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function toggleUserStatus(id) {
+    const res = toggleUserActive(id);
+    if (res.success) { renderUsersTable(); showToast(`User ${res.active ? 'activated' : 'deactivated'}.`); }
+  }
+
+  function confirmDeleteUser(id, name) {
+    confirm2(`Permanently delete user "${name}"?`, () => {
+      const res = deleteUser(id);
+      if (res.success) { renderUsersTable(); showToast('User deleted.'); }
+      else showToast(res.message, 'error');
+    });
+  }
+
+  function openUserModal(userId) {
+    let user = null;
+    if (userId) {
+      const users = getAllUsers();
+      user = users.find(u => u.id === userId);
+    }
+    const isEdit = !!user;
+    const roleOptions = Object.entries(ROLE_PRESETS).map(([k, v]) =>
+      `<option value="${k}" ${user && user.role === k ? 'selected' : ''}>${v.label}</option>`
+    ).join('');
+
+    document.getElementById('modal-content').innerHTML = `
+      <h3 style="margin-bottom:0.4rem">${isEdit ? 'Edit User' : 'Add New User'}</h3>
+      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem">${isEdit ? 'Update user details and permissions.' : 'Create a new admin panel account.'}</p>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group"><label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">Full Name</label>
+          <input class="form-input" id="u-name" value="${escHtml(user?.name||'')}" style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;"></div>
+        <div class="form-group"><label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">Username</label>
+          <input class="form-input" id="u-username" value="${escHtml(user?.username||'')}" ${isEdit ? 'readonly style="background:#fafbfc;width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;"' : 'style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;"'}></div>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group"><label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">Email</label>
+          <input class="form-input" id="u-email" type="email" value="${escHtml(user?.email||'')}" style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;"></div>
+        <div class="form-group"><label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">${isEdit ? 'New Password (blank = no change)' : 'Password'}</label>
+          <input class="form-input" id="u-password" type="password" placeholder="••••••••" style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;"></div>
+      </div>
+      <div class="form-group" style="margin-bottom:1rem;">
+        <label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">Role</label>
+        <select class="form-select" id="u-role" onchange="updatePermPreview()" style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--surface);">${roleOptions}</select>
+      </div>
+      <div class="form-group" id="custom-perms-group" style="${user?.role === 'custom' ? '' : 'display:none'}">
+        <label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.6rem;">Custom Permissions</label>
+        <div class="perm-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;">
+          ${Object.entries(PERMISSIONS).map(([key, perm]) => `
+            <label class="perm-item" style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.75rem;background:#fafbfc;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;">
+              <input type="checkbox" id="perm-${key}" value="${key}" ${user?.permissions?.includes(key) ? 'checked' : ''} style="accent-color:var(--accent);width:16px;height:16px;flex-shrink:0;margin-top:2px;cursor:pointer;">
+              <div>
+                <div class="perm-item-label" style="font-size:0.82rem;font-weight:600;">${perm.label}</div>
+                <div class="perm-item-desc" style="font-size:0.75rem;color:var(--muted);margin-top:2px;">${perm.desc}</div>
+              </div>
+            </label>`).join('')}
+        </div>
+      </div>
+      <div id="role-perm-preview" style="margin-bottom:1rem;"></div>
+      <div class="modal-actions" style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem;">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="${isEdit ? `saveEditUser('${userId}')` : 'saveNewUser()'}">${isEdit ? 'Save Changes' : 'Create User'}</button>
+      </div>`;
+    document.getElementById('modal-overlay').classList.add('open');
+    updatePermPreview();
+  }
+
+  function updatePermPreview() {
+    const role = document.getElementById('u-role')?.value;
+    const customGroup = document.getElementById('custom-perms-group');
+    const preview = document.getElementById('role-perm-preview');
+    if (!role) return;
+    if (role === 'custom') {
+      if (customGroup) customGroup.style.display = '';
+      if (preview) preview.innerHTML = '';
+      return;
+    }
+    if (customGroup) customGroup.style.display = 'none';
+    const perms = (ROLE_PRESETS[role] || {}).permissions || [];
+    if (preview) preview.innerHTML = `<div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.5rem;">Permissions included</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">${perms.map(p => `<span class="perm-chip" style="font-size:0.72rem;padding:2px 8px;background:var(--accent-light);color:var(--accent);border-radius:20px;font-weight:700;">${PERMISSIONS[p]?.label||p}</span>`).join('')}</div>`;
+  }
+
+  function saveNewUser() {
+    const name = document.getElementById('u-name').value.trim();
+    const username = document.getElementById('u-username').value.trim();
+    const password = document.getElementById('u-password').value;
+    const email = document.getElementById('u-email').value.trim();
+    const role = document.getElementById('u-role').value;
+    const permissions = role === 'custom'
+      ? Object.keys(PERMISSIONS).filter(k => document.getElementById('perm-' + k)?.checked)
+      : [];
+
+    if (!name || !username || !password) { showToast('Name, username and password are required.', 'error'); return; }
+    const res = createUser({ username, password, name, email, role, permissions });
+    if (res.success) { closeModal(); renderUsersTable(); showToast('User created!', 'success'); }
+    else showToast(res.message, 'error');
+  }
+
+  function saveEditUser(id) {
+    const updates = {
+      name: document.getElementById('u-name').value.trim(),
+      email: document.getElementById('u-email').value.trim(),
+      role: document.getElementById('u-role').value,
+    };
+    const pw = document.getElementById('u-password').value;
+    if (pw) updates.password = pw;
+    if (updates.role === 'custom') {
+      updates.permissions = Object.keys(PERMISSIONS).filter(k => document.getElementById('perm-' + k)?.checked);
+    }
+    const res = updateUser(id, updates);
+    if (res.success) { closeModal(); renderUsersTable(); showToast('User updated!', 'success'); }
+    else showToast(res.message, 'error');
+  }
+
+  // ============================================================
+  //  SEO PAGE
+  // ============================================================
+  const SEO_PAGES = [
+    { key: 'home',      title: 'Home',              url: 'index.html' },
+    { key: 'about',     title: 'About',             url: 'about.html' },
+    { key: 'gates',     title: 'Gate Systems',       url: 'gates.html' },
+    { key: 'shutters',  title: 'Rolling Shutters',   url: 'rolling-shutters.html' },
+    { key: 'autodoors', title: 'Automatic Doors',    url: 'automatic-doors.html' },
+    { key: 'windows',   title: 'Window Systems',     url: 'window-systems.html' },
+    { key: 'blog',      title: 'Blog',              url: 'blog.html' },
+    { key: 'contact',   title: 'Contact',           url: 'contact.html' },
+  ];
+
+  function getSEOData() {
+    const raw = localStorage.getItem('calisto_seo');
+    if (raw) { try { return JSON.parse(raw); } catch(e) {} }
+    return {};
+  }
+  function saveSEOData(d) { localStorage.setItem('calisto_seo', JSON.stringify(d)); }
+
+  function renderSEOPage() {
+    const seo = getSEOData();
+    const list = document.getElementById('seo-page-list');
+    if (!list) return;
+    list.innerHTML = SEO_PAGES.map((p, i) => {
+      const d = seo[p.key] || {};
+      return `<div class="seo-page-card">
+        <div class="seo-page-header" onclick="toggleSEOCard(this, 'seo-body-${i}')">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--accent);flex-shrink:0"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
+          <div class="seo-page-url"><strong>${p.title}</strong> <span>/ ${p.url}</span></div>
+          <svg class="seo-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+        </div>
+        <div class="seo-page-body" id="seo-body-${i}">
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">
+              Meta Title
+              <span class="seo-char-count" id="seo-title-count-${i}">0 / 60</span>
+            </label>
+            <input id="seo-title-${i}" value="${escHtml(d.title||'')}" maxlength="80" oninput="seoCount(this,'seo-title-count-${i}',60)"
+              style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;" placeholder="e.g. Gate Automation Systems | Calisto">
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">
+              Meta Description
+              <span class="seo-char-count" id="seo-desc-count-${i}">0 / 160</span>
+            </label>
+            <textarea id="seo-desc-${i}" maxlength="300" oninput="seoCount(this,'seo-desc-count-${i}',160)"
+              style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;min-height:80px;resize:vertical;" placeholder="Short description for search engines...">${escHtml(d.description||'')}</textarea>
+          </div>
+          <div class="form-group">
+            <label style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">Keywords</label>
+            <input id="seo-kw-${i}" value="${escHtml(d.keywords||'')}"
+              style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;" placeholder="gate automation, swing gates, Calisto Tech">
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    // Init char counts after render
+    SEO_PAGES.forEach((p, i) => {
+      const t = document.getElementById(`seo-title-${i}`);
+      const d2 = document.getElementById(`seo-desc-${i}`);
+      if (t) seoCount(t, `seo-title-count-${i}`, 60);
+      if (d2) seoCount(d2, `seo-desc-count-${i}`, 160);
+    });
+  }
+
+  function toggleSEOCard(header, bodyId) {
+    header.classList.toggle('open');
+    document.getElementById(bodyId).classList.toggle('open');
+  }
+
+  function seoCount(el, countId, max) {
+    const len = el.value.length;
+    const counter = document.getElementById(countId);
+    if (!counter) return;
+    counter.textContent = `${len} / ${max}`;
+    counter.className = 'seo-char-count' + (len > max ? ' over' : len > max * 0.85 ? ' warn' : '');
+  }
+
+  function saveSEO() {
+    const seo = {};
+    SEO_PAGES.forEach((p, i) => {
+      seo[p.key] = {
+        title: document.getElementById(`seo-title-${i}`)?.value || '',
+        description: document.getElementById(`seo-desc-${i}`)?.value || '',
+        keywords: document.getElementById(`seo-kw-${i}`)?.value || '',
+      };
+    });
+    saveSEOData(seo);
+    showToast('SEO data saved!', 'success');
+  }
+
+  // ============================================================
+  //  CONTACT FORMS PAGE
+  // ============================================================
+  function renderFormsPage() {
+    const forms = JSON.parse(localStorage.getItem('calisto_form_submissions') || '[]');
+    const el = document.getElementById('forms-list');
+    if (!el) return;
+    if (forms.length === 0) {
+      el.innerHTML = `<div class="empty-state">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/></svg>
+        <h3>No form submissions yet</h3>
+        <p>When visitors submit the contact form, their messages will appear here.</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem">To enable this, your contact form needs to save to <code>localStorage.calisto_form_submissions</code>.</p>
+      </div>`;
+      return;
+    }
+    el.innerHTML = forms.slice().reverse().map((f, i) => `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:0.75rem;box-shadow:var(--shadow);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+          <div>
+            <strong>${escHtml(f.name || 'Anonymous')}</strong>
+            ${f.email ? `<a href="mailto:${escHtml(f.email)}" style="color:var(--accent);font-size:0.85rem;margin-left:0.5rem;">${escHtml(f.email)}</a>` : ''}
+            ${f.company ? `<span style="color:var(--muted);font-size:0.82rem;margin-left:0.5rem;">· ${escHtml(f.company)}</span>` : ''}
+          </div>
+          <span style="color:var(--muted);font-size:0.78rem;">${f.date || ''}</span>
+        </div>
+        ${f.message ? `<p style="color:var(--text);font-size:0.88rem;line-height:1.6;background:var(--bg);padding:0.75rem;border-radius:8px;">${escHtml(f.message)}</p>` : ''}
+      </div>`).join('');
+  }
+
+  // ============================================================
+  //  PROFILE PAGE
+  // ============================================================
+  function renderProfilePage() {
+    const session = getSession();
+    if (!session) return;
+    const nameEl = document.getElementById('profile-name');
+    const emailEl = document.getElementById('profile-email');
+    if (nameEl) nameEl.value = session.name || '';
+    if (emailEl) {
+      const users = getAllUsers();
+      const user = users.find(u => u.id === session.id);
+      emailEl.value = user?.email || '';
+    }
+  }
+
+  function saveProfile() {
+    const session = getSession();
+    if (!session) return;
+    const name = document.getElementById('profile-name').value.trim();
+    const email = document.getElementById('profile-email').value.trim();
+    const pw = document.getElementById('profile-pw').value;
+    const updates = { name, email };
+    if (pw) updates.password = pw;
+
+    if (session.id === 'superadmin') {
+      // For superadmin, just update session display only (no user record in storage by default)
+      showToast('Profile saved (session only).', 'success');
+      document.getElementById('topbar-name').textContent = name;
+    } else {
+      const res = updateUser(session.id, updates);
+      if (res.success) {
+        // Refresh session name
+        const newSession = { ...session, name };
+        sessionStorage.setItem('calisto_session', JSON.stringify(newSession));
+        document.getElementById('topbar-name').textContent = name;
+        document.getElementById('topbar-avatar').textContent = name.slice(0,2).toUpperCase();
+        showToast('Profile saved!', 'success');
+      } else showToast(res.message, 'error');
+    }
+    document.getElementById('profile-pw').value = '';
   }
 
   // ============================================================
