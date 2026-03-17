@@ -1005,7 +1005,11 @@
     <script src="../js/products-data.js"></script>
     <script src="../js/category-renderer.js"></script>
     <script src="../js/common.js"></script>
-    <script>renderProductPage('gates', 'swing-gate-operators', 'vortex-calarm-350');</script>
+    <script>// Read slugs from URL: product-template.html?cat=gates&sub=swing-gate-operators&item=vortex-calarm-350
+        (function() {
+            const p = new URLSearchParams(window.location.search);
+            renderProductPage(p.get('cat'), p.get('sub'), p.get('item'));
+        })();</script>
     <script>
         // Modal Logic
         const modal = document.getElementById('downloadModal');

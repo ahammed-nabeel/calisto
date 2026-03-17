@@ -285,46 +285,22 @@
     <main>
         <section class="section-padding" id="shutter-systems">
             <div class="solutions-header">
-                <h2>Rolling Shutter Systems,
+                <h2 id="section-title">Rolling Shutter Systems,
                     <span>Specialized for Control.</span>
                 </h2>
-                <p>Enhance your privacy and security with our advanced rolling shutter and curtain automation solutions.
-                </p>
+                <p id="section-desc">Enhance your privacy and security with our advanced rolling shutter and curtain automation solutions.</p>
             </div>
-            <div class="automation-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 800px;">
-                <!-- Card 1: Rolling Shutter Operators -->
-                <div class="automation-card">
-                    <div class="icon-box">
-                        <img src="assets/shutter-auto.svg" alt="Rolling Shutter Operator"
-                            style="width:100%; height:100%;">
-                    </div>
-                    <h3>Rolling Shutter Operators</h3>
-                    <ul class="automation-list">
-                        <li>Tubular Motors</li>
-                        <li>Central Motors</li>
-                        <li>Side Motors</li>
-                    </ul>
-                    <a href="#" class="explore-link">EXPLORE</a>
-                </div>
-                <!-- Card 2: Curtain Operators -->
-                <div class="automation-card">
-                    <div class="icon-box">
-                        <img src="assets/curtain-auto.svg" alt="Curtain Operator" style="width:100%; height:100%;">
-                    </div>
-                    <h3>Curtain Operators</h3>
-                    <ul class="automation-list">
-                        <li>Motorized Curtains</li>
-                        <li>Drapery Systems</li>
-                        <li>Remote Control</li>
-                    </ul>
-                    <a href="#" class="explore-link">EXPLORE</a>
-                </div>
+            <div class="automation-grid" id="category-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 800px;">
+                <!-- Dynamically rendered from products-data.js -->
             </div>
         </section>
     </main>
     <!-- FOOTER -->
     <div id="footer-placeholder"></div>
+    <script src="js/products-data.js"></script>
+    <script src="js/category-renderer.js"></script>
     <script src="js/common.js"></script>
+    <script>renderCategoryPage('rolling-shutters');</script>
     <script>
         // Hero Carousel Logic
         let currentSlide = 0;

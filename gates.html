@@ -285,45 +285,22 @@
     <main>
         <section class="section-padding" id="gates-systems">
             <div class="solutions-header">
-                <h2>Gate Automation Systems,
+                <h2 id="section-title">Gate Automation Systems,
                     <span>Engineered for Reliability.</span>
                 </h2>
-                <p>Discover our specialized range of gate automation solutions designed for seamless operation and
-                    long-lasting performance.</p>
+                <p id="section-desc">Discover our specialized range of gate automation solutions designed for seamless operation and long-lasting performance.</p>
             </div>
-            <div class="automation-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 800px;">
-                <!-- Card 1: Swing Gates Operators -->
-                <div class="automation-card">
-                    <div class="icon-box">
-                        <img src="assets/swing-auto.svg" alt="Swing Gate Operator" style="width:100%; height:100%;">
-                    </div>
-                    <h3>Swing gates Operators</h3>
-                    <ul class="automation-list">
-                        <li>Residential Swing Gates</li>
-                        <li>Industrial Swing Gates</li>
-                        <li>Heavy Duty Operators</li>
-                    </ul>
-                    <a href="swing-gate-operators.html" class="explore-link">EXPLORE</a>
-                </div>
-                <!-- Card 2: Sliding Gate Operators -->
-                <div class="automation-card">
-                    <div class="icon-box">
-                        <img src="assets/sliding-auto.svg" alt="Sliding Gate Operator" style="width:100%; height:100%;">
-                    </div>
-                    <h3>Sliding Gate Operators</h3>
-                    <ul class="automation-list">
-                        <li>Residential Sliding Gates</li>
-                        <li>High Speed Operators</li>
-                        <li>Telescopic Gates</li>
-                    </ul>
-                    <a href="#" class="explore-link">EXPLORE</a>
-                </div>
+            <div class="automation-grid" id="category-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 800px;">
+                <!-- Dynamically rendered from products-data.js -->
             </div>
         </section>
     </main>
     <!-- FOOTER -->
     <div id="footer-placeholder"></div>
+    <script src="js/products-data.js"></script>
+    <script src="js/category-renderer.js"></script>
     <script src="js/common.js"></script>
+    <script>renderCategoryPage('gates');</script>
     <script>
         // Hero Carousel Logic (Simplified for single image or robust enough for one)
         let currentSlide = 0;

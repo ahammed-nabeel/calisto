@@ -260,84 +260,22 @@
     <main>
         <section class="section-padding" id="products">
             <div class="solutions-header">
-                <h2>Our Swing Gate Models,
+                <h2 id="section-title">Our Swing Gate Models,
                     <span>Engineered for Performance.</span>
                 </h2>
-                <p>Choose from our wide range of operators designed to suit different gate weights, lengths, and usage
-                    frequencies.</p>
+                <p id="section-desc">Choose from our wide range of operators designed to suit different gate weights, lengths, and usage frequencies.</p>
             </div>
-            <div class="automation-grid">
-                <!-- Product 1: Veloce-CXRM 180 -->
-                <div class="automation-card">
-                    <div class="icon-box">
-                        <img src="assets/swing-auto.svg" alt="Veloce-CXRM 180" style="width:100%; height:100%;">
-                    </div>
-                    <h3>Veloce-CXRM 180</h3>
-                    <ul class="automation-list">
-                        <li>High speed operation</li>
-                        <li>For gates up to 3m</li>
-                        <li>Intensive use</li>
-                    </ul>
-                    <a href="products/veloce-cxrm-180.html" class="explore-link">VIEW DETAILS</a>
-                </div>
-                <!-- Product 2: Aegis CJOSW-650 -->
-                <div class="automation-card">
-                    <div class="icon-box">
-                        <img src="assets/swing-auto.svg" alt="Aegis CJOSW-650" style="width:100%; height:100%;">
-                    </div>
-                    <h3>Aegis CJOSW-650</h3>
-                    <ul class="automation-list">
-                        <li>Heavy duty hydraulic</li>
-                        <li>For gates up to 5m</li>
-                        <li>Secure locking</li>
-                    </ul>
-                    <a href="products/aegis-cjosw-650.html" class="explore-link">VIEW DETAILS</a>
-                </div>
-                <!-- Product 3: Armox CALARM 650 -->
-                <div class="automation-card">
-                    <div class="icon-box">
-                        <img src="assets/swing-auto.svg" alt="Armox CALARM 650" style="width:100%; height:100%;">
-                    </div>
-                    <h3>Armox CALARM 650</h3>
-                    <ul class="automation-list">
-                        <li>Underground operator</li>
-                        <li>Invisible installation</li>
-                        <li>Robust mechanism</li>
-                    </ul>
-                    <a href="products/armox-calarm-650.html" class="explore-link">VIEW DETAILS</a>
-                </div>
-                <!-- Product 4: Vortex CALARM 350 -->
-                <div class="automation-card">
-                    <div class="icon-box">
-                        <img src="assets/swing-auto.svg" alt="Vortex CALARM 350" style="width:100%; height:100%;">
-                    </div>
-                    <h3>Vortex CALARM 350</h3>
-                    <ul class="automation-list">
-                        <li>Articulated arm</li>
-                        <li>For large pillars</li>
-                        <li>Smooth movement</li>
-                    </ul>
-                    <a href="products/vortex-calarm-350.html" class="explore-link">VIEW DETAILS</a>
-                </div>
-                <!-- Product 5: Centurion CAL280 -->
-                <div class="automation-card">
-                    <div class="icon-box">
-                        <img src="assets/swing-auto.svg" alt="Centurion CAL280" style="width:100%; height:100%;">
-                    </div>
-                    <h3>Centurion CAL280</h3>
-                    <ul class="automation-list">
-                        <li>Compact linear screw</li>
-                        <li>Residential use</li>
-                        <li>Easy installation</li>
-                    </ul>
-                    <a href="products/centurion-cal280.html" class="explore-link">VIEW DETAILS</a>
-                </div>
+            <div class="automation-grid" id="category-grid">
+                <!-- Dynamically rendered from products-data.js -->
             </div>
         </section>
     </main>
     <!-- FOOTER -->
     <div id="footer-placeholder"></div>
+    <script src="js/products-data.js"></script>
+    <script src="js/category-renderer.js"></script>
     <script src="js/common.js"></script>
+    <script>renderSubcategoryPage('gates', 'swing-gate-operators');</script>
 </body>
 
 </html>
