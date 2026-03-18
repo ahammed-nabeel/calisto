@@ -7,6 +7,7 @@
 <style>body{visibility:hidden}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<script src="auth.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 /* ═══════════════════════════════════════
@@ -1254,12 +1255,12 @@ tr:hover td { background: var(--bg-2); }
           <div style="font-size:12.5px;font-weight:700;color:var(--text-2);margin-bottom:10px;letter-spacing:.2px">ROLE PERMISSIONS</div>
           <div style="overflow-x:auto">
             <table style="min-width:560px">
-              <thead><tr><th>Role</th><th>View Enquiries</th><th>Products</th><th>Blog</th><th>SEO</th><th>Users</th><th>Export</th></tr></thead>
+              <thead><tr><th>Role</th><th>View Enquiries</th><th>Products</th><th>SEO</th><th>Users</th><th>Export</th></tr></thead>
               <tbody>
-                <tr><td><span class="role-badge role-super">Super Admin</span></td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
-                <tr><td><span class="role-badge role-editor">Editor</span></td><td>✓</td><td>✓</td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
-                <tr><td><span class="role-badge role-seo">SEO Manager</span></td><td>—</td><td>—</td><td>—</td><td>✓</td><td>—</td><td>—</td></tr>
-                <tr><td><span class="role-badge role-viewer">Viewer</span></td><td>✓</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+                <tr><td><span class="role-badge role-super">Super Admin</span></td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                <tr><td><span class="role-badge role-editor">Editor</span></td><td>✓</td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
+                <tr><td><span class="role-badge role-seo">SEO Manager</span></td><td>✓</td><td>—</td><td>✓</td><td>—</td><td>—</td></tr>
+                <tr><td><span class="role-badge role-viewer">Viewer</span></td><td>✓</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
               </tbody>
             </table>
           </div>
@@ -1267,27 +1268,9 @@ tr:hover td { background: var(--bg-2); }
 
         <div class="tbl-card">
           <table>
-            <thead><tr><th>User</th><th>Role</th><th>Status</th><th>Last Login</th><th></th></tr></thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <div class="avatar" style="width:28px;height:28px;font-size:11px;border-radius:7px">A</div>
-                    <div><div style="font-weight:700;font-size:13.5px">Admin</div><div style="font-size:12px;color:var(--text-3)">admin@calistotech.co</div></div>
-                  </div>
-                </td>
-                <td><span class="role-badge role-super">Super Admin</span></td>
-                <td><span class="pill pill-green">Active</span></td>
-                <td style="color:var(--text-3)">Just now</td>
-                <td><div class="tbl-actions">
-                  <button class="tbl-action" onclick="toast('Cannot edit the super admin account')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                </div></td>
-              </tr>
-            </tbody>
+            <thead><tr><th>User</th><th>Role</th><th>Status</th><th>Created</th><th></th></tr></thead>
+            <tbody id="users-tbody"></tbody>
           </table>
-          <div style="padding:12px 20px;border-top:1px solid var(--border-lt);font-size:12.5px;color:var(--text-3)">
-            Create additional users via "Add User" to grant limited access to team members.
-          </div>
         </div>
       </div>
 
@@ -1484,21 +1467,23 @@ tr:hover td { background: var(--bg-2); }
     </div>
     <div class="modal-body">
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Display Name</label><input class="form-input" placeholder="Full name"></div>
-        <div class="form-group"><label class="form-label">Username</label><input class="form-input" placeholder="username"></div>
+        <div class="form-group"><label class="form-label">Display Name</label><input class="form-input" id="nu-name" placeholder="Full name"></div>
+        <div class="form-group"><label class="form-label">Username</label><input class="form-input" id="nu-username" placeholder="username"></div>
       </div>
-      <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="name@calistotech.co"></div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="nu-email" type="email" placeholder="name@calistotech.co"></div>
       <div class="form-group">
         <label class="form-label">Role</label>
-        <select class="form-input">
-          <option>Editor</option><option>SEO Manager</option><option>Viewer</option>
+        <select class="form-input" id="nu-role">
+          <option value="editor">Editor</option>
+          <option value="seo_manager">SEO Manager</option>
+          <option value="viewer">Viewer</option>
         </select>
       </div>
-      <div class="form-group"><label class="form-label">Temporary Password</label><input class="form-input" type="password" placeholder="User must change on first login"></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Password</label><input class="form-input" id="nu-password" type="password" placeholder="Set a strong password"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('add-user-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="toast('User created!'); closeModal('add-user-modal')">Create User</button>
+      <button class="btn btn-primary" onclick="submitNewUser()">Create User</button>
     </div>
   </div>
 </div>
@@ -1539,36 +1524,32 @@ tr:hover td { background: var(--bg-2); }
 let currentUser = null;
 
 function initAuth() {
-  const stored = sessionStorage.getItem('calisto_user');
-  if (!stored) {
-    // No session — redirect to login immediately, show nothing
+  const session = getSession(); // from auth.js — reads calisto_session
+  if (!session) {
     document.body.style.visibility = 'hidden';
     window.location.replace('login.html');
     return;
   }
 
-  try {
-    currentUser = JSON.parse(stored);
-  } catch(e) {
-    sessionStorage.removeItem('calisto_user');
-    document.body.style.visibility = 'hidden';
-    window.location.replace('login.html');
-    return;
-  }
+  currentUser = session;
 
   // Populate user UI
-  const initials = currentUser.name ? currentUser.name.slice(0,1).toUpperCase() : 'A';
+  const initials = (session.name || session.username || 'A').slice(0, 1).toUpperCase();
   document.getElementById('sidebar-avatar').textContent = initials;
-  document.getElementById('sidebar-name').textContent = currentUser.name || currentUser.username;
-  document.getElementById('sidebar-role').textContent = currentUser.role;
+  document.getElementById('sidebar-name').textContent = session.name || session.username;
+  document.getElementById('sidebar-role').textContent = session.role || 'Admin';
   document.getElementById('profile-avatar-big').textContent = initials;
-  document.getElementById('profile-name-big').textContent = currentUser.name || currentUser.username;
-  document.getElementById('profile-role-big').textContent = `${currentUser.role} · ${currentUser.username}@calistotech.co`;
+  document.getElementById('profile-name-big').textContent = session.name || session.username;
+  document.getElementById('profile-role-big').textContent = `${session.role || 'Admin'} · ${session.username}@calistotech.co`;
 
   // Lock nav items without permission
   document.querySelectorAll('[data-perm]').forEach(item => {
     const perm = item.dataset.perm;
-    if (!currentUser.permissions || !currentUser.permissions.includes(perm)) {
+    const allowed = session.permissions || [];
+    // Map old permission keys to auth.js keys
+    const permMap = { forms: 'view_forms', products: 'manage_products', seo: 'manage_seo', users: 'manage_users', export: 'export_data', blog: 'manage_products' };
+    const authKey = permMap[perm] || perm;
+    if (!allowed.includes(perm) && !allowed.includes(authKey)) {
       item.classList.add('locked');
     }
   });
@@ -1579,7 +1560,7 @@ function initAuth() {
 
 function signOut() {
   if (confirm('Sign out of Calisto Admin?')) {
-    sessionStorage.removeItem('calisto_user');
+    clearSession(); // from auth.js
     window.location.href = 'login.html';
   }
 }
@@ -1612,6 +1593,7 @@ function nav(page, el) {
 
   if (page === 'seo') buildSEO();
   if (page === 'products') renderCatalogTree();
+  if (page === 'users') renderUsersPage();
   if (page === 'dashboard') initCharts();
 }
 
@@ -2333,6 +2315,97 @@ function initCharts() {
       },
     },
   });
+}
+
+/* ════════════════════════════════
+   USERS PAGE
+════════════════════════════════ */
+const ROLE_LABELS = {
+  superadmin:  { label: 'Super Admin', cls: 'role-super' },
+  editor:      { label: 'Editor',      cls: 'role-editor' },
+  seo_manager: { label: 'SEO Manager', cls: 'role-seo' },
+  viewer:      { label: 'Viewer',      cls: 'role-viewer' },
+};
+
+function renderUsersPage() {
+  const tbody = document.getElementById('users-tbody');
+  if (!tbody) return;
+  const users = getAllUsers(); // from auth.js — includes superadmin
+  tbody.innerHTML = users.map(u => {
+    const isSA   = u.id === 'superadmin';
+    const rl     = ROLE_LABELS[u.role] || { label: u.role, cls: 'role-viewer' };
+    const active = u.active !== false;
+    const initials = (u.name || u.username || '?').slice(0, 2).toUpperCase();
+    return `
+      <tr>
+        <td>
+          <div class="flex items-center gap-2">
+            <div class="avatar" style="width:28px;height:28px;font-size:11px;border-radius:7px">${initials}</div>
+            <div>
+              <div style="font-weight:700;font-size:13.5px">${u.name || u.username}</div>
+              <div style="font-size:12px;color:var(--text-3)">${u.username}${u.email ? ' · ' + u.email : ''}</div>
+            </div>
+          </div>
+        </td>
+        <td><span class="role-badge ${rl.cls}">${rl.label}</span></td>
+        <td><span class="pill ${active ? 'pill-green' : 'pill-amber'}">${active ? 'Active' : 'Inactive'}</span></td>
+        <td style="color:var(--text-3)">${u.createdAt || '—'}</td>
+        <td>
+          <div class="tbl-actions">
+            ${isSA ? '' : `
+              <button class="tbl-action" title="${active ? 'Deactivate' : 'Activate'}" onclick="toggleUser('${u.id}')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+              </button>
+              <button class="tbl-action del" title="Delete" onclick="removeUser('${u.id}')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+              </button>
+            `}
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function submitNewUser() {
+  const name     = document.getElementById('nu-name').value.trim();
+  const username = document.getElementById('nu-username').value.trim();
+  const email    = document.getElementById('nu-email').value.trim();
+  const role     = document.getElementById('nu-role').value;
+  const password = document.getElementById('nu-password').value;
+
+  if (!name)     { toast('Display name is required.');  return; }
+  if (!username) { toast('Username is required.');      return; }
+  if (!password) { toast('Password is required.');      return; }
+
+  const result = createUser({ username, password, name, email, role }); // from auth.js
+  if (result.success) {
+    closeModal('add-user-modal');
+    renderUsersPage();
+    toast(`User "${name}" created successfully.`);
+    ['nu-name','nu-username','nu-email','nu-password'].forEach(id => document.getElementById(id).value = '');
+  } else {
+    toast(result.message || 'Could not create user.');
+  }
+}
+
+function toggleUser(id) {
+  const result = toggleUserActive(id); // from auth.js
+  if (result.success) {
+    renderUsersPage();
+    toast(result.active ? 'User activated.' : 'User deactivated.');
+  }
+}
+
+function removeUser(id) {
+  if (!confirm('Delete this user? This cannot be undone.')) return;
+  const result = deleteUser(id); // from auth.js
+  if (result.success) {
+    renderUsersPage();
+    toast('User deleted.');
+  } else {
+    toast(result.message || 'Could not delete user.');
+  }
 }
 
 /* ════════════════════════════════

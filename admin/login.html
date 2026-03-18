@@ -444,12 +444,8 @@
   </div>
 </div>
 
+<script src="auth.js"></script>
 <script>
-  // Users store (mirrors auth.js logic)
-  const USERS = [
-    { username: 'admin', password: 'calisto2025', role: 'Super Admin', name: 'Admin', permissions: ['forms','products','seo','users','blog','export'] }
-  ];
-
   function handleLogin() {
     const u = document.getElementById('username').value.trim();
     const p = document.getElementById('password').value;
@@ -465,16 +461,15 @@
     btn.disabled = true;
 
     setTimeout(() => {
-      const user = USERS.find(x => x.username === u && x.password === p);
-      if (user) {
-        sessionStorage.setItem('calisto_user', JSON.stringify(user));
+      const result = authLogin(u, p);
+      if (result.success) {
         window.location.href = 'index.html';
       } else {
         spinner.style.display = 'none';
         btnText.textContent = 'Sign In';
         arrow.style.display = '';
         btn.disabled = false;
-        showError('Invalid username or password. Please try again.');
+        showError(result.message || 'Invalid username or password.');
         document.getElementById('password').value = '';
         document.getElementById('password').focus();
       }
