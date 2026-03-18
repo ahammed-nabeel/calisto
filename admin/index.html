@@ -1030,6 +1030,30 @@ tr:hover td { background: var(--bg-2); }
 
       <!-- ══ PRODUCTS ══ -->
       <div id="pg-products" class="hidden">
+
+        <!-- Cloudinary config banner — shown until credentials are saved -->
+        <div id="cloudinary-config-banner" class="hidden" style="background:var(--amber-bg);border:1px solid #f0d080;border-radius:var(--radius);padding:16px 20px;margin-bottom:16px;display:flex;align-items:flex-start;gap:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:13.5px;color:var(--amber);margin-bottom:6px">Cloudinary not configured — uploads won't work yet</div>
+            <div style="font-size:12.5px;color:var(--text-2);margin-bottom:12px">
+              Vercel is serverless — files are uploaded directly to <strong>Cloudinary</strong> (free). 
+              <a href="https://cloudinary.com/console" target="_blank" style="color:var(--blue);font-weight:700">Open Cloudinary Console</a> →
+              Settings → Upload → Upload presets → <strong>Add unsigned preset</strong> (folder: <code style="background:var(--bg);padding:1px 5px;border-radius:4px">calisto</code>) → Save preset name.
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+              <div>
+                <label class="form-label" style="margin-bottom:4px">Cloud Name</label>
+                <input class="form-input" id="cfg-cloud-name" placeholder="e.g. dxyz1abc2" style="width:180px;padding:7px 10px;font-size:13px">
+              </div>
+              <div>
+                <label class="form-label" style="margin-bottom:4px">Upload Preset (unsigned)</label>
+                <input class="form-input" id="cfg-upload-preset" placeholder="e.g. calisto_unsigned" style="width:200px;padding:7px 10px;font-size:13px">
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="saveCloudinaryConfig()">Save & Enable Uploads</button>
+            </div>
+          </div>
+        </div>
         <div class="page-hd">
           <div>
             <div class="page-hd-title">Products & Categories</div>
@@ -1344,6 +1368,31 @@ tr:hover td { background: var(--bg-2); }
             <div class="form-group" style="margin-bottom:0"><label class="form-label">Confirm New Password</label><input class="form-input" type="password" placeholder="Repeat new password"></div>
           </div>
         </div>
+
+        <!-- Cloudinary config card -->
+        <div class="card" style="padding:24px;margin-top:16px" id="cloudinary-settings-card">
+          <div style="font-family:'Raleway',sans-serif;font-weight:700;font-size:14.5px;margin-bottom:4px">Cloudinary — File Uploads</div>
+          <div style="font-size:12.5px;color:var(--text-3);margin-bottom:16px">
+            Required for uploading product images and datasheets. Files are served via Cloudinary CDN.
+            <a href="https://cloudinary.com/console" target="_blank" style="color:var(--blue);font-weight:700;margin-left:4px">Open Console ↗</a>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Cloud Name</label>
+              <input class="form-input" id="st-cloud-name" placeholder="e.g. dxyz1abc2">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Upload Preset <span style="font-weight:400;color:var(--text-3)">(unsigned)</span></label>
+              <input class="form-input" id="st-upload-preset" placeholder="e.g. calisto_unsigned">
+            </div>
+          </div>
+          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;font-size:12px;color:var(--text-2);margin-bottom:14px;line-height:1.7">
+            <strong>Setup:</strong> Cloudinary Console → Settings → Upload → Upload presets → <strong>Add preset</strong><br>
+            Set Signing mode to <strong>Unsigned</strong>, Folder to <code style="background:var(--border);padding:0 4px;border-radius:3px">calisto</code>, then copy the preset name here.
+          </div>
+          <div id="cloudinary-status" style="font-size:12.5px;margin-bottom:12px"></div>
+          <button class="btn btn-primary btn-sm" onclick="saveCloudinaryFromSettings()">Save Cloudinary Config</button>
+        </div>
       </div>
 
     </div><!-- /content -->
@@ -1615,7 +1664,8 @@ function nav(page, el) {
   closeSidebar();
 
   if (page === 'seo') buildSEO();
-  if (page === 'products') renderCatalogTree();
+  if (page === 'products') { renderCatalogTree(); _checkCloudinaryConfig(); }
+  if (page === 'profile') _populateCloudinarySettings();
   if (page === 'dashboard') initCharts();
 }
 
@@ -2036,9 +2086,40 @@ function populatePmSubcats() {
 }
 
 /* ════════════════════════════════
-   FILE UPLOAD ENGINE
+   FILE UPLOAD ENGINE — Cloudinary
+   Direct unsigned upload from browser.
+   No server required — works on Vercel.
+   Setup: https://cloudinary.com/console
+     → Settings → Upload → Upload presets
+     → Add preset → Signing mode: Unsigned
+     → Folder: calisto  → Save
+   Then paste Cloud Name + Preset below
+   (or enter them in the Settings panel).
 ════════════════════════════════ */
-const UPLOAD_URL = 'upload.php'; // relative to admin/
+
+function _getCloudinaryConfig() {
+  const stored = localStorage.getItem('calisto_cloudinary');
+  if (stored) { try { return JSON.parse(stored); } catch(e) {} }
+  return { cloudName: '', uploadPreset: '' };
+}
+
+function saveCloudinaryConfig() {
+  const cn = document.getElementById('cfg-cloud-name').value.trim();
+  const up = document.getElementById('cfg-upload-preset').value.trim();
+  if (!cn || !up) { toast('Both Cloud Name and Upload Preset are required.'); return; }
+  localStorage.setItem('calisto_cloudinary', JSON.stringify({ cloudName: cn, uploadPreset: up }));
+  document.getElementById('cloudinary-config-banner').classList.add('hidden');
+  toast('Cloudinary config saved!');
+}
+
+function _checkCloudinaryConfig() {
+  const cfg = _getCloudinaryConfig();
+  if (!cfg.cloudName || !cfg.uploadPreset) {
+    document.getElementById('cloudinary-config-banner').classList.remove('hidden');
+    return false;
+  }
+  return true;
+}
 
 function uploadDragOver(e) {
   e.preventDefault();
@@ -2056,14 +2137,24 @@ function uploadDrop(e, type, listId, zoneId) {
 }
 
 function uploadFiles(files, type, listId) {
+  if (!_checkCloudinaryConfig()) {
+    toast('Set up Cloudinary credentials first (see the banner above).');
+    return;
+  }
   Array.from(files).forEach(file => _uploadOne(file, type, listId));
 }
 
 function _uploadOne(file, type, listId) {
+  const cfg = _getCloudinaryConfig();
   const list = document.getElementById(listId);
   const itemId = 'upl-' + Date.now() + '-' + Math.random().toString(36).slice(2);
 
-  // Create pending item row
+  // Determine Cloudinary resource_type
+  const isPdf = file.type === 'application/pdf';
+  const resourceType = isPdf ? 'raw' : 'image';
+  const folder = type === 'image' ? 'calisto/products/images' : 'calisto/products/datasheets';
+
+  // Pending row
   const row = document.createElement('div');
   row.className = 'upload-item';
   row.id = itemId;
@@ -2080,21 +2171,18 @@ function _uploadOne(file, type, listId) {
   `;
   list.appendChild(row);
 
-  // Build FormData
   const fd = new FormData();
   fd.append('file', file);
-  fd.append('type', type);
-  fd.append('name', file.name.replace(/\.[^.]+$/, ''));
+  fd.append('upload_preset', cfg.uploadPreset);
+  fd.append('folder', folder);
 
-  // XHR for progress
   const xhr = new XMLHttpRequest();
-  xhr.open('POST', UPLOAD_URL);
+  xhr.open('POST', `https://api.cloudinary.com/v1_1/${cfg.cloudName}/${resourceType}/upload`);
 
   xhr.upload.addEventListener('progress', e => {
     if (e.lengthComputable) {
-      const pct = Math.round((e.loaded / e.total) * 90) + '%';
       const bar = document.getElementById(itemId + '-bar');
-      if (bar) bar.style.width = pct;
+      if (bar) bar.style.width = Math.round((e.loaded / e.total) * 92) + '%';
     }
   });
 
@@ -2105,21 +2193,23 @@ function _uploadOne(file, type, listId) {
     let resp;
     try { resp = JSON.parse(xhr.responseText); } catch(e) { resp = null; }
 
-    if (xhr.status === 200 && resp && resp.success) {
-      // Replace pending row with completed row
+    if (xhr.status === 200 && resp && resp.secure_url) {
+      const url = resp.secure_url;
+      const filename = resp.original_filename || file.name.replace(/\.[^.]+$/, '');
       const isImage = type === 'image';
       const isFirst = list.querySelectorAll('.upload-item:not([data-pending])').length === 0;
+
       row.removeAttribute('data-pending');
-      row.dataset.path = resp.path;
+      row.dataset.path = url;
       row.dataset.type = type;
-      row.dataset.name = resp.name;
+      row.dataset.name = filename;
       row.dataset.dtype = isImage ? 'image' : _guessDatasheetType(file.name);
 
       if (isImage) {
         row.innerHTML = `
           <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
-            <img src="../${resp.path}" style="width:36px;height:36px;object-fit:cover;border-radius:5px;border:1px solid var(--border);flex-shrink:0" onerror="this.style.display='none'">
-            <span style="font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-2)">${resp.filename}</span>
+            <img src="${url}" style="width:36px;height:36px;object-fit:cover;border-radius:5px;border:1px solid var(--border);flex-shrink:0" onerror="this.style.display='none'">
+            <span style="font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-2)">${filename}</span>
             ${isFirst ? '<span class="pill pill-blue" style="font-size:10px;padding:1px 7px;flex-shrink:0">Main</span>' : ''}
           </div>
           <button class="upload-item-remove" onclick="removeUploadItem(this)" title="Remove">×</button>
@@ -2129,19 +2219,19 @@ function _uploadOne(file, type, listId) {
           <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.5" style="flex-shrink:0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             <div style="min-width:0;flex:1">
-              <input class="form-input upload-name-input" value="${resp.name}" placeholder="Document name" style="padding:4px 8px;font-size:12px;margin-bottom:3px" oninput="this.closest('.upload-item').dataset.name=this.value">
-              <div style="font-size:11px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${resp.filename}</div>
+              <input class="form-input upload-name-input" value="${filename}" placeholder="Document name" style="padding:4px 8px;font-size:12px;margin-bottom:3px" oninput="this.closest('.upload-item').dataset.name=this.value">
+              <div style="font-size:11px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${url.split('/').pop()}</div>
             </div>
           </div>
           <button class="upload-item-remove" onclick="removeUploadItem(this)" title="Remove">×</button>
         `;
       }
-      toast(`Uploaded: ${resp.filename}`);
+      toast(`Uploaded: ${filename}`);
     } else {
-      const msg = (resp && resp.error) ? resp.error : 'Upload failed (status ' + xhr.status + ')';
+      const msg = (resp && resp.error && resp.error.message) ? resp.error.message : 'Upload failed (HTTP ' + xhr.status + ')';
       row.innerHTML = `
         <div style="flex:1;font-size:12.5px;color:var(--red)">${file.name} — ${msg}</div>
-        <button class="upload-item-remove" onclick="removeUploadItem(this)" title="Remove">×</button>
+        <button class="upload-item-remove" onclick="removeUploadItem(this)" title="Dismiss">×</button>
       `;
       row.dataset.error = '1';
     }
@@ -2149,8 +2239,8 @@ function _uploadOne(file, type, listId) {
 
   xhr.addEventListener('error', () => {
     row.innerHTML = `
-      <div style="flex:1;font-size:12.5px;color:var(--red)">${file.name} — Network error. Is upload.php accessible on the server?</div>
-      <button class="upload-item-remove" onclick="removeUploadItem(this)" title="Remove">×</button>
+      <div style="flex:1;font-size:12.5px;color:var(--red)">${file.name} — Network error. Check your Cloudinary config.</div>
+      <button class="upload-item-remove" onclick="removeUploadItem(this)" title="Dismiss">×</button>
     `;
     row.dataset.error = '1';
   });
@@ -2169,7 +2259,6 @@ function _guessDatasheetType(filename) {
   return 'brochure';
 }
 
-// Read upload list items → array of {url/file, alt/name, type}
 function _readUploadList(listId, dataType) {
   const list = document.getElementById(listId);
   if (!list) return [];
@@ -2181,7 +2270,7 @@ function _readUploadList(listId, dataType) {
         return { url: path, alt: (row.dataset.name || path.split('/').pop()) + ' ' + (i + 1) };
       } else {
         const nameInput = row.querySelector('.upload-name-input');
-        const name = (nameInput ? nameInput.value : row.dataset.name) || path.split('/').pop();
+        const name = (nameInput ? nameInput.value.trim() : '') || row.dataset.name || path.split('/').pop();
         return { name, file: path, type: row.dataset.dtype || 'brochure' };
       }
     })
@@ -2193,24 +2282,23 @@ function saveProductFromModal() {
   const name = document.getElementById('pm-name').value.trim();
   if (!name) { toast('Product name is required.'); return; }
 
-  // Block if any uploads still pending
   const pending = document.querySelectorAll('#pm-img-list [data-pending], #pm-ds-list [data-pending]');
   if (pending.length) { toast('Please wait for uploads to finish.'); return; }
 
-  const ci = parseInt(document.getElementById('pm-category').value);
-  const si = parseInt(document.getElementById('pm-subcat').value);
+  const ci   = parseInt(document.getElementById('pm-category').value);
+  const si   = parseInt(document.getElementById('pm-subcat').value);
   const slug = document.getElementById('pm-slug').value.trim() || name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
-  const chars = document.getElementById('pm-characteristics').value.split('\n').map(s => s.trim()).filter(Boolean).map(l => ({ label: l, icon: 'check' }));
-  const specs = document.getElementById('pm-specs').value.split('\n').map(s => s.trim()).filter(Boolean).map(l => { const [p, ...v] = l.split('|'); return { param: p.trim(), value: v.join('|').trim() }; });
-  const images = _readUploadList('pm-img-list', 'image');
+  const chars      = document.getElementById('pm-characteristics').value.split('\n').map(s => s.trim()).filter(Boolean).map(l => ({ label: l, icon: 'check' }));
+  const specs      = document.getElementById('pm-specs').value.split('\n').map(s => s.trim()).filter(Boolean).map(l => { const [p, ...v] = l.split('|'); return { param: p.trim(), value: v.join('|').trim() }; });
+  const images     = _readUploadList('pm-img-list', 'image');
   const datasheets = _readUploadList('pm-ds-list', 'datasheet');
 
   getCatalog().categories[ci].subcategories[si].items.push({
     id: slug, name, slug,
     shortDescription: document.getElementById('pm-short-desc').value,
-    description: document.getElementById('pm-description').value,
-    highlights: document.getElementById('pm-highlights').value.split(',').map(s => s.trim()).filter(Boolean),
+    description:      document.getElementById('pm-description').value,
+    highlights:       document.getElementById('pm-highlights').value.split(',').map(s => s.trim()).filter(Boolean),
     characteristics: chars, specs, images, datasheets
   });
 
@@ -2400,7 +2488,34 @@ function initCharts() {
 }
 
 /* ════════════════════════════════
-   FORMS BADGE
+   CLOUDINARY SETTINGS (Profile page)
+════════════════════════════════ */
+function _populateCloudinarySettings() {
+  const cfg = _getCloudinaryConfig();
+  const cn = document.getElementById('st-cloud-name');
+  const up = document.getElementById('st-upload-preset');
+  const status = document.getElementById('cloudinary-status');
+  if (cn) cn.value = cfg.cloudName || '';
+  if (up) up.value = cfg.uploadPreset || '';
+  if (status) {
+    if (cfg.cloudName && cfg.uploadPreset) {
+      status.innerHTML = `<span style="color:var(--green);font-weight:700">✓ Configured</span> — Cloud: <strong>${cfg.cloudName}</strong> · Preset: <strong>${cfg.uploadPreset}</strong>`;
+    } else {
+      status.innerHTML = `<span style="color:var(--amber);font-weight:700">⚠ Not configured</span> — uploads disabled until credentials are saved.`;
+    }
+  }
+}
+
+function saveCloudinaryFromSettings() {
+  const cn = document.getElementById('st-cloud-name').value.trim();
+  const up = document.getElementById('st-upload-preset').value.trim();
+  if (!cn || !up) { toast('Both Cloud Name and Upload Preset are required.'); return; }
+  localStorage.setItem('calisto_cloudinary', JSON.stringify({ cloudName: cn, uploadPreset: up }));
+  _populateCloudinarySettings();
+  toast('Cloudinary config saved — uploads are now enabled!');
+}
+
+/* ════════════════════════════════
 ════════════════════════════════ */
 function updateFormsBadge() {
   document.getElementById('forms-badge').textContent = '12';
