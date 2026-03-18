@@ -145,14 +145,23 @@ nav a:hover:after {
 }
 
 
+.hamburger {
   display: none;
   flex-direction: column;
   gap: 6px;
-  cursor: pointer
+  cursor: pointer;
+}
+
+.mobile-close-item {
+  display: none;
+  list-style: none;
 }
 
 .mobile-close-btn {
   display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .hamburger span {
@@ -189,22 +198,27 @@ nav a:hover:after {
     transform: translateX(0)
   }
 
-  .mobile-close-btn {
+  .mobile-close-item {
+    display: list-item;
     position: absolute;
     top: 20px;
     right: 20px;
+  }
+
+  .mobile-close-btn {
     width: 32px;
     height: 32px;
     background: var(--line);
     border-radius: 50%;
     display: flex;
-    /* Flex to center content */
     align-items: center;
     justify-content: center;
     cursor: pointer;
     color: var(--primary-dark);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     transition: var(--transition);
+    border: none;
+    font-family: inherit;
   }
 
   .mobile-close-btn:hover {

@@ -11,7 +11,7 @@ const headerHTML = `
     <nav>
       <ul id="nav-links">
         <!-- Close button mobile -->
-        <div class="mobile-close-btn" onclick="toggleMenu()">✕</div>
+        <li class="mobile-close-item"><button class="mobile-close-btn" onclick="toggleMenu()" aria-label="Close menu">✕</button></li>
         
         <li><a href="${basePath}index.html#solutions">Solutions</a></li>
         <li><a href="${basePath}index.html#partner">Partners</a></li>
