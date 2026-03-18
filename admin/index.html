@@ -1495,13 +1495,10 @@ tr:hover td { background: var(--bg-2); }
         </select>
       </div>
       <div class="form-group"><label class="form-label">Temporary Password</label><input class="form-input" type="password" placeholder="User must change on first login"></div>
-      <div style="background:var(--blue-light);border:1px solid var(--blue-mid);border-radius:var(--radius-sm);padding:11px 14px;font-size:12.5px;color:#2a5a8a;margin-top:4px">
-        The user will receive an email to set up their account. They can only access modules allowed by their assigned role.
-      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('add-user-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="toast('User created and invite sent!'); closeModal('add-user-modal')">Create User</button>
+      <button class="btn btn-primary" onclick="toast('User created!'); closeModal('add-user-modal')">Create User</button>
     </div>
   </div>
 </div>
