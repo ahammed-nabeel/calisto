@@ -1,10 +1,11 @@
 // ============================================================
-//  CALISTO PRODUCTS DATA STORE
-//  Edit this file directly OR use the Admin Panel at /admin/
+//  CALISTO PRODUCTS DATA STORE  v2
+//  Edit via Admin Panel at /admin/ — Export to overwrite this file
 // ============================================================
 
 const CALISTO_PRODUCTS = {
   categories: [
+    // ── GATES ────────────────────────────────────────────────
     {
       id: "gates",
       name: "Gates",
@@ -12,7 +13,7 @@ const CALISTO_PRODUCTS = {
       description: "Discover our specialized range of gate automation solutions designed for seamless operation and long-lasting performance.",
       heroTitle: "Gate Automation Systems,",
       heroSubtitle: "Engineered for Reliability.",
-      icon: "assets/swing-auto.svg",
+      heroImage: "https://images.unsplash.com/photo-1558002038-1091a16606f3?auto=format&fit=crop&w=1920&q=80",
       pageFile: "gates.html",
       subcategories: [
         {
@@ -20,7 +21,8 @@ const CALISTO_PRODUCTS = {
           name: "Swing Gate Operators",
           slug: "swing-gate-operators",
           description: "Choose from our wide range of operators designed to suit different gate weights, lengths, and usage frequencies.",
-          icon: "assets/swing-auto.svg",
+          heroImage: "https://images.unsplash.com/photo-1558002038-1091a16606f3?auto=format&fit=crop&w=1920&q=80",
+          heroSubtitle: "Premium automation solutions for residential and industrial swing gates.",
           pageFile: "swing-gate-operators.html",
           items: [
             {
@@ -73,12 +75,15 @@ const CALISTO_PRODUCTS = {
           name: "Sliding Gate Operators",
           slug: "sliding-gate-operators",
           description: "High-performance sliding gate systems for residential and commercial applications.",
-          icon: "assets/sliding-auto.svg",
+          heroImage: "https://images.unsplash.com/photo-1558002038-1091a16606f3?auto=format&fit=crop&w=1920&q=80",
+          heroSubtitle: "Powerful sliding gate automation for any property.",
           pageFile: "sliding-gate-operators.html",
           items: []
         }
       ]
     },
+
+    // ── ROLLING SHUTTERS ──────────────────────────────────────
     {
       id: "rolling-shutters",
       name: "Rolling Shutters",
@@ -86,15 +91,16 @@ const CALISTO_PRODUCTS = {
       description: "Enhance your privacy and security with our advanced rolling shutter and curtain automation solutions.",
       heroTitle: "Smart Rolling Shutters,",
       heroSubtitle: "Specialized for Control.",
-      icon: "assets/shutter-auto.svg",
+      heroImage: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1920&q=80",
       pageFile: "rolling-shutters.html",
       subcategories: [
         {
           id: "rolling-shutter-operators",
           name: "Rolling Shutter Operators",
           slug: "rolling-shutter-operators",
-          description: "Advanced tubular and central motor systems for rolling shutters.",
-          icon: "assets/shutter-auto.svg",
+          description: "Advanced tubular and central motor systems for rolling shutters and curtains.",
+          heroImage: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1920&q=80",
+          heroSubtitle: "Precision tubular motors for reliable shutter control.",
           pageFile: "rolling-shutter-operators.html",
           items: []
         },
@@ -103,12 +109,15 @@ const CALISTO_PRODUCTS = {
           name: "Curtain Operators",
           slug: "curtain-operators",
           description: "Motorized curtain and drapery systems with remote control.",
-          icon: "assets/curtain-auto.svg",
+          heroImage: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
+          heroSubtitle: "Elegant motorized curtain systems for modern interiors.",
           pageFile: "curtain-operators.html",
           items: []
         }
       ]
     },
+
+    // ── AUTOMATIC DOORS ───────────────────────────────────────
     {
       id: "automatic-doors",
       name: "Automatic Doors",
@@ -116,10 +125,33 @@ const CALISTO_PRODUCTS = {
       description: "Smart door automation for residential, commercial, and industrial spaces.",
       heroTitle: "Automatic Door Systems,",
       heroSubtitle: "Opening New Possibilities.",
-      icon: "assets/door-auto.svg",
+      heroImage: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80",
       pageFile: "automatic-doors.html",
-      subcategories: []
+      subcategories: [
+        {
+          id: "sliding-door-operators",
+          name: "Sliding Door Operators",
+          slug: "sliding-door-operators",
+          description: "Smooth, quiet automatic sliding door systems for commercial and residential use.",
+          heroImage: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80",
+          heroSubtitle: "Touch-free access with precision sliding door automation.",
+          pageFile: "sliding-door-operators.html",
+          items: []
+        },
+        {
+          id: "swing-door-operators",
+          name: "Swing Door Operators",
+          slug: "swing-door-operators",
+          description: "Automated swing door systems for accessible and hygienic entry points.",
+          heroImage: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80",
+          heroSubtitle: "Reliable automated swing doors for every environment.",
+          pageFile: "swing-door-operators.html",
+          items: []
+        }
+      ]
     },
+
+    // ── WINDOW SYSTEMS ────────────────────────────────────────
     {
       id: "window-systems",
       name: "Window Systems",
@@ -127,46 +159,59 @@ const CALISTO_PRODUCTS = {
       description: "Intelligent window automation for comfort, ventilation, and energy efficiency.",
       heroTitle: "Window Automation,",
       heroSubtitle: "Comfort at Your Command.",
-      icon: "assets/window-auto.svg",
+      heroImage: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
       pageFile: "window-systems.html",
-      subcategories: []
+      subcategories: [
+        {
+          id: "window-operators",
+          name: "Window Operators",
+          slug: "window-operators",
+          description: "Motorized window openers for roof, awning, casement, and tilt-and-turn windows.",
+          heroImage: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
+          heroSubtitle: "Smart window control for ventilation and energy efficiency.",
+          pageFile: "window-operators.html",
+          items: []
+        },
+        {
+          id: "awning-operators",
+          name: "Awning Operators",
+          slug: "awning-operators",
+          description: "Motorized awning and blind systems for outdoor comfort and sun control.",
+          heroImage: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
+          heroSubtitle: "Automated awnings for shade, comfort, and style.",
+          pageFile: "awning-operators.html",
+          items: []
+        }
+      ]
     }
   ]
 };
 
-// Helper: find category by slug
+// ── Helpers ──────────────────────────────────────────────────
 function getCategoryBySlug(slug) {
-  return CALISTO_PRODUCTS.categories.find(c => c.slug === slug);
+  return loadProductsData().categories.find(c => c.slug === slug);
 }
 
-// Helper: find subcategory by slug within a category
 function getSubcategoryBySlug(categorySlug, subcatSlug) {
   const cat = getCategoryBySlug(categorySlug);
   if (!cat) return null;
   return cat.subcategories.find(s => s.slug === subcatSlug);
 }
 
-// Helper: find item by slug within a subcategory
 function getItemBySlug(categorySlug, subcatSlug, itemSlug) {
   const subcat = getSubcategoryBySlug(categorySlug, subcatSlug);
   if (!subcat) return null;
   return subcat.items.find(i => i.slug === itemSlug);
 }
 
-// Save to localStorage (used by admin panel)
 function saveProductsData(data) {
   localStorage.setItem('calisto_products', JSON.stringify(data));
 }
 
-// Load from localStorage (overrides default if admin has made changes)
 function loadProductsData() {
   const saved = localStorage.getItem('calisto_products');
   if (saved) {
-    try {
-      return JSON.parse(saved);
-    } catch(e) {
-      return CALISTO_PRODUCTS;
-    }
+    try { return JSON.parse(saved); } catch(e) {}
   }
   return CALISTO_PRODUCTS;
 }

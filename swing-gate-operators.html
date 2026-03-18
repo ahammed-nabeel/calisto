@@ -1,281 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <!-- Basic page setup -->
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calisto Automation | Swing Gate Operators</title>
-    <meta name="description"
-        content="Explore Calisto's range of high-performance swing gate operators including Veloce, Aegis, Armox, Vortex, and Centurion models.">
-    <meta name="keywords"
-        content="swing gate operators, gate automation, Veloce-CXRM, Aegis CJOSW, Armox CALARM, Vortex CALARM, Centurion CAL, Calisto Tech">
-    <meta name="robots" content="index, follow">
-
-    <link rel="canonical" href="https://calistotech.com/swing-gate-operators.html">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Raleway:wght@300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-
-    <link rel="stylesheet" href="css/common.css?v=2">
-
-    <style>
-        :root {
-            --primary-dark: #0f172a;
-            --primary-light: #F6F7FB;
-            --surface: #ffffff;
-            --line: rgba(15, 23, 42, .10);
-            --accent: #005cb9;
-            --text-body: #334155;
-            --muted: #64748b;
-            --font-body: "Lato", system-ui, sans-serif;
-            --font-head: "Raleway", system-ui, sans-serif;
-            --container-padding: 6vw;
-            --transition: all .35s ease;
-            --shadow: 0 16px 40px rgba(2, 6, 23, .10);
-            --shadow2: 0 10px 24px rgba(2, 6, 23, .08);
-            --radius: 18px;
-        }
-
-        body {
-            font-family: var(--font-body);
-            background: var(--primary-light);
-            margin: 0;
-            padding: 0;
-            color: var(--text-body);
-        }
-
-        .section-padding {
-            padding: 6rem var(--container-padding);
-        }
-
-        .solutions-header {
-            text-align: center;
-            max-width: 900px;
-            margin: 0 auto 5rem;
-        }
-
-        .solutions-header h2 {
-            font-family: var(--font-head);
-            font-size: 2.5rem;
-            color: var(--muted);
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-        }
-
-        .solutions-header h2 span {
-            display: block;
-            color: var(--primary-dark);
-        }
-
-        .solutions-header p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: var(--muted);
-        }
-
-        /* Automation Grid */
-        .automation-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .automation-card {
-            background: #fff;
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            padding: 3rem 1.5rem;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: var(--transition);
-            box-shadow: var(--shadow2);
-            position: relative;
-        }
-
-        .automation-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow);
-            border-color: var(--accent);
-        }
-
-        .icon-box {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 2rem;
-        }
-
-        .automation-card h3 {
-            font-family: var(--font-head);
-            font-size: 1.4rem;
-            color: var(--primary-dark);
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-
-        .automation-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 2rem;
-            font-size: 0.95rem;
-            line-height: 1.8;
-            color: var(--muted);
-            flex-grow: 1;
-        }
-
-        .explore-link {
-            display: inline-block;
-            margin-top: auto;
-            padding: 0.75rem 1.8rem;
-            background: transparent;
-            color: var(--accent);
-            border: 2px solid var(--accent);
-            border-radius: 50px;
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .explore-link:hover {
-            background: var(--accent);
-            color: #fff;
-            box-shadow: 0 6px 15px rgba(0, 92, 185, 0.25);
-            transform: translateY(-2px);
-        }
-
-        @media (max-width: 1024px) {
-            .automation-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 600px) {
-            .automation-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Hero Carousel Styles */
-        .hero-carousel {
-            position: relative;
-            height: 60vh;
-            min-height: 500px;
-            width: 100%;
-            overflow: hidden;
-            margin-bottom: 0;
-        }
-
-        .carousel-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .carousel-slide::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to right, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.4));
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            color: #fff;
-            max-width: 900px;
-            padding: 0 20px;
-        }
-
-        .hero-title {
-            font-family: var(--font-head);
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            margin-bottom: 1rem;
-            font-weight: 800;
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1.1rem, 2vw, 1.4rem);
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        .btn-slide {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            background: var(--accent);
-            color: #fff;
-            border-radius: 50px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            text-decoration: none;
-            border: 2px solid var(--accent);
-        }
-
-        .btn-slide:hover {
-            background: transparent;
-            border-color: #fff;
-            color: #fff;
-            transform: translateY(-3px);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calisto Automation | Swing Gate Operators</title>
+  <meta name="description" content="Explore Calisto's range of high-performance swing gate operators for residential and industrial applications.">
+  <meta name="keywords" content="swing gate operators, gate automation, Calisto Tech">
+  <meta name="robots" content="index, follow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Raleway:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/common.css?v=2">
+  <style>
+    :root {
+      --primary-dark: #0f172a;
+      --primary-light: #F6F7FB;
+      --surface: #ffffff;
+      --line: rgba(15,23,42,.10);
+      --accent: #005cb9;
+      --text-body: #334155;
+      --muted: #64748b;
+      --font-body: "Lato", system-ui, sans-serif;
+      --font-head: "Raleway", system-ui, sans-serif;
+      --container-padding: 6vw;
+      --transition: all .35s ease;
+      --shadow: 0 16px 40px rgba(2,6,23,.10);
+      --shadow2: 0 10px 24px rgba(2,6,23,.08);
+      --radius: 18px;
+    }
+    body { font-family: var(--font-body); background: var(--primary-light); margin: 0; padding: 0; color: var(--text-body); }
+    .section-padding { padding: 6rem var(--container-padding); }
+    .solutions-header { text-align: center; max-width: 900px; margin: 0 auto 5rem; }
+    .solutions-header h2 { font-family: var(--font-head); font-size: 2.5rem; color: var(--muted); margin-bottom: 1.5rem; font-weight: 700; }
+    .solutions-header h2 span { display: block; color: var(--primary-dark); }
+    .solutions-header p { font-size: 1.1rem; line-height: 1.6; color: var(--muted); }
+    .automation-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; max-width: 1400px; margin: 0 auto; }
+    .automation-card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 2rem 1.5rem; text-align: center; display: flex; flex-direction: column; align-items: center; transition: var(--transition); box-shadow: var(--shadow2); position: relative; }
+    .automation-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); border-color: var(--accent); }
+    .icon-box { width: 80px; height: 80px; margin-bottom: 2rem; }
+    .automation-card h3 { font-family: var(--font-head); font-size: 1.4rem; color: var(--primary-dark); margin-bottom: 1rem; font-weight: 700; }
+    .automation-list { list-style: none; padding: 0; margin: 0 0 2rem; font-size: .95rem; line-height: 1.8; color: var(--muted); flex-grow: 1; }
+    .explore-link { display: inline-block; margin-top: auto; padding: .75rem 1.8rem; background: transparent; color: var(--accent); border: 2px solid var(--accent); border-radius: 50px; font-weight: 700; text-transform: uppercase; font-size: .8rem; letter-spacing: 1px; text-decoration: none; transition: all .3s ease; }
+    .explore-link:hover { background: var(--accent); color: #fff; box-shadow: 0 6px 15px rgba(0,92,185,.25); transform: translateY(-2px); }
+    .hero-carousel { position: relative; height: 60vh; min-height: 500px; width: 100%; overflow: hidden; }
+    .carousel-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; }
+    .carousel-slide::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to right,rgba(15,23,42,.8),rgba(15,23,42,.4)); }
+    .hero-content { position: relative; z-index: 2; text-align: center; color: #fff; max-width: 900px; padding: 0 20px; }
+    .hero-title { font-family: var(--font-head); font-size: clamp(2.5rem,5vw,4rem); margin-bottom: 1rem; font-weight: 800; }
+    .hero-subtitle { font-size: clamp(1.1rem,2vw,1.4rem); margin-bottom: 2rem; opacity: .9; }
+    .btn-slide { display: inline-block; padding: 1rem 2.5rem; background: var(--accent); color: #fff; border-radius: 50px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: .9rem; transition: all .3s; text-decoration: none; border: 2px solid var(--accent); }
+    .btn-slide:hover { background: transparent; border-color: #fff; color: #fff; transform: translateY(-3px); }
+    @media(max-width:1024px){ .automation-grid{grid-template-columns:repeat(2,1fr);} }
+    @media(max-width:600px){ .automation-grid{grid-template-columns:1fr;} }
+  </style>
 </head>
-
 <body>
-    <!-- HEADER -->
-    <div id="header-placeholder"></div>
-    <!-- HERO CAROUSEL -->
-    <section class="hero-carousel" id="home">
-        <!-- Static Hero Image for Product Category -->
-        <div class="carousel-slide"
-            style="background-image: url('https://images.unsplash.com/photo-1558002038-1091a16606f3?auto=format&fit=crop&w=1920&q=80');">
-            <div class="hero-content">
-                <h1 class="hero-title">Swing Gate Operators</h1>
-                <p class="hero-subtitle">Premium automation solutions for residential and industrial swing gates.</p>
-                <a href="#products" class="btn-slide">View Models</a>
-            </div>
-        </div>
+  <div id="header-placeholder"></div>
+  <section class="hero-carousel" id="home">
+    <div class="carousel-slide" id="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1558002038-1091a16606f3?auto=format&fit=crop&w=1920&q=80');">
+      <div class="hero-content">
+        <h1 class="hero-title">Swing Gate Operators</h1>
+        <p class="hero-subtitle">Premium automation solutions for residential and industrial swing gates.</p>
+        <a href="#products" class="btn-slide">View Models</a>
+      </div>
+    </div>
+  </section>
+  <main>
+    <section class="section-padding" id="products">
+      <div class="solutions-header">
+        <h2 id="section-title">Loading…</h2>
+        <p id="section-desc"></p>
+      </div>
+      <div class="automation-grid" id="category-grid"></div>
     </section>
-    <main>
-        <section class="section-padding" id="products">
-            <div class="solutions-header">
-                <h2 id="section-title">Our Swing Gate Models,
-                    <span>Engineered for Performance.</span>
-                </h2>
-                <p id="section-desc">Choose from our wide range of operators designed to suit different gate weights, lengths, and usage frequencies.</p>
-            </div>
-            <div class="automation-grid" id="category-grid">
-                <!-- Dynamically rendered from products-data.js -->
-            </div>
-        </section>
-    </main>
-    <!-- FOOTER -->
-    <div id="footer-placeholder"></div>
-    <script src="js/products-data.js"></script>
-    <script src="js/category-renderer.js"></script>
-    <script src="js/common.js"></script>
-    <script>renderSubcategoryPage('gates', 'swing-gate-operators');</script>
+  </main>
+  <div id="footer-placeholder"></div>
+  <script src="js/products-data.js"></script>
+  <script src="js/category-renderer.js"></script>
+  <script src="js/common.js"></script>
+  <script>renderSubcategoryPage('gates','swing-gate-operators');</script>
 </body>
-
 </html>
