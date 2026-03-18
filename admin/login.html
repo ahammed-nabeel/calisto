@@ -1,229 +1,512 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calisto — Admin Sign In</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calisto Admin — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #005cb9;
+    --blue-dark: #004a96;
+    --blue-light: #e8f1fb;
+    --blue-mid: #cfe0f5;
+    --text: #1a2332;
+    --text-2: #4a5568;
+    --text-3: #8a96a8;
+    --border: #dde3ec;
+    --surface: #ffffff;
+    --bg: #f4f7fc;
+    --danger: #d94040;
+    --danger-bg: #fdf0f0;
+  }
 
-    :root {
-      --accent:   #005cb9;
-      --accent-h: #004a94;
-      --ink:      #0f172a;
-      --ink2:     #334155;
-      --muted:    #64748b;
-      --line:     #e2e8f0;
-      --bg:       #f8fafc;
-      --surface:  #ffffff;
-      --danger:   #ef4444;
-      --radius:   10px;
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: stretch;
+    color: var(--text);
+  }
+
+  /* Left brand panel */
+  .brand-panel {
+    width: 420px;
+    flex-shrink: 0;
+    background: var(--blue);
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(255,255,255,.07) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(0,30,80,.3) 0%, transparent 60%);
+    display: flex;
+    flex-direction: column;
+    padding: 56px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .brand-panel::before {
+    content: '';
+    position: absolute;
+    width: 320px; height: 320px;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 50%;
+    top: -80px; right: -80px;
+  }
+
+  .brand-panel::after {
+    content: '';
+    position: absolute;
+    width: 200px; height: 200px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 50%;
+    bottom: 60px; left: -60px;
+  }
+
+  .brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-mark {
+    width: 40px; height: 40px;
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .brand-name-text {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: white;
+    letter-spacing: -.3px;
+  }
+
+  .brand-name-text span { opacity: .6; font-weight: 400; }
+
+  .brand-content { position: relative; z-index: 1; margin-top: auto; }
+
+  .brand-headline {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: white;
+    line-height: 1.25;
+    letter-spacing: -.5px;
+    margin-bottom: 16px;
+  }
+
+  .brand-desc {
+    font-size: 14.5px;
+    color: rgba(255,255,255,.65);
+    line-height: 1.7;
+    margin-bottom: 40px;
+  }
+
+  .brand-stats {
+    display: flex;
+    gap: 32px;
+  }
+
+  .brand-stat-val {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: white;
+  }
+
+  .brand-stat-lbl {
+    font-size: 12px;
+    color: rgba(255,255,255,.5);
+    margin-top: 2px;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+  }
+
+  /* Right form panel */
+  .form-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 32px;
+  }
+
+  .form-box {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .form-top {
+    margin-bottom: 40px;
+  }
+
+  .form-eyebrow {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 10px;
+  }
+
+  .form-title {
+    font-family: 'Raleway', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -.5px;
+    margin-bottom: 6px;
+  }
+
+  .form-sub {
+    font-size: 14px;
+    color: var(--text-3);
+  }
+
+  .form-group { margin-bottom: 18px; }
+
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-2);
+    letter-spacing: .2px;
+    margin-bottom: 7px;
+  }
+
+  .input-wrap { position: relative; }
+
+  .input-icon {
+    position: absolute;
+    left: 13px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-3);
+    width: 16px; height: 16px;
+    pointer-events: none;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 11px 14px 11px 40px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Lato', sans-serif;
+    background: white;
+    color: var(--text);
+    transition: border-color .18s, box-shadow .18s;
+    outline: none;
+    appearance: none;
+  }
+
+  .form-input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(0,92,185,.1);
+  }
+
+  .form-input::placeholder { color: var(--text-3); }
+
+  .toggle-pw {
+    position: absolute;
+    right: 12px; top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--text-3);
+    background: none; border: none;
+    padding: 4px;
+    display: flex; align-items: center; justify-content: center;
+    transition: color .15s;
+  }
+
+  .toggle-pw:hover { color: var(--blue); }
+
+  .form-row-end {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 24px;
+    margin-top: -6px;
+  }
+
+  .forgot-link {
+    font-size: 13px;
+    color: var(--blue);
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity .15s;
+  }
+
+  .forgot-link:hover { opacity: .7; }
+
+  .btn-login {
+    width: 100%;
+    padding: 13px;
+    background: var(--blue);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: .3px;
+    transition: background .18s, transform .15s, box-shadow .18s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-login:hover {
+    background: var(--blue-dark);
+    box-shadow: 0 6px 20px rgba(0,92,185,.28);
+    transform: translateY(-1px);
+  }
+
+  .btn-login:active { transform: translateY(0); }
+
+  .btn-login .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    display: none;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-box {
+    background: var(--danger-bg);
+    border: 1px solid #f5c6c6;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    color: var(--danger);
+    font-weight: 500;
+    margin-bottom: 18px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .form-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0;
+    color: var(--text-3);
+    font-size: 12px;
+  }
+
+  .form-divider::before, .form-divider::after {
+    content: ''; flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .hint-box {
+    background: var(--blue-light);
+    border: 1px solid var(--blue-mid);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 12.5px;
+    color: #2a5a8a;
+    line-height: 1.6;
+  }
+
+  .hint-box strong { color: var(--blue-dark); }
+
+  .form-footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+
+  /* Mobile */
+  @media (max-width: 860px) {
+    .brand-panel { display: none; }
+    .form-panel { padding: 32px 20px; }
+
+    .form-box::before {
+      content: 'CALISTO';
+      display: block;
+      font-family: 'Raleway', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--blue);
+      letter-spacing: 2px;
+      margin-bottom: 32px;
+      text-align: center;
     }
-
-    html, body { height: 100%; font-family: 'Lato', sans-serif; background: var(--bg); color: var(--ink); }
-
-    .wrap { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
-
-    /* Left brand panel */
-    .left {
-      background: var(--accent);
-      display: flex; flex-direction: column; justify-content: space-between;
-      padding: 3rem 3.5rem; position: relative; overflow: hidden;
-    }
-    .left::before {
-      content: ''; position: absolute; width: 340px; height: 340px;
-      border-radius: 50%; border: 1px solid rgba(255,255,255,0.12);
-      top: -80px; right: -80px; pointer-events: none;
-    }
-    .left::after {
-      content: ''; position: absolute; width: 200px; height: 200px;
-      border-radius: 50%; border: 1px solid rgba(255,255,255,0.08);
-      bottom: 60px; left: -60px; pointer-events: none;
-    }
-    .left-brand { display: flex; align-items: center; gap: 0.75rem; position: relative; z-index: 1; }
-    .left-brand img { height: 28px; filter: brightness(0) invert(1); opacity: 0.95; }
-    .left-brand-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.3); }
-    .left-brand-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.75); }
-
-    .left-hero { position: relative; z-index: 1; }
-    .left-hero h1 {
-      font-family: 'Raleway', sans-serif; font-size: clamp(1.9rem, 2.8vw, 2.8rem);
-      font-weight: 800; color: #fff; line-height: 1.15; letter-spacing: -0.5px; margin-bottom: 1.25rem;
-    }
-    .left-hero p { color: rgba(255,255,255,0.7); font-size: 0.93rem; line-height: 1.7; max-width: 340px; }
-
-    .left-modules { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.55rem; }
-    .module-row { display: flex; align-items: center; gap: 0.65rem; color: rgba(255,255,255,0.65); font-size: 0.81rem; font-weight: 600; }
-    .module-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.5); flex-shrink: 0; }
-
-    /* Right form panel */
-    .right {
-      display: flex; flex-direction: column; justify-content: center;
-      padding: 3rem 4rem; background: var(--surface);
-      max-width: 520px; width: 100%; margin: 0 auto;
-      animation: fadeUp 0.4s ease both;
-    }
-    .form-eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; }
-    .form-heading { font-family: 'Raleway', sans-serif; font-size: 1.85rem; font-weight: 800; color: var(--ink); letter-spacing: -0.5px; margin-bottom: 0.45rem; }
-    .form-sub { color: var(--muted); font-size: 0.87rem; margin-bottom: 2.25rem; }
-
-    .alert { display: none; align-items: center; gap: 0.6rem; background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; border-radius: var(--radius); padding: 0.75rem 1rem; font-size: 0.83rem; font-weight: 600; margin-bottom: 1.25rem; }
-    .alert.show { display: flex; }
-    .alert svg { width: 15px; height: 15px; fill: #b91c1c; flex-shrink: 0; }
-
-    .field { margin-bottom: 1rem; }
-    .field > label { display: block; font-size: 0.77rem; font-weight: 700; color: var(--ink2); letter-spacing: 0.3px; margin-bottom: 0.4rem; }
-    .field-wrap { position: relative; }
-    .field-wrap input {
-      width: 100%; padding: 0.78rem 2.5rem 0.78rem 0.9rem;
-      border: 1.5px solid var(--line); border-radius: var(--radius);
-      font-family: 'Lato', sans-serif; font-size: 0.9rem; color: var(--ink); background: #fff;
-      outline: none; transition: border-color 0.15s;
-    }
-    .field-wrap input::placeholder { color: #94a3b8; }
-    .field-wrap input:focus { border-color: var(--accent); }
-    .field-icon { position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; fill: #cbd5e1; pointer-events: none; }
-    .pw-eye { position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 0; color: #94a3b8; display: flex; align-items: center; transition: color 0.15s; }
-    .pw-eye:hover { color: var(--ink2); }
-    .pw-eye svg { width: 15px; height: 15px; fill: currentColor; display: block; }
-
-    .btn-login {
-      width: 100%; margin-top: 0.6rem; padding: 0.82rem;
-      background: var(--accent); color: #fff; border: none; border-radius: var(--radius);
-      font-family: 'Raleway', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
-      cursor: pointer; transition: background 0.15s, transform 0.12s, box-shadow 0.15s; position: relative; overflow: hidden;
-    }
-    .btn-login:hover { background: var(--accent-h); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,92,185,0.22); }
-    .btn-login:active { transform: translateY(0); }
-    .btn-login .btn-text { transition: opacity 0.15s; }
-    .btn-login .btn-loader { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.15s; }
-    .btn-login.loading .btn-text { opacity: 0; }
-    .btn-login.loading .btn-loader { opacity: 1; }
-    .btn-login.loading { pointer-events: none; }
-    .loader-ring { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
-
-    .form-footer { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); text-align: center; color: var(--muted); font-size: 0.76rem; }
-
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    @media (max-width: 860px) {
-      .wrap { grid-template-columns: 1fr; min-height: 100vh; }
-      .left { display: none; }
-      .right {
-        max-width: 100%; min-height: 100vh;
-        padding: 2rem 1.25rem;
-        justify-content: flex-start;
-        padding-top: 3rem;
-      }
-      #mobile-logo { display: block !important; }
-    }
-    @media (max-width: 400px) {
-      .right { padding: 1.5rem 1rem; }
-      .form-heading { font-size: 1.5rem; }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
-<div class="wrap">
-  <div class="left">
-    <div class="left-brand">
-      <img src="../assets/logo-calisto.svg" alt="Calisto" onerror="this.style.display='none'">
-      <div class="left-brand-divider"></div>
-      <span class="left-brand-label">Admin Portal</span>
+
+<!-- Brand panel -->
+<div class="brand-panel">
+  <div class="brand-logo">
+    <div class="brand-mark">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
     </div>
-    <div class="left-hero">
-      <h1>Your product catalog,<br>fully in control.</h1>
-      <p>Manage categories, products, SEO, and your team — all from one clean dashboard.</p>
-    </div>
-    <div class="left-modules">
-      <div class="module-row"><span class="module-dot"></span>Product Catalog Management</div>
-      <div class="module-row"><span class="module-dot"></span>Category &amp; Subcategory Control</div>
-      <div class="module-row"><span class="module-dot"></span>SEO Meta Editor</div>
-      <div class="module-row"><span class="module-dot"></span>Contact Form Inbox</div>
-      <div class="module-row"><span class="module-dot"></span>Role-based User Access</div>
-    </div>
+    <div class="brand-name-text">Calisto <span>Admin</span></div>
   </div>
 
-  <div class="right">
-    <div class="form-eyebrow" style="display:flex;align-items:center;gap:0.6rem;">
-      <img src="../assets/logo-calisto.svg" alt="Calisto" style="height:18px;display:none" id="mobile-logo" onerror="this.style.display='none'">
-      Calisto Admin
+  <div class="brand-content">
+    <div class="brand-headline">Premium Entrance Automation Management</div>
+    <div class="brand-desc">Control your product catalog, client enquiries, blog content, and site SEO — all from one secure dashboard.</div>
+    <div class="brand-stats">
+      <div>
+        <div class="brand-stat-val">3</div>
+        <div class="brand-stat-lbl">Catalogues</div>
+      </div>
+      <div>
+        <div class="brand-stat-val">SEO</div>
+        <div class="brand-stat-lbl">Per Page</div>
+      </div>
+      <div>
+        <div class="brand-stat-val">RBAC</div>
+        <div class="brand-stat-lbl">Role Access</div>
+      </div>
     </div>
-    <div class="form-heading">Sign in</div>
-    <p class="form-sub">Enter your credentials to access the dashboard.</p>
+  </div>
+</div>
 
-    <div class="alert" id="alert">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
-      <span id="alert-text">Incorrect username or password.</span>
+<!-- Form panel -->
+<div class="form-panel">
+  <div class="form-box">
+    <div class="form-top">
+      <div class="form-eyebrow">Admin Portal</div>
+      <div class="form-title">Welcome back</div>
+      <div class="form-sub">Sign in to your Calisto dashboard</div>
     </div>
 
-    <div class="field">
-      <label>Username</label>
-      <div class="field-wrap">
-        <input type="text" id="username" placeholder="Enter username" autocomplete="username" autofocus>
-        <svg class="field-icon" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+    <div class="error-box" id="error-box">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      <span id="error-msg">Invalid username or password.</span>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="username">Username</label>
+      <div class="input-wrap">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        <input class="form-input" type="text" id="username" placeholder="admin" autocomplete="username">
       </div>
     </div>
 
-    <div class="field">
-      <label>Password</label>
-      <div class="field-wrap">
-        <input type="password" id="password" placeholder="Enter password" autocomplete="current-password">
-        <button class="pw-eye" type="button" onclick="togglePw()">
-          <svg id="eye-show" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-          <svg id="eye-hide" viewBox="0 0 24 24" style="display:none"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+    <div class="form-group">
+      <label class="form-label" for="password">Password</label>
+      <div class="input-wrap">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <input class="form-input" type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+        <button class="toggle-pw" type="button" onclick="togglePw()" id="pw-toggle" aria-label="Show password">
+          <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
         </button>
       </div>
     </div>
 
-    <button class="btn-login" id="btn-login" onclick="handleLogin()">
-      <span class="btn-text">Sign In</span>
-      <span class="btn-loader"><span class="loader-ring"></span></span>
+    <div class="form-row-end">
+      <a href="#" class="forgot-link">Forgot password?</a>
+    </div>
+
+    <button class="btn-login" id="login-btn" onclick="handleLogin()">
+      <span class="spinner" id="spinner"></span>
+      <span id="btn-text">Sign In</span>
+      <svg id="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+      </svg>
     </button>
 
-    <div class="form-footer">Protected area &middot; Calisto Automation &copy; <span id="yr"></span></div>
+    <div class="form-footer">
+      Calisto Automation Admin · Secure Access Only<br>
+      © 2025 Calistotech.co · All rights reserved
+    </div>
   </div>
 </div>
 
-<script src="auth.js"></script>
 <script>
-  document.getElementById('yr').textContent = new Date().getFullYear();
-
-  function togglePw() {
-    const inp = document.getElementById('password');
-    const show = inp.type === 'password';
-    inp.type = show ? 'text' : 'password';
-    document.getElementById('eye-show').style.display = show ? 'none' : 'block';
-    document.getElementById('eye-hide').style.display = show ? 'block' : 'none';
-  }
-
-  document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+  // Users store (mirrors auth.js logic)
+  const USERS = [
+    { username: 'admin', password: 'calisto2025', role: 'Super Admin', name: 'Admin', permissions: ['forms','products','seo','users','blog','export'] }
+  ];
 
   function handleLogin() {
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
-    const btn = document.getElementById('btn-login');
-    const alertEl = document.getElementById('alert');
-    alertEl.classList.remove('show');
-    btn.classList.add('loading');
+    const u = document.getElementById('username').value.trim();
+    const p = document.getElementById('password').value;
+    const btn = document.getElementById('login-btn');
+    const spinner = document.getElementById('spinner');
+    const btnText = document.getElementById('btn-text');
+    const arrow = document.getElementById('btn-arrow');
+
+    hideError();
+    spinner.style.display = 'block';
+    btnText.textContent = 'Signing in…';
+    arrow.style.display = 'none';
+    btn.disabled = true;
+
     setTimeout(() => {
-      const result = authLogin(username, password);
-      btn.classList.remove('loading');
-      if (result.success) {
-        btn.querySelector('.btn-text').textContent = 'Redirecting…';
-        btn.style.background = '#16a34a';
-        setTimeout(() => { window.location.href = 'index.html'; }, 500);
+      const user = USERS.find(x => x.username === u && x.password === p);
+      if (user) {
+        sessionStorage.setItem('calisto_user', JSON.stringify(user));
+        window.location.href = 'index.html';
       } else {
-        document.getElementById('alert-text').textContent = result.message || 'Incorrect username or password.';
-        alertEl.classList.add('show');
+        spinner.style.display = 'none';
+        btnText.textContent = 'Sign In';
+        arrow.style.display = '';
+        btn.disabled = false;
+        showError('Invalid username or password. Please try again.');
         document.getElementById('password').value = '';
         document.getElementById('password').focus();
       }
-    }, 600);
+    }, 700);
   }
+
+  function showError(msg) {
+    const box = document.getElementById('error-box');
+    document.getElementById('error-msg').textContent = msg;
+    box.style.display = 'flex';
+  }
+
+  function hideError() {
+    document.getElementById('error-box').style.display = 'none';
+  }
+
+  function togglePw() {
+    const input = document.getElementById('password');
+    const icon = document.getElementById('eye-icon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    } else {
+      input.type = 'password';
+      icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    }
+  }
+
+  // Enter key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleLogin();
+  });
 </script>
 </body>
 </html>

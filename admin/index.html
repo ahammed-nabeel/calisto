@@ -1,1779 +1,1808 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calisto Admin Panel</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Raleway:wght@500;700;900&display=swap" rel="stylesheet">
-  <script src="auth.js"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calisto Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ═══════════════════════════════════════
+   CALISTO ADMIN — DESIGN SYSTEM
+   Brand: #005cb9, Raleway + Lato
+═══════════════════════════════════════ */
+:root {
+  --blue:        #005cb9;
+  --blue-dark:   #004a96;
+  --blue-hover:  #0052a8;
+  --blue-light:  #e8f1fb;
+  --blue-mid:    #c2d8f5;
+  --text:        #1a2332;
+  --text-2:      #4a5568;
+  --text-3:      #8a96a8;
+  --border:      #dde3ec;
+  --border-lt:   #eef1f6;
+  --surface:     #ffffff;
+  --bg:          #f4f7fc;
+  --bg-2:        #f9fafd;
+  --green:       #1a9e5f;
+  --green-bg:    #e6f7f0;
+  --amber:       #c27c0e;
+  --amber-bg:    #fef6e4;
+  --red:         #d94040;
+  --red-bg:      #fdf0f0;
+  --purple:      #6c3ebd;
+  --purple-bg:   #f2eeff;
+  --sidebar-w:   248px;
+  --header-h:    58px;
+  --radius:      10px;
+  --radius-sm:   7px;
+  --shadow-sm:   0 1px 4px rgba(26,35,50,.06);
+  --shadow:      0 4px 16px rgba(26,35,50,.09);
+  --shadow-lg:   0 8px 32px rgba(26,35,50,.13);
+  --tr:          180ms cubic-bezier(.4,0,.2,1);
+}
 
-    :root {
-      --accent:      #005cb9;
-      --accent-h:    #004a94;
-      --accent-bg:   #f0f6ff;
-      --ink:         #0f172a;
-      --ink2:        #334155;
-      --muted:       #64748b;
-      --muted2:      #94a3b8;
-      --line:        #e2e8f0;
-      --line2:       #f1f5f9;
-      --bg:          #f8fafc;
-      --surface:     #ffffff;
-      --danger:      #ef4444;
-      --danger-bg:   #fef2f2;
-      --success:     #16a34a;
-      --warning:     #d97706;
-      --radius:      8px;
-      --radius-lg:   12px;
-      --shadow:      0 1px 4px rgba(15,23,42,0.07), 0 4px 16px rgba(15,23,42,0.04);
-      --shadow-lg:   0 4px 24px rgba(15,23,42,0.10);
-    }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body { font-family: 'Lato', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; font-size: 14px; line-height: 1.5; }
+body {
+  font-family: 'Lato', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
 
-    /* ── Layout ── */
-    .admin-layout { display: flex; min-height: 100vh; }
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
 
-    /* ── Sidebar ── */
-    .sidebar {
-      width: 220px; background: var(--surface); border-right: 1px solid var(--line);
-      position: fixed; top: 0; left: 0; height: 100vh;
-      display: flex; flex-direction: column; z-index: 100; flex-shrink: 0;
-      overflow-y: auto;
-    }
-    .sidebar-logo {
-      padding: 1.25rem 1.1rem 1rem; border-bottom: 1px solid var(--line);
-      display: flex; align-items: center; gap: 0.6rem; min-height: 56px;
-    }
-    .sidebar-logo img { height: 22px; }
-    .sidebar-logo span { font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--ink); }
-    .sidebar-badge { font-size: 0.58rem; background: var(--accent-bg); color: var(--accent); padding: 2px 6px; border-radius: 20px; margin-left: auto; font-weight: 700; letter-spacing: 0.5px; }
+/* ── Utilities ── */
+.hidden { display: none !important; }
+.flex { display: flex; }
+.items-center { align-items: center; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.ml-auto { margin-left: auto; }
 
-    .sidebar-nav { padding: 0.75rem 0; flex: 1; }
-    .nav-section-label { padding: 0.65rem 1.1rem 0.3rem; font-size: 0.63rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted2); }
-    .nav-item {
-      display: flex; align-items: center; gap: 0.65rem;
-      padding: 0.62rem 1.1rem; cursor: pointer; width: 100%; border: none; background: none;
-      font-family: 'Lato', sans-serif; font-size: 0.83rem; font-weight: 600; color: var(--ink2);
-      transition: background 0.15s, color 0.15s; text-align: left; border-radius: 0;
-    }
-    .nav-item svg { width: 16px; height: 16px; fill: var(--muted); flex-shrink: 0; transition: fill 0.15s; }
-    .nav-item:hover { background: var(--bg); color: var(--ink); }
-    .nav-item:hover svg { fill: var(--ink2); }
-    .nav-item.active { background: var(--accent-bg); color: var(--accent); font-weight: 700; }
-    .nav-item.active svg { fill: var(--accent); }
-    .nav-item.locked { opacity: 0.4; cursor: not-allowed; }
-    .nav-item.locked:hover { background: none; color: var(--ink2); }
-    .nav-item.locked:hover svg { fill: var(--muted); }
-    .lock-icon { width: 12px; height: 12px; fill: var(--muted2); margin-left: auto; }
+/* ══════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════ */
+#app { display: flex; height: 100vh; overflow: hidden; }
 
-    /* ── Main content ── */
-    .main-content { margin-left: 220px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: transform var(--tr);
+  z-index: 100;
+}
 
-    /* ── Topbar ── */
-    .topbar {
-      background: var(--surface); border-bottom: 1px solid var(--line);
-      padding: 0 1.75rem; display: flex; align-items: center;
-      justify-content: space-between; height: 56px;
-      position: sticky; top: 0; z-index: 50;
-    }
-    .topbar h1 { font-family: 'Raleway', sans-serif; font-size: 1rem; font-weight: 700; color: var(--ink); }
-    .topbar-actions { display: flex; gap: 0.6rem; align-items: center; }
+.sidebar-brand {
+  height: var(--header-h);
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
 
-    /* ── Buttons ── */
-    .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: var(--radius); font-weight: 700; font-size: 0.78rem; cursor: pointer; transition: all 0.15s; border: 1.5px solid transparent; font-family: 'Lato', sans-serif; white-space: nowrap; }
-    .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .btn-primary:hover { background: var(--accent-h); border-color: var(--accent-h); }
-    .btn-secondary { background: var(--surface); color: var(--ink2); border-color: var(--line); }
-    .btn-secondary:hover { border-color: var(--muted2); color: var(--ink); }
-    .btn-danger { background: var(--danger-bg); color: var(--danger); border-color: #fecaca; }
-    .btn-danger:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
-    .btn-success { background: #f0fdf4; color: var(--success); border-color: #bbf7d0; }
-    .btn-sm { padding: 0.38rem 0.75rem; font-size: 0.74rem; }
-    .btn-icon { padding: 0.38rem; border-radius: var(--radius); }
+.brand-icon {
+  width: 34px; height: 34px;
+  background: var(--blue);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
 
-    /* ── Pages ── */
-    .page { padding: 1.75rem; display: none; flex: 1; }
-    .page.active { display: block; }
+.brand-text {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--text);
+  letter-spacing: -.3px;
+}
 
-    /* ── Stat cards ── */
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
-    .stat-card { background: var(--surface); border-radius: var(--radius-lg); padding: 1.25rem; border: 1px solid var(--line); }
-    .stat-icon { width: 36px; height: 36px; background: var(--accent-bg); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 0.85rem; }
-    .stat-icon svg { width: 18px; height: 18px; fill: var(--accent); }
-    .stat-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
-    .stat-value { font-family: 'Raleway', sans-serif; font-size: 1.85rem; font-weight: 800; color: var(--ink); margin-top: 0.25rem; }
+.brand-text span {
+  font-weight: 400;
+  color: var(--text-3);
+  font-size: 13px;
+}
 
-    /* ── Cards / panels ── */
-    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
-    .card-header { padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
-    .card-header h3 { font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 0.88rem; color: var(--ink); }
-    .card-body { padding: 1.25rem; }
+.sidebar-view-site {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--blue);
+  font-weight: 700;
+  text-decoration: none;
+  padding: 4px 9px;
+  border: 1.5px solid var(--blue-mid);
+  border-radius: 6px;
+  letter-spacing: .2px;
+  transition: all var(--tr);
+  white-space: nowrap;
+}
 
-    /* ── Section title ── */
-    .section-title { font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 0.88rem; color: var(--ink); margin-bottom: 0.85rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--line); }
+.sidebar-view-site:hover { background: var(--blue-light); }
 
-    /* ── Tree ── */
-    .tree-container { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--line); overflow: hidden; }
-    .tree-header { padding: 0.85rem 1.1rem; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; background: var(--bg); }
-    .tree-header h3 { font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 0.85rem; }
-    .tree-item { border-bottom: 1px solid var(--line2); }
-    .tree-item:last-child { border-bottom: none; }
-    .tree-row { display: flex; align-items: center; padding: 0.65rem 1.1rem; cursor: pointer; transition: background 0.12s; gap: 0.6rem; }
-    .tree-row:hover { background: var(--bg); }
-    .tree-row.selected { background: var(--accent-bg); }
-    .tree-toggle { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: transform 0.2s; flex-shrink: 0; }
-    .tree-toggle.open { transform: rotate(90deg); }
-    .tree-toggle svg { width: 12px; height: 12px; fill: var(--muted2); }
-    .tree-name { flex: 1; font-size: 0.83rem; font-weight: 600; color: var(--ink2); }
-    .tree-row.selected .tree-name { color: var(--accent); }
-    .tree-type { font-size: 0.64rem; padding: 2px 7px; border-radius: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
-    .type-category { background: #ede9fe; color: #6d28d9; }
-    .type-subcat { background: #dbeafe; color: #1d4ed8; }
-    .type-item { background: #dcfce7; color: #15803d; }
-    .tree-actions { display: flex; gap: 0.3rem; opacity: 0; transition: opacity 0.15s; }
-    .tree-row:hover .tree-actions { opacity: 1; }
-    .tree-children { padding-left: 2.2rem; border-left: 1px solid var(--line); margin-left: 2rem; display: none; }
-    .tree-children.open { display: block; }
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 0;
+}
 
-    /* ── Detail panel ── */
-    .panel-layout { display: grid; grid-template-columns: 1fr 380px; gap: 1.25rem; }
-    .detail-panel { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--line); }
-    .panel-header { padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; background: var(--bg); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
-    .panel-header h3 { font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 0.85rem; }
-    .panel-body { padding: 1.25rem; }
+.nav-section {
+  padding: 14px 18px 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 
-    /* ── Forms ── */
-    .form-group { margin-bottom: 1rem; }
-    .form-label { display: block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 0.35rem; }
-    .form-input, .form-textarea, .form-select {
-      width: 100%; padding: 0.6rem 0.85rem; border: 1.5px solid var(--line);
-      border-radius: var(--radius); font-family: 'Lato', sans-serif; font-size: 0.85rem;
-      color: var(--ink); background: var(--surface); outline: none; transition: border-color 0.15s;
-    }
-    .form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--accent); }
-    .form-textarea { min-height: 90px; resize: vertical; }
-    .form-hint { font-size: 0.7rem; color: var(--muted2); margin-top: 0.25rem; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  margin: 1px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-2);
+  font-size: 13.5px;
+  font-weight: 400;
+  transition: all var(--tr);
+  position: relative;
+  user-select: none;
+}
 
-    /* ── Dynamic list ── */
-    .dynamic-list { border: 1.5px solid var(--line); border-radius: var(--radius); overflow: hidden; }
-    .dynamic-list-header { padding: 0.6rem 0.9rem; background: var(--bg); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.77rem; color: var(--ink2); }
-    .dynamic-row { display: flex; align-items: center; gap: 0.45rem; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--line2); background: var(--surface); }
-    .dynamic-row:last-child { border-bottom: none; }
-    .dynamic-row input { flex: 1; border: 1px solid var(--line); border-radius: 6px; padding: 0.35rem 0.6rem; font-size: 0.82rem; font-family: 'Lato', sans-serif; background: var(--bg); color: var(--ink); outline: none; }
-    .dynamic-row input:focus { border-color: var(--accent); background: #fff; }
-    .remove-row { color: var(--muted2); cursor: pointer; flex-shrink: 0; background: none; border: none; padding: 2px; display: flex; transition: color 0.15s; }
-    .remove-row:hover { color: var(--danger); }
-    .remove-row svg { width: 14px; height: 14px; fill: currentColor; }
-    .dynamic-empty { padding: 1.25rem; text-align: center; color: var(--muted2); font-size: 0.8rem; }
+.nav-item:hover { background: var(--bg); color: var(--text); }
 
-    /* ── Tabs ── */
-    .tabs { display: flex; border-bottom: 1.5px solid var(--line); margin-bottom: 1.25rem; gap: 0; }
-    .tab { padding: 0.55rem 1rem; cursor: pointer; font-size: 0.78rem; font-weight: 700; color: var(--muted); border: none; background: none; font-family: 'Lato', sans-serif; border-bottom: 2px solid transparent; margin-bottom: -1.5px; transition: color 0.15s, border-color 0.15s; }
-    .tab:hover { color: var(--ink); }
-    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+.nav-item.active {
+  background: var(--blue-light);
+  color: var(--blue);
+  font-weight: 700;
+}
 
-    /* ── Toast ── */
-    .toast { position: fixed; bottom: 1.25rem; right: 1.25rem; background: var(--ink); color: #fff; padding: 0.7rem 1.1rem; border-radius: var(--radius-lg); font-size: 0.82rem; font-weight: 600; z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.25s; display: flex; align-items: center; gap: 0.6rem; box-shadow: var(--shadow-lg); }
-    .toast.show { transform: translateY(0); opacity: 1; }
-    .toast.success { background: var(--success); }
-    .toast.error { background: var(--danger); }
-    .toast svg { width: 15px; height: 15px; fill: currentColor; flex-shrink: 0; }
+.nav-icon {
+  width: 17px; height: 17px;
+  flex-shrink: 0;
+  opacity: .65;
+  transition: opacity var(--tr);
+}
 
-    /* ── Modals ── */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.35); display: none; align-items: center; justify-content: center; z-index: 200; backdrop-filter: blur(2px); }
-    .modal-overlay.open { display: flex; }
-    .modal { background: var(--surface); border-radius: var(--radius-lg); padding: 1.75rem; width: 90%; max-width: 500px; box-shadow: var(--shadow-lg); border: 1px solid var(--line); }
-    .modal h3 { font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.35rem; color: var(--ink); }
-    .modal p { color: var(--muted); font-size: 0.83rem; margin-bottom: 1.25rem; }
-    .modal-actions { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 1.25rem; }
+.nav-item.active .nav-icon,
+.nav-item:hover .nav-icon { opacity: 1; }
 
-    /* ── User profile topbar ── */
-    .user-info { display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.65rem; border-radius: var(--radius); border: 1.5px solid var(--line); cursor: pointer; transition: border-color 0.15s; position: relative; background: var(--surface); }
-    .user-info:hover { border-color: var(--muted2); }
-    .user-avatar { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.65rem; color: #fff; flex-shrink: 0; }
-    .user-name { font-size: 0.78rem; font-weight: 700; color: var(--ink2); }
-    .user-role-badge { font-size: 0.62rem; padding: 1px 6px; border-radius: 20px; font-weight: 700; }
-    .user-dropdown { position: absolute; top: calc(100% + 6px); right: 0; background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); min-width: 170px; z-index: 200; display: none; overflow: hidden; }
-    .user-dropdown.open { display: block; }
-    .user-dropdown-item { display: flex; align-items: center; gap: 0.55rem; padding: 0.62rem 0.9rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 0.12s; border: none; background: none; width: 100%; text-align: left; color: var(--ink2); }
-    .user-dropdown-item:hover { background: var(--bg); }
-    .user-dropdown-item svg { width: 14px; height: 14px; fill: var(--muted); }
-    .user-dropdown-item.danger { color: var(--danger); }
-    .user-dropdown-item.danger svg { fill: var(--danger); }
-    .user-dropdown-divider { height: 1px; background: var(--line); }
+.nav-badge {
+  margin-left: auto;
+  background: var(--blue);
+  color: white;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 99px;
+  font-family: 'Lato', sans-serif;
+}
 
-    /* ── Users table ── */
-    .users-table-wrap { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--line); overflow: hidden; }
-    .users-table { width: 100%; border-collapse: collapse; }
-    .users-table th { background: var(--bg); padding: 0.7rem 1.1rem; text-align: left; font-size: 0.67rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-weight: 700; border-bottom: 1px solid var(--line); }
-    .users-table td { padding: 0.85rem 1.1rem; border-bottom: 1px solid var(--line2); font-size: 0.82rem; vertical-align: middle; }
-    .users-table tr:last-child td { border-bottom: none; }
-    .users-table tr:hover td { background: var(--bg); }
-    .user-cell { display: flex; align-items: center; gap: 0.65rem; }
-    .role-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; }
-    .status-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-    .status-dot.active { background: var(--success); }
-    .status-dot.inactive { background: var(--line); }
-    .perm-list { display: flex; flex-wrap: wrap; gap: 0.25rem; }
-    .perm-chip { font-size: 0.64rem; padding: 2px 6px; background: var(--accent-bg); color: var(--accent); border-radius: 20px; font-weight: 700; }
-    .table-actions { display: flex; gap: 0.35rem; }
+.nav-badge.amber { background: var(--amber); }
 
-    /* ── SEO ── */
-    .seo-page-list { display: flex; flex-direction: column; gap: 0.6rem; }
-    .seo-page-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; }
-    .seo-page-header { display: flex; align-items: center; gap: 0.7rem; padding: 0.85rem 1.1rem; cursor: pointer; transition: background 0.12s; }
-    .seo-page-header:hover { background: var(--bg); }
-    .seo-page-url { flex: 1; font-size: 0.82rem; font-weight: 600; color: var(--ink2); }
-    .seo-page-url span { color: var(--muted); font-weight: 400; }
-    .seo-chevron { width: 16px; height: 16px; fill: var(--muted2); transition: transform 0.2s; }
-    .seo-page-header.open .seo-chevron { transform: rotate(180deg); }
-    .seo-page-body { display: none; padding: 1.1rem; border-top: 1px solid var(--line); background: var(--bg); }
-    .seo-page-body.open { display: block; }
-    .seo-char-count { font-size: 0.68rem; color: var(--muted2); float: right; }
-    .seo-char-count.warn { color: var(--warning); font-weight: 700; }
-    .seo-char-count.over { color: var(--danger); font-weight: 700; }
+.nav-item.locked {
+  opacity: .45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
-    /* ── Permissions grid ── */
-    .perm-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; margin-top: 0.6rem; }
-    .perm-item { display: flex; align-items: flex-start; gap: 0.55rem; padding: 0.65rem; background: var(--bg); border: 1.5px solid var(--line); border-radius: var(--radius); cursor: pointer; transition: border-color 0.15s; }
-    .perm-item:hover { border-color: var(--accent); }
-    .perm-item input[type=checkbox] { accent-color: var(--accent); width: 14px; height: 14px; flex-shrink: 0; margin-top: 2px; cursor: pointer; }
-    .perm-item-label { font-size: 0.78rem; font-weight: 700; color: var(--ink2); }
-    .perm-item-desc { font-size: 0.7rem; color: var(--muted2); margin-top: 1px; }
+.sidebar-footer {
+  border-top: 1px solid var(--border);
+  padding: 10px 8px;
+  flex-shrink: 0;
+}
 
-    /* ── Misc ── */
-    .empty-state { text-align: center; padding: 3.5rem 2rem; color: var(--muted); }
-    .empty-state svg { width: 48px; height: 48px; fill: var(--line); margin-bottom: 0.85rem; }
-    .empty-state h3 { font-family: 'Raleway', sans-serif; color: var(--ink2); margin-bottom: 0.35rem; font-size: 0.95rem; }
-    .empty-state p { font-size: 0.8rem; }
-    .chip { display: inline-flex; align-items: center; gap: 0.2rem; background: var(--accent-bg); color: var(--accent); border-radius: 20px; padding: 2px 8px; font-size: 0.7rem; font-weight: 700; }
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--tr);
+}
 
-    /* ── Mobile hamburger button (hidden on desktop) ── */
-    .mob-menu-btn {
-      display: none; background: none; border: none; cursor: pointer;
-      padding: 6px; border-radius: var(--radius); color: var(--ink2);
-      transition: background 0.15s;
-    }
-    .mob-menu-btn:hover { background: var(--bg); }
-    .mob-menu-btn svg { width: 20px; height: 20px; fill: currentColor; display: block; }
+.user-row:hover { background: var(--bg); }
 
-    /* ── Sidebar overlay (mobile) ── */
-    .sidebar-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(15,23,42,0.35); z-index: 99;
-      backdrop-filter: blur(2px);
-    }
-    .sidebar-overlay.open { display: block; }
+.avatar {
+  width: 32px; height: 32px;
+  background: var(--blue);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  color: white;
+  flex-shrink: 0;
+}
 
-    /* ── ≤ 1200px: collapse panel layout ── */
-    @media (max-width: 1200px) {
-      .panel-layout { grid-template-columns: 1fr; }
-    }
+.user-info { flex: 1; overflow: hidden; }
+.user-name { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-role { font-size: 11.5px; color: var(--text-3); }
 
-    /* ── ≤ 900px: sidebar becomes a slide-in drawer ── */
-    @media (max-width: 900px) {
-      /* Sidebar as off-canvas drawer */
-      .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.25s ease;
-        z-index: 200;
-        width: 240px;
-        box-shadow: none;
-      }
-      .sidebar.open {
-        transform: translateX(0);
-        box-shadow: 4px 0 24px rgba(15,23,42,0.12);
-      }
+.signout-btn {
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 7px;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: all var(--tr);
+  flex-shrink: 0;
+  border: none; background: none;
+}
 
-      /* Main content fills full width */
-      .main-content { margin-left: 0; }
+.signout-btn:hover { background: var(--red-bg); color: var(--red); }
 
-      /* Show hamburger in topbar */
-      .mob-menu-btn { display: flex; }
+/* ── MAIN ── */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 
-      /* Topbar adjustments */
-      .topbar { padding: 0 1rem; gap: 0.5rem; }
-      .topbar h1 { font-size: 0.9rem; }
+/* ── TOPBAR ── */
+.topbar {
+  height: var(--header-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
 
-      /* Hide text labels on secondary topbar buttons, keep icons */
-      #topbar-save .btn-label-text { display: none; }
+.hamburger {
+  display: none;
+  width: 36px; height: 36px;
+  align-items: center; justify-content: center;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: var(--text-2);
+  transition: background var(--tr);
+}
 
-      /* User info — show avatar only */
-      .user-name, .user-role-badge,
-      #user-info-btn > svg:last-child { display: none; }
-      .user-info { padding: 0.3rem; border-radius: var(--radius); }
+.hamburger:hover { background: var(--bg); }
 
-      /* Pages */
-      .page { padding: 1rem; }
+.page-title {
+  font-family: 'Raleway', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -.3px;
+}
 
-      /* Stats: 2 columns */
-      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-      .stat-value { font-size: 1.5rem; }
+.page-desc { font-size: 12px; color: var(--text-3); margin-top: 1px; }
 
-      /* Tabs: scrollable row */
-      .tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
-      .tab { white-space: nowrap; flex-shrink: 0; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 
-      /* Tree + detail: stacked */
-      .panel-layout { grid-template-columns: 1fr; gap: 1rem; }
+.topbar-btn {
+  width: 34px; height: 34px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: none;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background var(--tr);
+  position: relative;
+}
 
-      /* Form rows: stack on mobile */
-      .form-row { grid-template-columns: 1fr; gap: 0.75rem; }
+.topbar-btn:hover { background: var(--bg); color: var(--text); }
 
-      /* Users table: hide less critical columns */
-      .users-table th:nth-child(3),
-      .users-table td:nth-child(3),
-      .users-table th:nth-child(5),
-      .users-table td:nth-child(5) { display: none; }
+.notif-dot {
+  position: absolute;
+  top: 7px; right: 7px;
+  width: 6px; height: 6px;
+  background: var(--red);
+  border-radius: 50%;
+  border: 1.5px solid white;
+}
 
-      /* Modals */
-      .modal { width: 95%; padding: 1.25rem; margin: 0 auto; }
-      .perm-grid { grid-template-columns: 1fr; }
-      .modal .form-row { grid-template-columns: 1fr; gap: 0.75rem; }
+/* ── CONTENT ── */
+.content { flex: 1; overflow-y: auto; padding: 24px; }
 
-      /* Toast */
-      .toast { left: 1rem; right: 1rem; bottom: 1rem; }
-    }
+/* ══════════════════════════════════════
+   SHARED COMPONENTS
+══════════════════════════════════════ */
 
-    /* ── ≤ 480px: single-column everything ── */
-    @media (max-width: 480px) {
-      .stats-grid { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
-      .stat-card { padding: 0.85rem; }
-      .stat-icon { width: 30px; height: 30px; margin-bottom: 0.6rem; }
-      .stat-value { font-size: 1.3rem; }
+/* Card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
 
-      /* Users table: minimal columns */
-      .users-table th:nth-child(4),
-      .users-table td:nth-child(4) { display: none; }
-      .table-actions { flex-direction: column; }
-      .table-actions .btn { font-size: 0.68rem; padding: 0.28rem 0.5rem; }
+/* Page header */
+.page-hd {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 16px;
+}
 
-      /* Topbar */
-      .topbar-actions .btn-secondary { display: none; }
-    }
-  </style>
+.page-hd-title {
+  font-family: 'Raleway', sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -.4px;
+}
+
+.page-hd-sub { font-size: 13px; color: var(--text-3); margin-top: 3px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 700;
+  font-family: 'Lato', sans-serif;
+  cursor: pointer;
+  border: none;
+  transition: all var(--tr);
+  white-space: nowrap;
+  letter-spacing: .1px;
+}
+
+.btn-primary { background: var(--blue); color: white; }
+.btn-primary:hover { background: var(--blue-dark); box-shadow: 0 4px 14px rgba(0,92,185,.22); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-outline {
+  background: white;
+  color: var(--text-2);
+  border: 1.5px solid var(--border);
+}
+
+.btn-outline:hover { background: var(--bg); border-color: var(--blue-mid); color: var(--text); }
+
+.btn-ghost { background: none; color: var(--text-2); padding: 7px 12px; }
+.btn-ghost:hover { background: var(--bg); color: var(--text); }
+
+.btn-sm { padding: 7px 13px; font-size: 12.5px; }
+.btn-danger { background: var(--red); color: white; }
+.btn-danger:hover { background: #c03030; }
+
+/* Form elements */
+.form-group { margin-bottom: 16px; }
+
+.form-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-2);
+  letter-spacing: .2px;
+  margin-bottom: 6px;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-family: 'Lato', sans-serif;
+  color: var(--text);
+  background: white;
+  outline: none;
+  transition: border-color var(--tr), box-shadow var(--tr);
+  appearance: none;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(0,92,185,.09);
+}
+
+.form-textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+.form-input::placeholder, .form-textarea::placeholder { color: var(--text-3); }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* Status pills */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+
+.pill-green { background: var(--green-bg); color: var(--green); }
+.pill-amber { background: var(--amber-bg); color: var(--amber); }
+.pill-red   { background: var(--red-bg);   color: var(--red); }
+.pill-blue  { background: var(--blue-light); color: var(--blue); }
+.pill-purple{ background: var(--purple-bg); color: var(--purple); }
+
+/* Table */
+.tbl-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.tbl-head {
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+
+.tbl-title { font-family: 'Raleway', sans-serif; font-weight: 700; font-size: 14.5px; }
+
+table { width: 100%; border-collapse: collapse; }
+
+th {
+  text-align: left;
+  padding: 9px 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: .7px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 12px 20px;
+  font-size: 13.5px;
+  border-bottom: 1px solid var(--border-lt);
+  vertical-align: middle;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg-2); }
+
+.tbl-action {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 6px;
+  border: none; background: none;
+  cursor: pointer;
+  color: var(--text-3);
+  transition: all var(--tr);
+}
+
+.tbl-action:hover { background: var(--bg); color: var(--text); }
+.tbl-action.del:hover { background: var(--red-bg); color: var(--red); }
+
+.tbl-actions { display: flex; gap: 4px; }
+
+/* Stat cards */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--tr), transform var(--tr);
+  cursor: default;
+}
+
+.stat-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+
+.stat-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+
+.stat-icon {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.stat-trend {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 12px; font-weight: 700;
+  padding: 3px 8px; border-radius: 99px;
+}
+
+.trend-up { background: var(--green-bg); color: var(--green); }
+.trend-down { background: var(--red-bg); color: var(--red); }
+
+.stat-val {
+  font-family: 'Raleway', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -.5px;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.stat-lbl { font-size: 12.5px; color: var(--text-3); }
+
+/* Charts */
+.charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 20px; }
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.chart-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
+.chart-title { font-family: 'Raleway', sans-serif; font-size: 14.5px; font-weight: 700; }
+.chart-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+.chart-wrap { position: relative; height: 200px; }
+
+/* Toggle */
+.toggle {
+  width: 38px; height: 21px;
+  background: var(--border);
+  border-radius: 99px;
+  cursor: pointer;
+  position: relative;
+  transition: background var(--tr);
+  flex-shrink: 0;
+  border: none;
+}
+
+.toggle.on { background: var(--blue); }
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 15px; height: 15px;
+  background: white;
+  border-radius: 50%;
+  top: 3px; left: 3px;
+  transition: transform var(--tr);
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+}
+
+.toggle.on::after { transform: translateX(17px); }
+
+/* Role badge */
+.role-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 5px;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+}
+
+.role-super { background: var(--purple-bg); color: var(--purple); }
+.role-editor { background: var(--blue-light); color: var(--blue); }
+.role-seo { background: var(--green-bg); color: var(--green); }
+.role-viewer { background: var(--bg); color: var(--text-2); }
+
+/* SEO counter */
+.char-row { display: flex; justify-content: space-between; margin-top: 4px; }
+.char-count { font-size: 11.5px; color: var(--text-3); }
+.char-count.warn { color: var(--amber); }
+.char-count.over { color: var(--red); }
+
+/* Activity feed */
+.feed-item {
+  display: flex; gap: 12px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border-lt);
+  transition: background var(--tr);
+}
+
+.feed-item:last-child { border-bottom: none; }
+.feed-item:hover { background: var(--bg-2); }
+
+.feed-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.feed-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+.feed-time { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--text);
+  color: white;
+  padding: 11px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 400;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 250ms cubic-bezier(.4,0,.2,1);
+  z-index: 9999;
+  display: flex; align-items: center; gap: 9px;
+  max-width: 340px;
+}
+
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(26,35,50,.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 500;
+  padding: 20px;
+  backdrop-filter: blur(2px);
+}
+
+.modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-title { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 16px; }
+
+.modal-close {
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 7px;
+  cursor: pointer;
+  border: none; background: none;
+  color: var(--text-3);
+  transition: background var(--tr);
+}
+
+.modal-close:hover { background: var(--bg); color: var(--text); }
+
+.modal-body { padding: 20px 24px; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+
+/* Overlay for mobile sidebar */
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(26,35,50,.4);
+  z-index: 99;
+  backdrop-filter: blur(1px);
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.open { display: block; }
+  .hamburger { display: flex; }
+  .topbar { padding: 0 16px; }
+  .content { padding: 16px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .charts-row { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 540px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .page-hd { flex-direction: column; }
+  .page-hd .btn { align-self: flex-start; }
+}
+</style>
 </head>
 <body>
 
-<div class="admin-layout">
-  <!-- Mobile sidebar overlay -->
-  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
 
-  <!-- Sidebar -->
+<div id="app">
+  <!-- ═══════ SIDEBAR ═══════ -->
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <img src="../assets/logo-calisto.svg" alt="Calisto" onerror="this.style.display='none'">
-      <span>Calisto Admin</span>
-      <span class="sidebar-badge">v1</span>
+    <div class="sidebar-brand">
+      <div class="brand-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <div class="brand-text">Calisto <span>Admin</span></div>
+      <a href="https://calistotech.co" target="_blank" class="sidebar-view-site">↗ Site</a>
     </div>
+
     <nav class="sidebar-nav">
-      <div class="nav-section-label">Overview</div>
-      <button class="nav-item active" onclick="showPage('dashboard')">
-        <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <div class="nav-section">Overview</div>
+
+      <div class="nav-item active" data-page="dashboard" onclick="nav('dashboard', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
         Dashboard
-      </button>
-      <div class="nav-section-label">Products</div>
-      <button class="nav-item" id="nav-products" onclick="showPage('products')">
-        <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.35 0-2.56-2.07-4.65-4.62-4.65-1.39 0-2.66.6-3.56 1.56L9 3l-.82-.44C7.28 1.6 5.99 1 4.62 1 2.07 1 0 3.09 0 5.65 0 6.12.11 6.56.18 7H2v13h16V7h2V6zm-7.7-3.74C12.93 1.83 13.8 1.5 14.62 1.5c1.53 0 2.88 1.35 2.88 3.15 0 .65-.2 1.25-.5 1.85H7c-.3-.6-.5-1.2-.5-1.85 0-1.8 1.35-3.15 2.88-3.15.82 0 1.69.33 2.32.81L12 3.2l.3-.94z"/></svg>
-        Product Catalog
-      </button>
-      <button class="nav-item" id="nav-seo" onclick="showPage('seo')">
-        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-        SEO Details
-      </button>
-      <button class="nav-item" id="nav-forms" onclick="showPage('forms')">
-        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/></svg>
-        Contact Forms
-      </button>
-      <button class="nav-item" id="nav-export" onclick="showPage('export')">
-        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-        Export / Deploy
-      </button>
-      <div class="nav-section-label" id="nav-section-admin" style="display:none">Admin</div>
-      <button class="nav-item" id="nav-users" onclick="showPage('users')" style="display:none">
-        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-        User Management
-      </button>
+      </div>
+
+      <div class="nav-section" style="margin-top:6px">Catalog</div>
+
+      <div class="nav-item" data-page="products" data-perm="products" onclick="nav('products', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+        </svg>
+        Products & Categories
+      </div>
+
+      <div class="nav-section" style="margin-top:6px">Content</div>
+
+      <div class="nav-item" data-page="blog" data-perm="blog" onclick="nav('blog', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+        Blog Posts
+      </div>
+
+      <div class="nav-item" data-page="forms" data-perm="forms" onclick="nav('forms', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        Enquiries
+        <span class="nav-badge amber" id="forms-badge">—</span>
+      </div>
+
+      <div class="nav-section" style="margin-top:6px">System</div>
+
+      <div class="nav-item" data-page="seo" data-perm="seo" onclick="nav('seo', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        SEO Settings
+      </div>
+
+      <div class="nav-item" data-page="users" data-perm="users" onclick="nav('users', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        Users & Roles
+      </div>
+
+      <div class="nav-item" data-page="profile" onclick="nav('profile', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        My Profile
+      </div>
     </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-row">
+        <div class="avatar" id="sidebar-avatar">—</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-name">—</div>
+          <div class="user-role" id="sidebar-role">—</div>
+        </div>
+        <button class="signout-btn" onclick="signOut()" title="Sign out">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
   </aside>
 
-  <!-- Main -->
-  <div class="main-content">
-    <div class="topbar">
-      <div style="display:flex;align-items:center;gap:0.75rem;">
-        <button class="mob-menu-btn" onclick="openSidebar()" aria-label="Open menu">
-          <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-        </button>
-        <h1 id="page-title">Dashboard</h1>
+  <!-- ═══════ MAIN ═══════ -->
+  <div class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div>
+        <div class="page-title" id="topbar-title">Dashboard</div>
+        <div class="page-desc" id="topbar-desc">Calisto Automation overview</div>
       </div>
-      <div class="topbar-actions">
-        <button class="btn btn-secondary btn-sm" onclick="window.open('../index.html', '_blank')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          View Site
+      <div class="topbar-right">
+        <button class="topbar-btn" onclick="toast('No new notifications')" aria-label="Notifications">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="notif-dot"></span>
         </button>
-        <button class="btn btn-primary btn-sm" onclick="saveAll()" id="topbar-save" style="display:none">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V7l-4-4zm-5 16a3 3 0 110-6 3 3 0 010 6zm3-10H5V5h10v4z"/></svg>
-          <span class="btn-label-text">Save Changes</span>
-        </button>
-        <div class="user-info" onclick="toggleUserDropdown()" id="user-info-btn">
-          <div class="user-avatar" id="topbar-avatar" style="background:#005cb9">--</div>
+        <a href="https://calistotech.co" target="_blank" class="btn btn-outline btn-sm" style="display:none" id="view-site-topbar">↗ View Site</a>
+      </div>
+    </header>
+
+    <!-- Pages -->
+    <div class="content">
+
+      <!-- ══ DASHBOARD ══ -->
+      <div id="pg-dashboard">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-top">
+              <div class="stat-icon" style="background:#e8f1fb">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#005cb9" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <span class="stat-trend trend-up">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>+14%
+              </span>
+            </div>
+            <div class="stat-val">24,521</div>
+            <div class="stat-lbl">Site Visitors</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <div class="stat-icon" style="background:#fef6e4">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c27c0e" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <span class="stat-trend trend-up">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>+8%
+              </span>
+            </div>
+            <div class="stat-val">47</div>
+            <div class="stat-lbl">New Enquiries</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <div class="stat-icon" style="background:#e6f7f0">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1a9e5f" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              </div>
+              <span class="stat-trend trend-up">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>+3
+              </span>
+            </div>
+            <div class="stat-val">128</div>
+            <div class="stat-lbl">Total Products</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <div class="stat-icon" style="background:#f2eeff">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6c3ebd" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+              <span class="stat-trend trend-up">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>+2
+              </span>
+            </div>
+            <div class="stat-val">12</div>
+            <div class="stat-lbl">Blog Articles</div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="chart-head">
+              <div>
+                <div class="chart-title">Site Visits & Enquiries</div>
+                <div class="chart-sub">Last 30 days</div>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="trafficChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-head">
+              <div>
+                <div class="chart-title">Enquiry Sources</div>
+                <div class="chart-sub">Where leads come from</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding-top:8px">
+              <canvas id="sourceChart" style="max-width:130px;max-height:130px"></canvas>
+              <div style="width:100%;display:flex;flex-direction:column;gap:7px">
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:12.5px">
+                  <span style="display:flex;align-items:center;gap:7px"><span style="width:9px;height:9px;border-radius:3px;background:#005cb9;display:inline-block"></span><span style="color:var(--text-2)">Contact Form</span></span>
+                  <span style="font-weight:700">46%</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:12.5px">
+                  <span style="display:flex;align-items:center;gap:7px"><span style="width:9px;height:9px;border-radius:3px;background:#1a9e5f;display:inline-block"></span><span style="color:var(--text-2)">Partner Apply</span></span>
+                  <span style="font-weight:700">30%</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:12.5px">
+                  <span style="display:flex;align-items:center;gap:7px"><span style="width:9px;height:9px;border-radius:3px;background:#c27c0e;display:inline-block"></span><span style="color:var(--text-2)">Product Query</span></span>
+                  <span style="font-weight:700">24%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom row -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="tbl-card">
+            <div class="tbl-head">
+              <div class="tbl-title">Recent Enquiries</div>
+              <button class="btn btn-ghost btn-sm" onclick="nav('forms', document.querySelector('[data-page=forms]'))" style="margin-left:auto;font-size:12.5px;color:var(--blue)">View all</button>
+            </div>
+            <table>
+              <thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Time</th></tr></thead>
+              <tbody>
+                <tr><td>Rajan Menon</td><td style="color:var(--text-3)">Contact</td><td><span class="pill pill-blue">New</span></td><td style="color:var(--text-3)">2h ago</td></tr>
+                <tr><td>Ahmed Al Farsi</td><td style="color:var(--text-3)">Partner</td><td><span class="pill pill-amber">Pending</span></td><td style="color:var(--text-3)">5h ago</td></tr>
+                <tr><td>Suresh Kumar</td><td style="color:var(--text-3)">Product</td><td><span class="pill pill-green">Replied</span></td><td style="color:var(--text-3)">1d ago</td></tr>
+                <tr><td>Maria Santos</td><td style="color:var(--text-3)">Contact</td><td><span class="pill pill-green">Replied</span></td><td style="color:var(--text-3)">2d ago</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="tbl-card">
+            <div class="tbl-head"><div class="tbl-title">Recent Activity</div></div>
+            <div>
+              <div class="feed-item">
+                <div class="feed-dot" style="background:var(--blue)"></div>
+                <div><div class="feed-text"><strong>Product added</strong> — Calarm 350 (Rolling Shutters)</div><div class="feed-time">30 min ago</div></div>
+              </div>
+              <div class="feed-item">
+                <div class="feed-dot" style="background:var(--amber)"></div>
+                <div><div class="feed-text"><strong>New enquiry</strong> — Rajan Menon via contact form</div><div class="feed-time">2 hours ago</div></div>
+              </div>
+              <div class="feed-item">
+                <div class="feed-dot" style="background:var(--green)"></div>
+                <div><div class="feed-text"><strong>Blog published</strong> — "Future of Smart Gate Automation"</div><div class="feed-time">Oct 24, 2025</div></div>
+              </div>
+              <div class="feed-item">
+                <div class="feed-dot" style="background:var(--purple)"></div>
+                <div><div class="feed-text"><strong>SEO updated</strong> — gates.html meta description</div><div class="feed-time">Oct 22, 2025</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PRODUCTS ══ -->
+      <div id="pg-products" class="hidden">
+        <div class="page-hd">
           <div>
-            <div class="user-name" id="topbar-name">Loading...</div>
-            <div class="user-role-badge" id="topbar-role" style="background:#eff6ff;color:#005cb9">-</div>
+            <div class="page-hd-title">Products & Categories</div>
+            <div class="page-hd-sub">Manage the Calisto product catalog — automation operators, hardware, controls</div>
           </div>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="#64748b"><path d="M7 10l5 5 5-5z"/></svg>
-          <div class="user-dropdown" id="user-dropdown">
-            <button class="user-dropdown-item" onclick="showPage('profile'); closeUserDropdown()">
-              <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-              My Profile
+          <div class="flex gap-2">
+            <button class="btn btn-outline btn-sm" onclick="toast('Exporting products-data.js…')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export Data
             </button>
-            <div class="user-dropdown-divider"></div>
-            <button class="user-dropdown-item danger" onclick="authLogout()">
-              <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
-              Sign Out
+            <button class="btn btn-primary btn-sm" onclick="openModal('add-product-modal')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Product
             </button>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Dashboard -->
-    <div class="page active" id="page-dashboard">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
-          <div class="stat-label">Categories</div>
-          <div class="stat-value" id="stat-categories">0</div>
+        <!-- Category tabs -->
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+          <button class="btn btn-primary btn-sm" id="cat-tab-all" onclick="filterCat('all', this)">All Categories</button>
+          <button class="btn btn-outline btn-sm" id="cat-tab-automation" onclick="filterCat('automation', this)">Automation Operators</button>
+          <button class="btn btn-outline btn-sm" id="cat-tab-hardware" onclick="filterCat('hardware', this)">Hardware & Components</button>
+          <button class="btn btn-outline btn-sm" id="cat-tab-controls" onclick="filterCat('controls', this)">Controls & Accessories</button>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg></div>
-          <div class="stat-label">Subcategories</div>
-          <div class="stat-value" id="stat-subcats">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.35C18 2.09 15.91 0 13.35 0a4.62 4.62 0 00-3.56 1.56L9 3l-.82-.44C7.28 1.6 5.99 1 4.62 1 2.07 1 0 3.09 0 5.65c0 .47.11.91.18 1.35H0v13h20V6z"/></svg></div>
-          <div class="stat-label">Products</div>
-          <div class="stat-value" id="stat-items">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
-          <div class="stat-label">Datasheets</div>
-          <div class="stat-value" id="stat-datasheets">0</div>
-        </div>
-      </div>
 
-      <div style="background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow);">
-        <div class="section-title">Quick Start</div>
-        <p style="color: var(--muted); font-size: 0.9rem; line-height: 1.7;">
-          Use the <strong>Product Catalog</strong> to manage your categories, subcategories, and products. 
-          Changes are saved locally and you can export a <code>products-data.js</code> file to deploy to your site.
-          Each product supports: name, description, characteristics, multiple images, and datasheets.
-        </p>
-        <div style="display: flex; gap: 0.75rem; margin-top: 1.25rem;">
-          <button class="btn btn-primary" onclick="showPage('products')">Open Product Catalog →</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Products Page -->
-    <div class="page" id="page-products">
-      <div class="panel-layout">
-        <!-- Tree -->
-        <div>
-          <div class="tree-container">
-            <div class="tree-header">
-              <h3>Product Structure</h3>
-              <button class="btn btn-primary btn-sm" onclick="openAddCategoryModal()">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                Add Category
-              </button>
-            </div>
-            <div id="product-tree"></div>
+        <div class="tbl-card">
+          <div class="tbl-head">
+            <div class="tbl-title">Product Catalog</div>
+            <input type="text" class="form-input" placeholder="Search products…" style="width:220px;padding:7px 12px;font-size:13px;margin-left:auto" oninput="filterProducts(this.value)">
           </div>
-        </div>
-
-        <!-- Detail -->
-        <div class="detail-panel">
-          <div class="panel-header">
-            <h3 id="detail-title">Select an item</h3>
-            <div id="detail-header-actions"></div>
-          </div>
-          <div class="panel-body" id="detail-body">
-            <div class="empty-state">
-              <svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm4 4H8v-.57c0-1.34 2.67-2 4-2s4 .67 4 2V16z"/></svg>
-              <h3>Nothing selected</h3>
-              <p>Click on a category, subcategory, or product in the tree to edit it.</p>
-            </div>
-          </div>
+          <table>
+            <thead><tr><th>Product Name</th><th>Category</th><th>Sub-category</th><th>Status</th><th>Datasheet</th><th></th></tr></thead>
+            <tbody id="products-tbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
 
-    <!-- Export Page -->
-    <div class="page" id="page-export">
-      <div style="max-width: 700px;">
-        <div style="background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 2rem; box-shadow: var(--shadow); margin-bottom: 1.5rem;">
-          <div class="section-title">Export products-data.js</div>
-          <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.7;">
-            Download the updated <code>products-data.js</code> file and replace the one in your project's <code>js/</code> folder. Your product pages will automatically load the new data.
-          </p>
-          <button class="btn btn-primary" onclick="exportDataFile()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            Download products-data.js
+      <!-- ══ BLOG ══ -->
+      <div id="pg-blog" class="hidden">
+        <div class="page-hd">
+          <div>
+            <div class="page-hd-title">Blog Posts</div>
+            <div class="page-hd-sub">Manage articles, news, and technical updates</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('add-blog-modal')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Article
           </button>
         </div>
 
-        <div style="background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 2rem; box-shadow: var(--shadow);">
-          <div class="section-title">Reset to defaults</div>
-          <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.7;">
-            This will clear all local admin changes and revert to the data in <code>products-data.js</code>. Use with caution.
-          </p>
-          <button class="btn btn-danger" onclick="confirmReset()">Reset All Changes</button>
+        <div class="tbl-card">
+          <table>
+            <thead><tr><th>Title</th><th>Category</th><th>Author</th><th>Status</th><th>Date</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:700;max-width:260px">The Future of Smart Gate Automation</td>
+                <td><span class="pill pill-blue">Tech</span></td>
+                <td style="color:var(--text-2)">Admin</td>
+                <td><span class="pill pill-green">Published</span></td>
+                <td style="color:var(--text-3)">Oct 24, 2025</td>
+                <td><div class="tbl-actions">
+                  <button class="tbl-action" onclick="toast('Editing post…')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                  <button class="tbl-action del" onclick="toast('Confirm delete?')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+                </div></td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;max-width:260px">Choosing the Right Motor for Industrial Shutters</td>
+                <td><span class="pill pill-purple">Guide</span></td>
+                <td style="color:var(--text-2)">Admin</td>
+                <td><span class="pill pill-green">Published</span></td>
+                <td style="color:var(--text-3)">Sep 15, 2025</td>
+                <td><div class="tbl-actions">
+                  <button class="tbl-action" onclick="toast('Editing post…')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                  <button class="tbl-action del" onclick="toast('Confirm delete?')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+                </div></td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;max-width:260px">Calisto Launches New Tubular Series</td>
+                <td><span class="pill pill-amber">News</span></td>
+                <td style="color:var(--text-2)">Admin</td>
+                <td><span class="pill pill-green">Published</span></td>
+                <td style="color:var(--text-3)">Aug 02, 2025</td>
+                <td><div class="tbl-actions">
+                  <button class="tbl-action" onclick="toast('Editing post…')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                  <button class="tbl-action del" onclick="toast('Confirm delete?')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+                </div></td>
+              </tr>
+              <tr>
+                <td style="font-weight:700;max-width:260px">Partner Training Events 2025</td>
+                <td><span class="pill pill-green">Events</span></td>
+                <td style="color:var(--text-2)">Admin</td>
+                <td><span class="pill pill-amber">Draft</span></td>
+                <td style="color:var(--text-3)">Jul 10, 2025</td>
+                <td><div class="tbl-actions">
+                  <button class="tbl-action" onclick="toast('Editing post…')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                  <button class="tbl-action del" onclick="toast('Confirm delete?')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+                </div></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
 
-    <!-- User Management Page -->
-    <div class="page" id="page-users">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-        <div>
-          <div style="font-family:'Raleway',sans-serif;font-weight:700;font-size:1.1rem;">Team Members</div>
-          <div style="color:var(--muted);font-size:0.85rem;margin-top:2px;">Manage who can access the admin panel and what they can do.</div>
-        </div>
-        <button class="btn btn-primary" onclick="openUserModal()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-          Add User
-        </button>
-      </div>
-      <div class="users-table-wrap">
-        <table class="users-table">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Role</th>
-              <th>Permissions</th>
-              <th>Status</th>
-              <th>Added</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="users-table-body"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- SEO Page -->
-    <div class="page" id="page-seo">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-        <div>
-          <div style="font-family:'Raleway',sans-serif;font-weight:700;font-size:1.1rem;">SEO Details</div>
-          <div style="color:var(--muted);font-size:0.85rem;margin-top:2px;">Manage meta titles, descriptions and keywords for each page.</div>
-        </div>
-        <button class="btn btn-primary" onclick="saveSEO()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V7l-4-4zm-5 16a3 3 0 110-6 3 3 0 010 6zm3-10H5V5h10v4z"/></svg>
-          Save SEO
-        </button>
-      </div>
-      <div class="seo-page-list" id="seo-page-list"></div>
-    </div>
-
-    <!-- Contact Forms Page -->
-    <div class="page" id="page-forms">
-      <div style="margin-bottom:1.5rem;">
-        <div style="font-family:'Raleway',sans-serif;font-weight:700;font-size:1.1rem;">Contact Form Submissions</div>
-        <div style="color:var(--muted);font-size:0.85rem;margin-top:2px;">View enquiries submitted through the website contact form.</div>
-      </div>
-      <div id="forms-list"></div>
-    </div>
-
-    <!-- Profile Page -->
-    <div class="page" id="page-profile">
-      <div style="max-width:500px;">
-        <div style="background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:2rem;box-shadow:var(--shadow);">
-          <div class="section-title">My Profile</div>
-          <div class="form-group" style="margin-bottom:1.25rem;">
-            <label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">Display Name</label>
-            <input class="form-input" id="profile-name" style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;">
+      <!-- ══ FORMS / ENQUIRIES ══ -->
+      <div id="pg-forms" class="hidden">
+        <div class="page-hd">
+          <div>
+            <div class="page-hd-title">Enquiries</div>
+            <div class="page-hd-sub">Contact form submissions and partner applications</div>
           </div>
-          <div class="form-group" style="margin-bottom:1.25rem;">
-            <label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">Email</label>
-            <input class="form-input" id="profile-email" type="email" style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;">
+          <div class="flex gap-2">
+            <button class="btn btn-outline btn-sm" onclick="toast('Marking all as read…')">Mark all read</button>
+            <button class="btn btn-outline btn-sm" onclick="toast('Exporting CSV…')">Export CSV</button>
           </div>
-          <div class="form-group" style="margin-bottom:1.5rem;">
-            <label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">New Password <span style="font-weight:400;text-transform:none">(leave blank to keep current)</span></label>
-            <input class="form-input" id="profile-pw" type="password" placeholder="••••••••" style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;">
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
+          <div class="stat-card">
+            <div class="stat-top">
+              <div class="stat-icon" style="background:#e8f1fb"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#005cb9" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            </div>
+            <div class="stat-val">47</div>
+            <div class="stat-lbl">Total Enquiries</div>
           </div>
-          <button class="btn btn-primary" onclick="saveProfile()">Save Profile</button>
+          <div class="stat-card">
+            <div class="stat-top">
+              <div class="stat-icon" style="background:#fef6e4"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c27c0e" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            </div>
+            <div class="stat-val">12</div>
+            <div class="stat-lbl">Awaiting Reply</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top">
+              <div class="stat-icon" style="background:#e6f7f0"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1a9e5f" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+            </div>
+            <div class="stat-val">35</div>
+            <div class="stat-lbl">Replied</div>
+          </div>
+        </div>
+
+        <div class="tbl-card">
+          <div class="tbl-head">
+            <div class="tbl-title">All Submissions</div>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <select class="form-input" style="width:auto;padding:6px 10px;font-size:12.5px">
+                <option>All Types</option><option>Contact</option><option>Partner Apply</option><option>Product Query</option>
+              </select>
+              <select class="form-input" style="width:auto;padding:6px 10px;font-size:12.5px">
+                <option>All Status</option><option>New</option><option>Pending</option><option>Replied</option>
+              </select>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Type</th><th>Message</th><th>Status</th><th>Date</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:700">Rajan Menon</td>
+                <td style="color:var(--text-3)">rajan@example.com</td>
+                <td>Contact</td>
+                <td style="color:var(--text-3);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Interested in rolling shutter automation for my warehouse…</td>
+                <td><span class="pill pill-blue">New</span></td>
+                <td style="color:var(--text-3)">2h ago</td>
+                <td><div class="tbl-actions">
+                  <button class="tbl-action" onclick="viewEnquiry('Rajan Menon','rajan@example.com','Contact','Interested in rolling shutter automation for my warehouse in Calicut. Please send a quote.')">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div></td>
+              </tr>
+              <tr>
+                <td style="font-weight:700">Ahmed Al Farsi</td>
+                <td style="color:var(--text-3)">ahmed@partner.ae</td>
+                <td>Partner Apply</td>
+                <td style="color:var(--text-3);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">We are a licensed installer in UAE looking to partner…</td>
+                <td><span class="pill pill-amber">Pending</span></td>
+                <td style="color:var(--text-3)">5h ago</td>
+                <td><div class="tbl-actions"><button class="tbl-action" onclick="viewEnquiry('Ahmed Al Farsi','ahmed@partner.ae','Partner Apply','We are a licensed installer in UAE looking to become a certified Calisto partner. We have 8 years of experience.')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button></div></td>
+              </tr>
+              <tr>
+                <td style="font-weight:700">Suresh Kumar</td>
+                <td style="color:var(--text-3)">suresh@bizco.in</td>
+                <td>Product Query</td>
+                <td style="color:var(--text-3);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Need datasheet for Vortex Calarm 350 swing gate operator…</td>
+                <td><span class="pill pill-green">Replied</span></td>
+                <td style="color:var(--text-3)">1d ago</td>
+                <td><div class="tbl-actions"><button class="tbl-action" onclick="viewEnquiry('Suresh Kumar','suresh@bizco.in','Product Query','Need datasheet for Vortex Calarm 350 swing gate operator. Also want to know about bulk pricing.')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button></div></td>
+              </tr>
+              <tr>
+                <td style="font-weight:700">Maria Santos</td>
+                <td style="color:var(--text-3)">maria@example.com</td>
+                <td>Contact</td>
+                <td style="color:var(--text-3);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Looking for installation support in our new building project…</td>
+                <td><span class="pill pill-green">Replied</span></td>
+                <td style="color:var(--text-3)">2d ago</td>
+                <td><div class="tbl-actions"><button class="tbl-action" onclick="viewEnquiry('Maria Santos','maria@example.com','Contact','Looking for installation support in our new building project in Kochi. Need residential gate automation.')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button></div></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+
+      <!-- ══ SEO ══ -->
+      <div id="pg-seo" class="hidden">
+        <div class="page-hd">
+          <div>
+            <div class="page-hd-title">SEO Settings</div>
+            <div class="page-hd-sub">Edit meta titles, descriptions, and keywords per page</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="saveSEO()">Save All SEO</button>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px" id="seo-cards">
+          <!-- Built by JS -->
+        </div>
+      </div>
+
+      <!-- ══ USERS ══ -->
+      <div id="pg-users" class="hidden">
+        <div class="page-hd">
+          <div>
+            <div class="page-hd-title">Users & Roles</div>
+            <div class="page-hd-sub">Manage admin accounts and role-based permissions</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('add-user-modal')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add User
+          </button>
+        </div>
+
+        <!-- Permissions legend -->
+        <div class="card" style="padding:16px 20px;margin-bottom:16px">
+          <div style="font-size:12.5px;font-weight:700;color:var(--text-2);margin-bottom:10px;letter-spacing:.2px">ROLE PERMISSIONS</div>
+          <div style="overflow-x:auto">
+            <table style="min-width:560px">
+              <thead><tr><th>Role</th><th>View Enquiries</th><th>Products</th><th>Blog</th><th>SEO</th><th>Users</th><th>Export</th></tr></thead>
+              <tbody>
+                <tr><td><span class="role-badge role-super">Super Admin</span></td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                <tr><td><span class="role-badge role-editor">Editor</span></td><td>✓</td><td>✓</td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
+                <tr><td><span class="role-badge role-seo">SEO Manager</span></td><td>—</td><td>—</td><td>—</td><td>✓</td><td>—</td><td>—</td></tr>
+                <tr><td><span class="role-badge role-viewer">Viewer</span></td><td>✓</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tbl-card">
+          <table>
+            <thead><tr><th>User</th><th>Role</th><th>Status</th><th>Last Login</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar" style="width:28px;height:28px;font-size:11px;border-radius:7px">A</div>
+                    <div><div style="font-weight:700;font-size:13.5px">Admin</div><div style="font-size:12px;color:var(--text-3)">admin@calistotech.co</div></div>
+                  </div>
+                </td>
+                <td><span class="role-badge role-super">Super Admin</span></td>
+                <td><span class="pill pill-green">Active</span></td>
+                <td style="color:var(--text-3)">Just now</td>
+                <td><div class="tbl-actions">
+                  <button class="tbl-action" onclick="toast('Cannot edit the super admin account')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                </div></td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="padding:12px 20px;border-top:1px solid var(--border-lt);font-size:12.5px;color:var(--text-3)">
+            Create additional users via "Add User" to grant limited access to team members.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PROFILE ══ -->
+      <div id="pg-profile" class="hidden">
+        <div class="page-hd">
+          <div>
+            <div class="page-hd-title">My Profile</div>
+            <div class="page-hd-sub">Update your personal details and password</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="toast('Profile saved!')">Save Changes</button>
+        </div>
+
+        <div class="card" style="padding:28px 32px;margin-bottom:16px;display:flex;align-items:center;gap:24px">
+          <div class="avatar" style="width:60px;height:60px;border-radius:14px;font-size:20px;font-weight:800" id="profile-avatar-big">A</div>
+          <div>
+            <div style="font-family:'Raleway',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.3px" id="profile-name-big">Admin</div>
+            <div style="font-size:13.5px;color:var(--text-3);margin-top:3px" id="profile-role-big">Super Admin · admin@calistotech.co</div>
+          </div>
+          <div style="margin-left:auto">
+            <button class="btn btn-outline btn-sm" onclick="toast('Photo upload not available in demo')">Change Photo</button>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="card" style="padding:24px">
+            <div style="font-family:'Raleway',sans-serif;font-weight:700;font-size:14.5px;margin-bottom:4px">Personal Information</div>
+            <div style="font-size:12.5px;color:var(--text-3);margin-bottom:18px">Update your account details</div>
+            <div class="form-group"><label class="form-label">Display Name</label><input class="form-input" id="pf-name" value="Admin"></div>
+            <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="pf-email" value="admin@calistotech.co"></div>
+            <div class="form-group" style="margin-bottom:0"><label class="form-label">Username</label><input class="form-input" value="admin" disabled style="background:var(--bg-2);color:var(--text-3)"></div>
+          </div>
+          <div class="card" style="padding:24px">
+            <div style="font-family:'Raleway',sans-serif;font-weight:700;font-size:14.5px;margin-bottom:4px">Change Password</div>
+            <div style="font-size:12.5px;color:var(--text-3);margin-bottom:18px">Use a strong, unique password</div>
+            <div class="form-group"><label class="form-label">Current Password</label><input class="form-input" type="password" placeholder="••••••••"></div>
+            <div class="form-group"><label class="form-label">New Password</label><input class="form-input" type="password" placeholder="Min. 8 characters"></div>
+            <div class="form-group" style="margin-bottom:0"><label class="form-label">Confirm New Password</label><input class="form-input" type="password" placeholder="Repeat new password"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast-el">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg"></span>
+</div>
+
+<!-- ══ MODALS ══ -->
+
+<!-- Add Product -->
+<div class="modal-overlay hidden" id="add-product-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Add New Product</div>
+      <button class="modal-close" onclick="closeModal('add-product-modal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast">
-  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-  <span id="toast-msg">Saved!</span>
-</div>
-
-<!-- Modals -->
-<div class="modal-overlay" id="modal-overlay">
-  <div class="modal" id="modal-content"></div>
-</div>
-
-<!-- Confirm delete modal -->
-<div class="modal-overlay" id="confirm-overlay">
-  <div class="modal" id="confirm-modal">
-    <h3>Confirm Delete</h3>
-    <p id="confirm-msg">Are you sure?</p>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeConfirm()">Cancel</button>
-      <button class="btn btn-danger" id="confirm-yes">Delete</button>
-    </div>
-  </div>
-</div>
-
-<script src="../js/products-data.js"></script>
-<script>
-  // ============================================================
-  //  STATE
-  // ============================================================
-  let data = loadProductsData();
-  let selectedNode = null;
-  let currentSession = null;
-
-  // ============================================================
-  //  INIT
-  // ============================================================
-  document.addEventListener('DOMContentLoaded', () => {
-    // Auth guard
-    currentSession = requireAuth();
-    if (!currentSession) return;
-
-    // Populate topbar user info
-    const roleColors = { superadmin:'#7c3aed', editor:'#0891b2', viewer:'#16a34a', seo_manager:'#d97706', custom:'#64748b' };
-    document.getElementById('topbar-avatar').textContent = currentSession.avatar;
-    document.getElementById('topbar-avatar').style.background = roleColors[currentSession.role] || '#005cb9';
-    document.getElementById('topbar-name').textContent = currentSession.name;
-    document.getElementById('topbar-role').textContent = (ROLE_PRESETS[currentSession.role] || {label: currentSession.role}).label;
-
-    // Role-aware nav visibility
-    const p = currentSession.permissions;
-    applyNavPermissions(p);
-
-    // Show save button only if they can manage products
-    if (p.includes('manage_products') || p.includes('export_data')) {
-      document.getElementById('topbar-save').style.display = '';
-    }
-
-    updateStats();
-    renderTree();
-    renderSEOPage();
-    renderFormsPage();
-    renderProfilePage();
-  });
-
-  function applyNavPermissions(perms) {
-    const map = {
-      'nav-products': 'manage_products',
-      'nav-seo':      'manage_seo',
-      'nav-forms':    'view_forms',
-      'nav-export':   'export_data',
-      'nav-users':    'manage_users',
-    };
-    Object.entries(map).forEach(([navId, perm]) => {
-      const el = document.getElementById(navId);
-      if (!el) return;
-      if (navId === 'nav-users') {
-        el.style.display = perms.includes(perm) ? '' : 'none';
-        document.getElementById('nav-section-admin').style.display = perms.includes('manage_users') ? '' : 'none';
-      } else if (!perms.includes(perm)) {
-        el.classList.add('locked');
-        el.onclick = () => showToast('You don\'t have permission to access this module.', 'error');
-        const lockSvg = document.createElement('svg');
-        lockSvg.setAttribute('viewBox','0 0 24 24');
-        lockSvg.classList.add('lock-icon');
-        lockSvg.innerHTML = '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>';
-        el.appendChild(lockSvg);
-      }
-    });
-  }
-
-  // User dropdown toggle
-  function toggleUserDropdown() {
-    document.getElementById('user-dropdown').classList.toggle('open');
-  }
-  function closeUserDropdown() {
-    document.getElementById('user-dropdown').classList.remove('open');
-  }
-  document.addEventListener('click', e => {
-    if (!e.target.closest('#user-info-btn')) closeUserDropdown();
-  });
-
-  function updateStats() {
-    let subcats = 0, items = 0, sheets = 0;
-    data.categories.forEach(cat => {
-      cat.subcategories.forEach(sc => {
-        subcats++;
-        sc.items.forEach(it => {
-          items++;
-          sheets += (it.datasheets || []).length;
-        });
-      });
-    });
-    document.getElementById('stat-categories').textContent = data.categories.length;
-    document.getElementById('stat-subcats').textContent = subcats;
-    document.getElementById('stat-items').textContent = items;
-    document.getElementById('stat-datasheets').textContent = sheets;
-  }
-
-  // ============================================================
-  //  NAVIGATION
-  // ============================================================
-  function showPage(id) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    const pageEl = document.getElementById('page-' + id);
-    if (pageEl) pageEl.classList.add('active');
-    const titles = { dashboard:'Dashboard', products:'Product Catalog', export:'Export / Deploy', users:'User Management', seo:'SEO Details', forms:'Contact Forms', profile:'My Profile' };
-    document.getElementById('page-title').textContent = titles[id] || id;
-    document.querySelectorAll('.nav-item').forEach(n => {
-      if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + id + "'")) n.classList.add('active');
-    });
-    if (id === 'products') renderTree();
-    if (id === 'users') renderUsersTable();
-    if (id === 'seo') renderSEOPage();
-    if (id === 'forms') renderFormsPage();
-    if (id === 'profile') renderProfilePage();
-    closeSidebar(); // close drawer on mobile after nav
-  }
-
-  // ── Mobile sidebar drawer ──
-  function openSidebar() {
-    document.getElementById('sidebar').classList.add('open');
-    document.getElementById('sidebar-overlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebar-overlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  // ============================================================
-  //  TREE
-  // ============================================================
-  function renderTree() {
-    const tree = document.getElementById('product-tree');
-    tree.innerHTML = '';
-    data.categories.forEach((cat, ci) => {
-      tree.appendChild(buildCategoryNode(cat, ci));
-    });
-    if (data.categories.length === 0) {
-      tree.innerHTML = '<div class="dynamic-empty">No categories yet. Click "Add Category" to start.</div>';
-    }
-    updateStats();
-  }
-
-  function buildCategoryNode(cat, ci) {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'tree-item';
-
-    const row = document.createElement('div');
-    row.className = 'tree-row' + (selectedNode && selectedNode.type === 'category' && selectedNode.catIdx === ci ? ' selected' : '');
-    row.innerHTML = `
-      <div class="tree-toggle ${cat.subcategories.length ? '' : ''}" onclick="toggleTree(event, 'tree-cat-${ci}')">
-        <svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5v10z"/></svg>
-      </div>
-      <span class="tree-name">${cat.name}</span>
-      <span class="tree-type type-category">Category</span>
-      <div class="tree-actions">
-        <button class="btn btn-secondary btn-sm btn-icon" title="Add Subcategory" onclick="openAddSubcatModal(event, ${ci})">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-        </button>
-        <button class="btn btn-danger btn-sm btn-icon" title="Delete" onclick="deleteCategory(event, ${ci})">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-        </button>
-      </div>
-    `;
-    row.onclick = (e) => { if (!e.target.closest('.tree-actions') && !e.target.closest('.tree-toggle')) selectNode('category', ci); };
-
-    const children = document.createElement('div');
-    children.className = 'tree-children';
-    children.id = `tree-cat-${ci}`;
-
-    cat.subcategories.forEach((sc, si) => {
-      children.appendChild(buildSubcatNode(sc, ci, si));
-    });
-
-    wrapper.appendChild(row);
-    wrapper.appendChild(children);
-    return wrapper;
-  }
-
-  function buildSubcatNode(sc, ci, si) {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'tree-item';
-
-    const row = document.createElement('div');
-    row.className = 'tree-row' + (selectedNode && selectedNode.type === 'subcat' && selectedNode.catIdx === ci && selectedNode.subcatIdx === si ? ' selected' : '');
-    row.innerHTML = `
-      <div class="tree-toggle" onclick="toggleTree(event, 'tree-sc-${ci}-${si}')">
-        <svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5v10z"/></svg>
-      </div>
-      <span class="tree-name">${sc.name}</span>
-      <span class="tree-type type-subcat">Subcategory</span>
-      <div class="tree-actions">
-        <button class="btn btn-secondary btn-sm btn-icon" title="Add Item" onclick="openAddItemModal(event, ${ci}, ${si})">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-        </button>
-        <button class="btn btn-danger btn-sm btn-icon" title="Delete" onclick="deleteSubcat(event, ${ci}, ${si})">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-        </button>
-      </div>
-    `;
-    row.onclick = (e) => { if (!e.target.closest('.tree-actions') && !e.target.closest('.tree-toggle')) selectNode('subcat', ci, si); };
-
-    const children = document.createElement('div');
-    children.className = 'tree-children';
-    children.id = `tree-sc-${ci}-${si}`;
-
-    sc.items.forEach((it, ii) => {
-      children.appendChild(buildItemNode(it, ci, si, ii));
-    });
-
-    wrapper.appendChild(row);
-    wrapper.appendChild(children);
-    return wrapper;
-  }
-
-  function buildItemNode(it, ci, si, ii) {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'tree-item';
-    const row = document.createElement('div');
-    row.className = 'tree-row' + (selectedNode && selectedNode.type === 'item' && selectedNode.catIdx === ci && selectedNode.subcatIdx === si && selectedNode.itemIdx === ii ? ' selected' : '');
-    row.innerHTML = `
-      <div style="width:20px;flex-shrink:0"></div>
-      <span class="tree-name">${it.name}</span>
-      <span class="tree-type type-item">Product</span>
-      <div class="tree-actions">
-        <button class="btn btn-danger btn-sm btn-icon" title="Delete" onclick="deleteItem(event, ${ci}, ${si}, ${ii})">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-        </button>
-      </div>
-    `;
-    row.onclick = (e) => { if (!e.target.closest('.tree-actions')) selectNode('item', ci, si, ii); };
-    wrapper.appendChild(row);
-    return wrapper;
-  }
-
-  function toggleTree(e, id) {
-    e.stopPropagation();
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.classList.toggle('open');
-    const btn = e.currentTarget;
-    btn.classList.toggle('open');
-  }
-
-  // ============================================================
-  //  SELECT / DETAIL PANEL
-  // ============================================================
-  function selectNode(type, catIdx, subcatIdx, itemIdx) {
-    selectedNode = { type, catIdx, subcatIdx, itemIdx };
-    renderTree(); // refresh selection highlight
-
-    if (type === 'category') renderCategoryDetail(catIdx);
-    else if (type === 'subcat') renderSubcatDetail(catIdx, subcatIdx);
-    else if (type === 'item') renderItemDetail(catIdx, subcatIdx, itemIdx);
-  }
-
-  function renderCategoryDetail(ci) {
-    const cat = data.categories[ci];
-    document.getElementById('detail-title').textContent = cat.name;
-    document.getElementById('detail-header-actions').innerHTML = '';
-    document.getElementById('detail-body').innerHTML = `
-      <div class="form-group">
-        <label class="form-label">Category Name</label>
-        <input class="form-input" id="cat-name" value="${cat.name}">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Slug (URL key)</label>
-        <input class="form-input" id="cat-slug" value="${cat.slug}">
-        <div class="form-hint">Used in URLs. Use lowercase-with-dashes only.</div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Description</label>
-        <textarea class="form-textarea" id="cat-desc">${cat.description || ''}</textarea>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Product Name</label><input class="form-input" placeholder="e.g. Calarm 350"></div>
+        <div class="form-group"><label class="form-label">Slug</label><input class="form-input" placeholder="calarm-350"></div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Hero Title</label>
-          <input class="form-input" id="cat-hero-title" value="${cat.heroTitle || ''}">
+          <label class="form-label">Category</label>
+          <select class="form-input">
+            <option>Automation Operators</option><option>Hardware & Components</option><option>Controls & Accessories</option>
+          </select>
         </div>
         <div class="form-group">
-          <label class="form-label">Hero Subtitle</label>
-          <input class="form-input" id="cat-hero-sub" value="${cat.heroSubtitle || ''}">
+          <label class="form-label">Sub-category</label>
+          <select class="form-input">
+            <option>Rolling Shutters</option><option>Swing Gates</option><option>Sliding Gates</option><option>Barriers</option>
+          </select>
         </div>
       </div>
+      <div class="form-group"><label class="form-label">Short Description (card text)</label><input class="form-input" placeholder="Brief product summary for catalog cards"></div>
+      <div class="form-group"><label class="form-label">Full Description</label><textarea class="form-textarea" placeholder="Detailed description shown on product page…"></textarea></div>
+      <div class="form-group"><label class="form-label">Characteristics (comma-separated)</label><input class="form-input" placeholder="Encoder braking, Auto-close, IP44 rated"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Product Image URL</label><input class="form-input" placeholder="assets/images/calarm-350.jpg"></div>
+        <div class="form-group"><label class="form-label">Image Alt Text</label><input class="form-input" placeholder="Calarm 350 swing gate operator"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Datasheet File Path</label><input class="form-input" placeholder="assets/datasheets/calarm-350.pdf"></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Datasheet Name</label><input class="form-input" placeholder="Calarm 350 Technical Datasheet"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('add-product-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProduct()">Add Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Blog Post -->
+<div class="modal-overlay hidden" id="add-blog-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">New Blog Article</div>
+      <button class="modal-close" onclick="closeModal('add-blog-modal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Title</label><input class="form-input" placeholder="Article title…"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-input"><option>Tech</option><option>Guide</option><option>News</option><option>Events</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-input"><option>Draft</option><option>Published</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Excerpt</label><textarea class="form-textarea" placeholder="Brief summary shown in article cards on the website…" style="min-height:70px"></textarea></div>
+      <div class="form-group"><label class="form-label">Cover Image URL</label><input class="form-input" placeholder="https://…"></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Article URL anchor (blog.html#)</label><input class="form-input" placeholder="smart-automation"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('add-blog-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="toast('Article saved!'); closeModal('add-blog-modal')">Save Article</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add User -->
+<div class="modal-overlay hidden" id="add-user-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Add Admin User</div>
+      <button class="modal-close" onclick="closeModal('add-user-modal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Display Name</label><input class="form-input" placeholder="Full name"></div>
+        <div class="form-group"><label class="form-label">Username</label><input class="form-input" placeholder="username"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="name@calistotech.co"></div>
       <div class="form-group">
-        <label class="form-label">Icon (asset path)</label>
-        <input class="form-input" id="cat-icon" value="${cat.icon || ''}">
-        <div class="form-hint">e.g. assets/swing-auto.svg</div>
+        <label class="form-label">Role</label>
+        <select class="form-input">
+          <option>Editor</option><option>SEO Manager</option><option>Viewer</option>
+        </select>
       </div>
-      <button class="btn btn-primary" onclick="saveCategoryDetail(${ci})">Save Category</button>
-    `;
+      <div class="form-group"><label class="form-label">Temporary Password</label><input class="form-input" type="password" placeholder="User must change on first login"></div>
+      <div style="background:var(--blue-light);border:1px solid var(--blue-mid);border-radius:var(--radius-sm);padding:11px 14px;font-size:12.5px;color:#2a5a8a;margin-top:4px">
+        The user will receive an email to set up their account. They can only access modules allowed by their assigned role.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('add-user-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="toast('User created and invite sent!'); closeModal('add-user-modal')">Create User</button>
+    </div>
+  </div>
+</div>
+
+<!-- View Enquiry -->
+<div class="modal-overlay hidden" id="view-enquiry-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Enquiry Details</div>
+      <button class="modal-close" onclick="closeModal('view-enquiry-modal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div><div class="form-label">From</div><div id="eq-name" style="font-weight:700;font-size:14px"></div></div>
+        <div><div class="form-label">Email</div><div id="eq-email" style="font-size:13.5px;color:var(--blue)"></div></div>
+        <div><div class="form-label">Type</div><div id="eq-type" style="font-size:13.5px"></div></div>
+      </div>
+      <div class="form-label">Message</div>
+      <div id="eq-msg" style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:13.5px;line-height:1.7;color:var(--text-2);margin-bottom:16px"></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Reply</label><textarea class="form-textarea" placeholder="Type your reply…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('view-enquiry-modal')">Close</button>
+      <button class="btn btn-primary" onclick="toast('Reply sent!'); closeModal('view-enquiry-modal')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Send Reply
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════
+   AUTH
+════════════════════════════════ */
+let currentUser = null;
+
+function initAuth() {
+  const stored = sessionStorage.getItem('calisto_user');
+  if (!stored) {
+    // In the demo file, allow default login
+    currentUser = { username: 'admin', role: 'Super Admin', name: 'Admin', permissions: ['forms','products','seo','users','blog','export'] };
+  } else {
+    currentUser = JSON.parse(stored);
   }
 
-  function saveCategoryDetail(ci) {
-    data.categories[ci].name = document.getElementById('cat-name').value;
-    data.categories[ci].slug = document.getElementById('cat-slug').value;
-    data.categories[ci].description = document.getElementById('cat-desc').value;
-    data.categories[ci].heroTitle = document.getElementById('cat-hero-title').value;
-    data.categories[ci].heroSubtitle = document.getElementById('cat-hero-sub').value;
-    data.categories[ci].icon = document.getElementById('cat-icon').value;
-    saveAll();
-    renderTree();
-    document.getElementById('detail-title').textContent = data.categories[ci].name;
-  }
+  // Populate user UI
+  const initials = currentUser.name ? currentUser.name.slice(0,1).toUpperCase() : 'A';
+  document.getElementById('sidebar-avatar').textContent = initials;
+  document.getElementById('sidebar-name').textContent = currentUser.name || currentUser.username;
+  document.getElementById('sidebar-role').textContent = currentUser.role;
+  document.getElementById('profile-avatar-big').textContent = initials;
+  document.getElementById('profile-name-big').textContent = currentUser.name || currentUser.username;
+  document.getElementById('profile-role-big').textContent = `${currentUser.role} · ${currentUser.username}@calistotech.co`;
 
-  function renderSubcatDetail(ci, si) {
-    const sc = data.categories[ci].subcategories[si];
-    document.getElementById('detail-title').textContent = sc.name;
-    document.getElementById('detail-header-actions').innerHTML = `
-      <button class="btn btn-primary btn-sm" onclick="openAddItemModal(null, ${ci}, ${si})">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-        Add Product
-      </button>`;
-    document.getElementById('detail-body').innerHTML = `
-      <div class="form-group">
-        <label class="form-label">Subcategory Name</label>
-        <input class="form-input" id="sc-name" value="${sc.name}">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Slug</label>
-        <input class="form-input" id="sc-slug" value="${sc.slug}">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Description</label>
-        <textarea class="form-textarea" id="sc-desc">${sc.description || ''}</textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Icon (asset path)</label>
-        <input class="form-input" id="sc-icon" value="${sc.icon || ''}">
-      </div>
-      <button class="btn btn-primary" onclick="saveSubcatDetail(${ci}, ${si})">Save Subcategory</button>
-      <hr style="margin: 1.5rem 0; border-color: var(--border);">
-      <div class="section-title">Products (${sc.items.length})</div>
-      ${sc.items.length === 0 ? '<p style="color:var(--muted); font-size:0.85rem;">No products yet.</p>' :
-        sc.items.map((it, ii) => `
-          <div style="display:flex; align-items:center; gap:0.75rem; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.5rem; cursor:pointer; transition: background 0.15s;" onmouseenter="this.style.background='var(--accent-light)'" onmouseleave="this.style.background=''" onclick="selectNode('item',${ci},${si},${ii})">
-            <span style="font-weight:600; flex:1">${it.name}</span>
-            <span class="chip">${(it.images||[]).length} imgs</span>
-            <span class="chip">${(it.datasheets||[]).length} docs</span>
-          </div>
-        `).join('')}`;
-  }
-
-  function saveSubcatDetail(ci, si) {
-    data.categories[ci].subcategories[si].name = document.getElementById('sc-name').value;
-    data.categories[ci].subcategories[si].slug = document.getElementById('sc-slug').value;
-    data.categories[ci].subcategories[si].description = document.getElementById('sc-desc').value;
-    data.categories[ci].subcategories[si].icon = document.getElementById('sc-icon').value;
-    saveAll();
-    renderTree();
-    document.getElementById('detail-title').textContent = data.categories[ci].subcategories[si].name;
-  }
-
-  function renderItemDetail(ci, si, ii) {
-    const item = data.categories[ci].subcategories[si].items[ii];
-    document.getElementById('detail-title').textContent = item.name;
-    document.getElementById('detail-header-actions').innerHTML = '';
-
-    document.getElementById('detail-body').innerHTML = `
-      <div class="tabs">
-        <button class="tab active" onclick="switchTab(event,'tab-basic')">Basic Info</button>
-        <button class="tab" onclick="switchTab(event,'tab-chars')">Characteristics</button>
-        <button class="tab" onclick="switchTab(event,'tab-specs')">Tech Specs</button>
-        <button class="tab" onclick="switchTab(event,'tab-media')">Images & Docs</button>
-      </div>
-
-      <!-- Basic Info -->
-      <div class="tab-content active" id="tab-basic">
-        <div class="form-group">
-          <label class="form-label">Product Name</label>
-          <input class="form-input" id="item-name" value="${escHtml(item.name)}">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Slug (URL)</label>
-          <input class="form-input" id="item-slug" value="${escHtml(item.slug)}">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Short Description (card preview)</label>
-          <textarea class="form-textarea" id="item-short" style="min-height:60px">${escHtml(item.shortDescription || '')}</textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Full Description (HTML allowed)</label>
-          <textarea class="form-textarea" id="item-desc" style="min-height:150px">${escHtml(item.description || '')}</textarea>
-          <div class="form-hint">Wrap text in &lt;p&gt; and use &lt;strong&gt; for bold.</div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Card Highlights (bullet points on category page)</label>
-          <div class="dynamic-list" id="highlights-list">
-            <div class="dynamic-list-header">Highlights <button class="btn btn-secondary btn-sm" onclick="addHighlight(${ci},${si},${ii})">+ Add</button></div>
-            <div id="highlights-rows">${renderHighlightRows(item.highlights||[], ci, si, ii)}</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Characteristics -->
-      <div class="tab-content" id="tab-chars">
-        <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem">These appear as "pill" cards on the product detail page (max 6 recommended).</p>
-        <div class="dynamic-list">
-          <div class="dynamic-list-header">Characteristics <button class="btn btn-secondary btn-sm" onclick="addCharacteristic(${ci},${si},${ii})">+ Add</button></div>
-          <div id="chars-rows">${renderCharRows(item.characteristics||[], ci, si, ii)}</div>
-        </div>
-      </div>
-
-      <!-- Tech Specs -->
-      <div class="tab-content" id="tab-specs">
-        <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem">Technical specifications shown in the expandable table.</p>
-        <div class="dynamic-list">
-          <div class="dynamic-list-header">Specifications <button class="btn btn-secondary btn-sm" onclick="addSpec(${ci},${si},${ii})">+ Add Row</button></div>
-          <div id="specs-rows">${renderSpecRows(item.specs||[], ci, si, ii)}</div>
-        </div>
-      </div>
-
-      <!-- Images & Docs -->
-      <div class="tab-content" id="tab-media">
-        <div class="form-group">
-          <label class="form-label">Product Images</label>
-          <p style="color:var(--muted);font-size:0.8rem;margin-bottom:0.75rem">Enter the image URL/path. The first image is the main display image.</p>
-          <div class="dynamic-list">
-            <div class="dynamic-list-header">Images <button class="btn btn-secondary btn-sm" onclick="addImage(${ci},${si},${ii})">+ Add</button></div>
-            <div id="images-rows">${renderImageRows(item.images||[], ci, si, ii)}</div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Datasheets / Documents</label>
-          <div class="dynamic-list">
-            <div class="dynamic-list-header">Documents <button class="btn btn-secondary btn-sm" onclick="addDatasheet(${ci},${si},${ii})">+ Add</button></div>
-            <div id="docs-rows">${renderDocRows(item.datasheets||[], ci, si, ii)}</div>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border); display:flex; gap:0.75rem;">
-        <button class="btn btn-primary" onclick="saveItemDetail(${ci},${si},${ii})">Save Product</button>
-      </div>
-    `;
-  }
-
-  function renderHighlightRows(highlights, ci, si, ii) {
-    if (!highlights.length) return '<div class="dynamic-empty">No highlights yet.</div>';
-    return highlights.map((h, i) => `
-      <div class="dynamic-row" id="hl-row-${i}">
-        <input value="${escHtml(h)}" id="hl-${i}" placeholder="e.g. For gates up to 3m">
-        <button class="remove-row" onclick="removeHighlight(${i},${ci},${si},${ii})"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
-      </div>`).join('');
-  }
-
-  function renderCharRows(chars, ci, si, ii) {
-    if (!chars.length) return '<div class="dynamic-empty">No characteristics yet.</div>';
-    return chars.map((c, i) => `
-      <div class="dynamic-row">
-        <input value="${escHtml(c.label)}" id="char-label-${i}" placeholder="e.g. DC motor & Backup Battery" style="flex:2">
-        <button class="remove-row" onclick="removeChar(${i},${ci},${si},${ii})"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
-      </div>`).join('');
-  }
-
-  function renderSpecRows(specs, ci, si, ii) {
-    if (!specs.length) return '<div class="dynamic-empty">No specs yet.</div>';
-    return specs.map((s, i) => `
-      <div class="dynamic-row">
-        <input value="${escHtml(s.param)}" id="spec-param-${i}" placeholder="Parameter" style="flex:1">
-        <input value="${escHtml(s.value)}" id="spec-val-${i}" placeholder="Value" style="flex:1.5">
-        <button class="remove-row" onclick="removeSpec(${i},${ci},${si},${ii})"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
-      </div>`).join('');
-  }
-
-  function renderImageRows(images, ci, si, ii) {
-    if (!images.length) return '<div class="dynamic-empty">No images yet.</div>';
-    return images.map((img, i) => `
-      <div class="dynamic-row">
-        <input value="${escHtml(img.url)}" id="img-url-${i}" placeholder="assets/my-image.jpg" style="flex:2">
-        <input value="${escHtml(img.alt)}" id="img-alt-${i}" placeholder="Alt text" style="flex:1">
-        <button class="remove-row" onclick="removeImage(${i},${ci},${si},${ii})"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
-      </div>`).join('');
-  }
-
-  function renderDocRows(docs, ci, si, ii) {
-    if (!docs.length) return '<div class="dynamic-empty">No documents yet.</div>';
-    return docs.map((d, i) => `
-      <div class="dynamic-row">
-        <input value="${escHtml(d.name)}" id="doc-name-${i}" placeholder="e.g. Installation Manual" style="flex:1.5">
-        <input value="${escHtml(d.file)}" id="doc-file-${i}" placeholder="assets/manual.pdf" style="flex:2">
-        <button class="remove-row" onclick="removeDoc(${i},${ci},${si},${ii})"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
-      </div>`).join('');
-  }
-
-  function saveItemDetail(ci, si, ii) {
-    const item = data.categories[ci].subcategories[si].items[ii];
-    item.name = document.getElementById('item-name').value;
-    item.slug = document.getElementById('item-slug').value;
-    item.shortDescription = document.getElementById('item-short').value;
-    item.description = document.getElementById('item-desc').value;
-
-    // Highlights
-    item.highlights = [];
-    let hi = 0;
-    while (document.getElementById('hl-' + hi)) {
-      item.highlights.push(document.getElementById('hl-' + hi).value);
-      hi++;
+  // Lock nav items without permission
+  document.querySelectorAll('[data-perm]').forEach(item => {
+    const perm = item.dataset.perm;
+    if (!currentUser.permissions || !currentUser.permissions.includes(perm)) {
+      item.classList.add('locked');
     }
-
-    // Characteristics
-    item.characteristics = [];
-    let chi = 0;
-    while (document.getElementById('char-label-' + chi)) {
-      item.characteristics.push({ label: document.getElementById('char-label-' + chi).value, icon: 'custom' });
-      chi++;
-    }
-
-    // Specs
-    item.specs = [];
-    let spi = 0;
-    while (document.getElementById('spec-param-' + spi)) {
-      item.specs.push({ param: document.getElementById('spec-param-' + spi).value, value: document.getElementById('spec-val-' + spi).value });
-      spi++;
-    }
-
-    // Images
-    item.images = [];
-    let imi = 0;
-    while (document.getElementById('img-url-' + imi)) {
-      item.images.push({ url: document.getElementById('img-url-' + imi).value, alt: document.getElementById('img-alt-' + imi).value });
-      imi++;
-    }
-
-    // Datasheets
-    item.datasheets = [];
-    let di = 0;
-    while (document.getElementById('doc-name-' + di)) {
-      item.datasheets.push({ name: document.getElementById('doc-name-' + di).value, file: document.getElementById('doc-file-' + di).value });
-      di++;
-    }
-
-    saveAll();
-    renderTree();
-    document.getElementById('detail-title').textContent = item.name;
-    showToast('Product saved!', 'success');
-  }
-
-  // Add row helpers
-  function addHighlight(ci, si, ii) {
-    data.categories[ci].subcategories[si].items[ii].highlights.push('New highlight');
-    saveAll(); renderItemDetail(ci, si, ii);
-  }
-  function removeHighlight(i, ci, si, ii) {
-    data.categories[ci].subcategories[si].items[ii].highlights.splice(i, 1);
-    saveAll(); renderItemDetail(ci, si, ii);
-  }
-  function addCharacteristic(ci, si, ii) {
-    data.categories[ci].subcategories[si].items[ii].characteristics.push({ label: 'New characteristic', icon: 'custom' });
-    saveAll(); renderItemDetail(ci, si, ii); switchTabById('tab-chars');
-  }
-  function removeChar(i, ci, si, ii) {
-    data.categories[ci].subcategories[si].items[ii].characteristics.splice(i, 1);
-    saveAll(); renderItemDetail(ci, si, ii); switchTabById('tab-chars');
-  }
-  function addSpec(ci, si, ii) {
-    data.categories[ci].subcategories[si].items[ii].specs.push({ param: '', value: '' });
-    saveAll(); renderItemDetail(ci, si, ii); switchTabById('tab-specs');
-  }
-  function removeSpec(i, ci, si, ii) {
-    data.categories[ci].subcategories[si].items[ii].specs.splice(i, 1);
-    saveAll(); renderItemDetail(ci, si, ii); switchTabById('tab-specs');
-  }
-  function addImage(ci, si, ii) {
-    data.categories[ci].subcategories[si].items[ii].images.push({ url: '', alt: '' });
-    saveAll(); renderItemDetail(ci, si, ii); switchTabById('tab-media');
-  }
-  function removeImage(i, ci, si, ii) {
-    data.categories[ci].subcategories[si].items[ii].images.splice(i, 1);
-    saveAll(); renderItemDetail(ci, si, ii); switchTabById('tab-media');
-  }
-  function addDatasheet(ci, si, ii) {
-    data.categories[ci].subcategories[si].items[ii].datasheets.push({ name: '', file: '' });
-    saveAll(); renderItemDetail(ci, si, ii); switchTabById('tab-media');
-  }
-  function removeDoc(i, ci, si, ii) {
-    data.categories[ci].subcategories[si].items[ii].datasheets.splice(i, 1);
-    saveAll(); renderItemDetail(ci, si, ii); switchTabById('tab-media');
-  }
-
-  // ============================================================
-  //  TABS
-  // ============================================================
-  function switchTab(e, id) {
-    const container = e.target.closest('.panel-body');
-    container.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    container.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    e.target.classList.add('active');
-    document.getElementById(id).classList.add('active');
-  }
-  function switchTabById(id) {
-    document.querySelectorAll('.tab').forEach(t => {
-      const tc = t.getAttribute('onclick');
-      if (tc && tc.includes("'" + id + "'")) t.classList.add('active');
-      else t.classList.remove('active');
-    });
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    const el = document.getElementById(id);
-    if (el) el.classList.add('active');
-  }
-
-  // ============================================================
-  //  MODALS
-  // ============================================================
-  function openAddCategoryModal() {
-    document.getElementById('modal-content').innerHTML = `
-      <h3 style="margin-bottom:0.5rem">Add Category</h3>
-      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem">Create a new top-level product category.</p>
-      <div class="form-group"><label class="form-label">Category Name</label><input class="form-input" id="new-cat-name" placeholder="e.g. Garage Doors" autofocus></div>
-      <div class="form-group"><label class="form-label">Slug</label><input class="form-input" id="new-cat-slug" placeholder="e.g. garage-doors"></div>
-      <div class="modal-actions">
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="addCategory()">Add Category</button>
-      </div>`;
-    document.getElementById('modal-overlay').classList.add('open');
-    document.getElementById('new-cat-name').addEventListener('input', function() {
-      document.getElementById('new-cat-slug').value = slugify(this.value);
-    });
-  }
-
-  function addCategory() {
-    const name = document.getElementById('new-cat-name').value.trim();
-    const slug = document.getElementById('new-cat-slug').value.trim() || slugify(name);
-    if (!name) return;
-    data.categories.push({ id: slug, name, slug, description: '', heroTitle: name + ',', heroSubtitle: '', icon: '', pageFile: slug + '.html', subcategories: [] });
-    saveAll(); renderTree(); closeModal();
-    showToast('Category added!', 'success');
-  }
-
-  function openAddSubcatModal(e, ci) {
-    if (e) e.stopPropagation();
-    document.getElementById('modal-content').innerHTML = `
-      <h3 style="margin-bottom:0.5rem">Add Subcategory</h3>
-      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem">Under: <strong>${data.categories[ci].name}</strong></p>
-      <div class="form-group"><label class="form-label">Subcategory Name</label><input class="form-input" id="new-sc-name" placeholder="e.g. Roller Doors" autofocus></div>
-      <div class="form-group"><label class="form-label">Slug</label><input class="form-input" id="new-sc-slug" placeholder="e.g. roller-doors"></div>
-      <div class="modal-actions">
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="addSubcat(${ci})">Add Subcategory</button>
-      </div>`;
-    document.getElementById('modal-overlay').classList.add('open');
-    document.getElementById('new-sc-name').addEventListener('input', function() {
-      document.getElementById('new-sc-slug').value = slugify(this.value);
-    });
-  }
-
-  function addSubcat(ci) {
-    const name = document.getElementById('new-sc-name').value.trim();
-    const slug = document.getElementById('new-sc-slug').value.trim() || slugify(name);
-    if (!name) return;
-    data.categories[ci].subcategories.push({ id: slug, name, slug, description: '', icon: '', pageFile: slug + '.html', items: [] });
-    saveAll(); renderTree(); closeModal();
-    showToast('Subcategory added!', 'success');
-    // open the parent node
-    setTimeout(() => { const el = document.getElementById(`tree-cat-${ci}`); if (el) { el.classList.add('open'); } }, 50);
-  }
-
-  function openAddItemModal(e, ci, si) {
-    if (e) e.stopPropagation();
-    document.getElementById('modal-content').innerHTML = `
-      <h3 style="margin-bottom:0.5rem">Add Product</h3>
-      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem">Under: <strong>${data.categories[ci].subcategories[si].name}</strong></p>
-      <div class="form-group"><label class="form-label">Product Name</label><input class="form-input" id="new-item-name" placeholder="e.g. Vortex CALARM 500" autofocus></div>
-      <div class="form-group"><label class="form-label">Slug</label><input class="form-input" id="new-item-slug" placeholder="e.g. vortex-calarm-500"></div>
-      <div class="modal-actions">
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="addItem(${ci},${si})">Add Product</button>
-      </div>`;
-    document.getElementById('modal-overlay').classList.add('open');
-    document.getElementById('new-item-name').addEventListener('input', function() {
-      document.getElementById('new-item-slug').value = slugify(this.value);
-    });
-  }
-
-  function addItem(ci, si) {
-    const name = document.getElementById('new-item-name').value.trim();
-    const slug = document.getElementById('new-item-slug').value.trim() || slugify(name);
-    if (!name) return;
-    const newItem = { id: slug, name, slug, shortDescription: '', description: '', highlights: [], characteristics: [], specs: [], images: [], datasheets: [] };
-    data.categories[ci].subcategories[si].items.push(newItem);
-    saveAll(); renderTree(); closeModal();
-    const ii = data.categories[ci].subcategories[si].items.length - 1;
-    setTimeout(() => {
-      const el = document.getElementById(`tree-sc-${ci}-${si}`); if (el) el.classList.add('open');
-      selectNode('item', ci, si, ii);
-    }, 50);
-    showToast('Product added!', 'success');
-  }
-
-  function closeModal() {
-    document.getElementById('modal-overlay').classList.remove('open');
-  }
-  document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target === document.getElementById('modal-overlay')) closeModal(); });
-
-  // ============================================================
-  //  DELETE
-  // ============================================================
-  function deleteCategory(e, ci) {
-    e.stopPropagation();
-    confirm2(`Delete category "${data.categories[ci].name}" and all its contents?`, () => {
-      data.categories.splice(ci, 1);
-      saveAll(); renderTree(); clearDetail();
-      showToast('Category deleted.', 'success');
-    });
-  }
-  function deleteSubcat(e, ci, si) {
-    e.stopPropagation();
-    confirm2(`Delete subcategory "${data.categories[ci].subcategories[si].name}"?`, () => {
-      data.categories[ci].subcategories.splice(si, 1);
-      saveAll(); renderTree(); clearDetail();
-      showToast('Subcategory deleted.', 'success');
-    });
-  }
-  function deleteItem(e, ci, si, ii) {
-    e.stopPropagation();
-    confirm2(`Delete product "${data.categories[ci].subcategories[si].items[ii].name}"?`, () => {
-      data.categories[ci].subcategories[si].items.splice(ii, 1);
-      saveAll(); renderTree(); clearDetail();
-      showToast('Product deleted.', 'success');
-    });
-  }
-  function clearDetail() {
-    selectedNode = null;
-    document.getElementById('detail-title').textContent = 'Select an item';
-    document.getElementById('detail-header-actions').innerHTML = '';
-    document.getElementById('detail-body').innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><h3>Nothing selected</h3><p>Click on a category, subcategory, or product in the tree to edit it.</p></div>`;
-  }
-
-  function confirm2(msg, cb) {
-    document.getElementById('confirm-msg').textContent = msg;
-    document.getElementById('confirm-overlay').classList.add('open');
-    document.getElementById('confirm-yes').onclick = () => { closeConfirm(); cb(); };
-  }
-  function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('open'); }
-
-  // ============================================================
-  //  SAVE / EXPORT
-  // ============================================================
-  function saveAll() {
-    saveProductsData(data);
-    updateStats();
-  }
-
-  function exportDataFile() {
-    const content = generateDataFile(data);
-    const blob = new Blob([content], { type: 'text/javascript' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'products-data.js';
-    a.click();
-    showToast('File downloaded!', 'success');
-  }
-
-  function generateDataFile(d) {
-    return `// ============================================================
-//  CALISTO PRODUCTS DATA STORE
-//  Generated by Admin Panel on ${new Date().toLocaleString()}
-// ============================================================
-
-const CALISTO_PRODUCTS = ${JSON.stringify(d, null, 2)};
-
-function getCategoryBySlug(slug) { return CALISTO_PRODUCTS.categories.find(c => c.slug === slug); }
-function getSubcategoryBySlug(categorySlug, subcatSlug) {
-  const cat = getCategoryBySlug(categorySlug);
-  if (!cat) return null;
-  return cat.subcategories.find(s => s.slug === subcatSlug);
+  });
 }
-function getItemBySlug(categorySlug, subcatSlug, itemSlug) {
-  const subcat = getSubcategoryBySlug(categorySlug, subcatSlug);
-  if (!subcat) return null;
-  return subcat.items.find(i => i.slug === itemSlug);
+
+function signOut() {
+  if (confirm('Sign out of Calisto Admin?')) {
+    sessionStorage.removeItem('calisto_user');
+    window.location.href = 'login.html';
+  }
 }
-function saveProductsData(data) { localStorage.setItem('calisto_products', JSON.stringify(data)); }
-function loadProductsData() {
-  const saved = localStorage.getItem('calisto_products');
-  if (saved) { try { return JSON.parse(saved); } catch(e) { return CALISTO_PRODUCTS; } }
-  return CALISTO_PRODUCTS;
+
+/* ════════════════════════════════
+   NAVIGATION
+════════════════════════════════ */
+const pageMeta = {
+  dashboard: { title: 'Dashboard', desc: 'Calisto Automation overview' },
+  products:  { title: 'Products & Categories', desc: 'Manage your full product catalog' },
+  blog:      { title: 'Blog Posts', desc: 'Articles, news, and technical updates' },
+  forms:     { title: 'Enquiries', desc: 'Contact form and partner applications' },
+  seo:       { title: 'SEO Settings', desc: 'Page-level meta tags and keywords' },
+  users:     { title: 'Users & Roles', desc: 'Admin accounts and permissions' },
+  profile:   { title: 'My Profile', desc: 'Your account settings' },
+};
+
+function nav(page, el) {
+  document.querySelectorAll('[id^="pg-"]').forEach(p => p.classList.add('hidden'));
+  document.getElementById('pg-' + page).classList.remove('hidden');
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  const meta = pageMeta[page] || {};
+  document.getElementById('topbar-title').textContent = meta.title || page;
+  document.getElementById('topbar-desc').textContent = meta.desc || '';
+
+  closeSidebar();
+
+  if (page === 'seo') buildSEO();
+  if (page === 'products') renderProducts();
+  if (page === 'dashboard') initCharts();
 }
-`;
+
+/* ════════════════════════════════
+   SIDEBAR (MOBILE)
+════════════════════════════════ */
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+/* ════════════════════════════════
+   TOAST
+════════════════════════════════ */
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast-el');
+  document.getElementById('toast-msg').textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+/* ════════════════════════════════
+   MODALS
+════════════════════════════════ */
+function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+function viewEnquiry(name, email, type, msg) {
+  document.getElementById('eq-name').textContent = name;
+  document.getElementById('eq-email').textContent = email;
+  document.getElementById('eq-type').textContent = type;
+  document.getElementById('eq-msg').textContent = msg;
+  openModal('view-enquiry-modal');
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.add('hidden');
+  });
+});
+
+/* ════════════════════════════════
+   PRODUCTS
+════════════════════════════════ */
+const PRODUCTS = [
+  { name: 'Vortex Calarm 350', cat: 'automation', catLabel: 'Automation Operators', sub: 'Swing Gates', status: 'Active', datasheet: 'calarm-350.pdf' },
+  { name: 'Calisto RS-2500',   cat: 'automation', catLabel: 'Automation Operators', sub: 'Rolling Shutters', status: 'Active', datasheet: 'rs-2500.pdf' },
+  { name: 'SlideX Pro 800',    cat: 'automation', catLabel: 'Automation Operators', sub: 'Sliding Gates', status: 'Active', datasheet: 'slidex-800.pdf' },
+  { name: 'BarrierX B200',     cat: 'automation', catLabel: 'Automation Operators', sub: 'Barriers', status: 'Active', datasheet: 'barrierx-b200.pdf' },
+  { name: 'CoilSpring CS-40',  cat: 'hardware',   catLabel: 'Hardware & Components', sub: 'Springs', status: 'Active', datasheet: '' },
+  { name: 'AlumSlat AS-60',    cat: 'hardware',   catLabel: 'Hardware & Components', sub: 'Slats', status: 'Active', datasheet: '' },
+  { name: 'GuideRail GR-12',   cat: 'hardware',   catLabel: 'Hardware & Components', sub: 'Guides', status: 'Draft', datasheet: '' },
+  { name: 'UniRemote 4CH',     cat: 'controls',   catLabel: 'Controls & Accessories', sub: 'Remotes', status: 'Active', datasheet: 'uniremote-4ch.pdf' },
+  { name: 'SafeEdge SE-IR',    cat: 'controls',   catLabel: 'Controls & Accessories', sub: 'Sensors', status: 'Active', datasheet: '' },
+];
+
+let catFilter = 'all';
+
+function filterCat(cat, btn) {
+  catFilter = cat;
+  document.querySelectorAll('[id^="cat-tab-"]').forEach(b => {
+    b.className = b.id === 'cat-tab-' + cat ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm';
+  });
+  renderProducts();
+}
+
+function filterProducts(q) {
+  renderProducts(q);
+}
+
+function renderProducts(q = '') {
+  const tbody = document.getElementById('products-tbody');
+  const list = PRODUCTS.filter(p =>
+    (catFilter === 'all' || p.cat === catFilter) &&
+    (!q || p.name.toLowerCase().includes(q.toLowerCase()))
+  );
+
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-3);padding:28px">No products found</td></tr>';
+    return;
   }
 
-  function confirmReset() {
-    confirm2('Reset all admin changes? This cannot be undone.', () => {
-      localStorage.removeItem('calisto_products');
-      data = JSON.parse(JSON.stringify(CALISTO_PRODUCTS));
-      saveAll(); renderTree(); clearDetail();
-      showToast('Reset to defaults.', 'success');
-    });
-  }
+  tbody.innerHTML = list.map(p => `
+    <tr>
+      <td style="font-weight:700">${p.name}</td>
+      <td style="color:var(--text-2)">${p.catLabel}</td>
+      <td style="color:var(--text-3)">${p.sub}</td>
+      <td><span class="pill ${p.status === 'Active' ? 'pill-green' : 'pill-amber'}">${p.status}</span></td>
+      <td>${p.datasheet ? `<a href="assets/datasheets/${p.datasheet}" style="color:var(--blue);font-size:12.5px;font-weight:700;text-decoration:none" onclick="event.preventDefault();toast('Downloading ${p.datasheet}…')">↓ PDF</a>` : '<span style="color:var(--text-3);font-size:12.5px">—</span>'}</td>
+      <td>
+        <div class="tbl-actions">
+          <button class="tbl-action" onclick="toast('Editing ${p.name}…')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="tbl-action del" onclick="toast('Delete ${p.name}?')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
 
-  // ============================================================
-  //  TOAST
-  // ============================================================
-  let toastTimer;
-  function showToast(msg, type='success') {
-    const t = document.getElementById('toast');
-    t.className = 'toast ' + type + ' show';
-    document.getElementById('toast-msg').textContent = msg;
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { t.classList.remove('show'); }, 2500);
-  }
+function saveProduct() {
+  toast('Product saved! Run Export Data to update products-data.js');
+  closeModal('add-product-modal');
+}
 
-  // ============================================================
-  //  USER MANAGEMENT
-  // ============================================================
-  function renderUsersTable() {
-    const users = getAllUsers();
-    const tbody = document.getElementById('users-table-body');
-    const roleColors = { superadmin:'#7c3aed', editor:'#0891b2', viewer:'#16a34a', seo_manager:'#d97706', custom:'#64748b' };
+/* ════════════════════════════════
+   SEO
+════════════════════════════════ */
+const SEO_PAGES = [
+  { file: 'index.html', label: 'Home', title: 'Calisto Automation | Premium Entrance Solutions', desc: 'Calisto delivers engineered entrance automation systems for residential and industrial applications — rolling shutters, gates, and barriers.', kw: 'gate automation, rolling shutters, entrance automation, Calisto' },
+  { file: 'automation.html', label: 'Automation Operators', title: 'Automation Operators — Shutters, Gates & Barriers | Calisto', desc: 'Explore Calisto\'s full range of automation operators including rolling shutter motors, swing and sliding gate operators, and traffic barriers.', kw: 'gate operator, shutter motor, sliding gate, barrier' },
+  { file: 'hardware.html', label: 'Hardware & Components', title: 'Hardware & Components | Calisto Automation', desc: 'Quality springs, slats, guides and mechanical components to complement Calisto automation systems.', kw: 'shutter springs, aluminum slats, guide rails, hardware' },
+  { file: 'controls.html', label: 'Controls & Accessories', title: 'Controls & Accessories — Remotes & Sensors | Calisto', desc: 'Remotes, receivers, sensors and control boards designed for seamless Calisto system integration.', kw: 'remote control, gate sensor, automation accessories' },
+  { file: 'blog.html', label: 'Blog', title: 'Automation Insights & News | Calisto Blog', desc: 'Read expert articles, product launches, and technical guides from the Calisto automation team.', kw: 'gate automation news, shutter guide, automation blog' },
+];
 
-    tbody.innerHTML = users.map(u => {
-      const perms = getUserPermissions(u);
-      const role = ROLE_PRESETS[u.role] || ROLE_PRESETS.custom;
-      const color = roleColors[u.role] || '#64748b';
-      const isSA = u.id === 'superadmin';
-      const isMe = currentSession && u.id === currentSession.id;
-      return `<tr>
-        <td>
-          <div class="user-cell">
-            <div class="user-avatar" style="width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;color:#fff;background:${color};flex-shrink:0">${u.avatar || u.name.slice(0,2).toUpperCase()}</div>
-            <div>
-              <div style="font-weight:600;font-size:0.88rem">${escHtml(u.name)} ${isMe ? '<span style="color:var(--accent);font-size:0.72rem">(you)</span>' : ''}</div>
-              <div style="color:var(--muted);font-size:0.78rem">@${escHtml(u.username)}${u.email ? ' · ' + escHtml(u.email) : ''}</div>
-            </div>
-          </div>
-        </td>
-        <td><span class="role-badge" style="background:${color}18;color:${color}">${role.label}</span></td>
-        <td>
-          <div class="perm-list">
-            ${perms.map(p => `<span class="perm-chip">${PERMISSIONS[p] ? PERMISSIONS[p].label : p}</span>`).join('')}
-            ${perms.length === 0 ? '<span style="color:var(--muted);font-size:0.78rem">No permissions</span>' : ''}
-          </div>
-        </td>
-        <td>
-          <span class="status-dot ${u.active !== false ? 'active' : 'inactive'}"></span>
-          ${u.active !== false ? 'Active' : 'Inactive'}
-        </td>
-        <td style="color:var(--muted);font-size:0.82rem">${u.createdAt || '—'}</td>
-        <td>
-          <div class="table-actions">
-            ${!isSA ? `<button class="btn btn-secondary btn-sm" onclick="openUserModal('${u.id}')">Edit</button>` : ''}
-            ${!isSA && !isMe ? `<button class="btn btn-secondary btn-sm" onclick="toggleUserStatus('${u.id}')">${u.active !== false ? 'Deactivate' : 'Activate'}</button>` : ''}
-            ${!isSA && !isMe ? `<button class="btn btn-danger btn-sm" onclick="confirmDeleteUser('${u.id}', '${escHtml(u.name)}')">Delete</button>` : ''}
-            ${isSA ? '<span style="color:var(--muted);font-size:0.78rem">Protected</span>' : ''}
-          </div>
-        </td>
-      </tr>`;
-    }).join('');
-  }
+function buildSEO() {
+  const container = document.getElementById('seo-cards');
+  if (container.children.length) return; // already built
 
-  function toggleUserStatus(id) {
-    const res = toggleUserActive(id);
-    if (res.success) { renderUsersTable(); showToast(`User ${res.active ? 'activated' : 'deactivated'}.`); }
-  }
-
-  function confirmDeleteUser(id, name) {
-    confirm2(`Permanently delete user "${name}"?`, () => {
-      const res = deleteUser(id);
-      if (res.success) { renderUsersTable(); showToast('User deleted.'); }
-      else showToast(res.message, 'error');
-    });
-  }
-
-  function openUserModal(userId) {
-    let user = null;
-    if (userId) {
-      const users = getAllUsers();
-      user = users.find(u => u.id === userId);
-    }
-    const isEdit = !!user;
-    const roleOptions = Object.entries(ROLE_PRESETS).map(([k, v]) =>
-      `<option value="${k}" ${user && user.role === k ? 'selected' : ''}>${v.label}</option>`
-    ).join('');
-
-    document.getElementById('modal-content').innerHTML = `
-      <h3 style="margin-bottom:0.4rem">${isEdit ? 'Edit User' : 'Add New User'}</h3>
-      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem">${isEdit ? 'Update user details and permissions.' : 'Create a new admin panel account.'}</p>
-      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-        <div class="form-group"><label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">Full Name</label>
-          <input class="form-input" id="u-name" value="${escHtml(user?.name||'')}" style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;"></div>
-        <div class="form-group"><label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">Username</label>
-          <input class="form-input" id="u-username" value="${escHtml(user?.username||'')}" ${isEdit ? 'readonly style="background:#fafbfc;width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;"' : 'style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;"'}></div>
-      </div>
-      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-        <div class="form-group"><label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">Email</label>
-          <input class="form-input" id="u-email" type="email" value="${escHtml(user?.email||'')}" style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;"></div>
-        <div class="form-group"><label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">${isEdit ? 'New Password (blank = no change)' : 'Password'}</label>
-          <input class="form-input" id="u-password" type="password" placeholder="••••••••" style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;"></div>
-      </div>
-      <div class="form-group" style="margin-bottom:1rem;">
-        <label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">Role</label>
-        <select class="form-select" id="u-role" onchange="updatePermPreview()" style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--surface);">${roleOptions}</select>
-      </div>
-      <div class="form-group" id="custom-perms-group" style="${user?.role === 'custom' ? '' : 'display:none'}">
-        <label class="form-label" style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.6rem;">Custom Permissions</label>
-        <div class="perm-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;">
-          ${Object.entries(PERMISSIONS).map(([key, perm]) => `
-            <label class="perm-item" style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.75rem;background:#fafbfc;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;">
-              <input type="checkbox" id="perm-${key}" value="${key}" ${user?.permissions?.includes(key) ? 'checked' : ''} style="accent-color:var(--accent);width:16px;height:16px;flex-shrink:0;margin-top:2px;cursor:pointer;">
-              <div>
-                <div class="perm-item-label" style="font-size:0.82rem;font-weight:600;">${perm.label}</div>
-                <div class="perm-item-desc" style="font-size:0.75rem;color:var(--muted);margin-top:2px;">${perm.desc}</div>
-              </div>
-            </label>`).join('')}
+  container.innerHTML = SEO_PAGES.map((p, i) => `
+    <div class="card" style="overflow:hidden">
+      <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none" onclick="toggleSEO(${i})">
+        <div style="font-family:'Raleway',sans-serif;font-weight:700;font-size:14px">${p.label}</div>
+        <div style="font-size:12px;color:var(--text-3)">${p.file}</div>
+        <div style="margin-left:auto" id="seo-chevron-${i}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
       </div>
-      <div id="role-perm-preview" style="margin-bottom:1rem;"></div>
-      <div class="modal-actions" style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem;">
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="${isEdit ? `saveEditUser('${userId}')` : 'saveNewUser()'}">${isEdit ? 'Save Changes' : 'Create User'}</button>
-      </div>`;
-    document.getElementById('modal-overlay').classList.add('open');
-    updatePermPreview();
-  }
-
-  function updatePermPreview() {
-    const role = document.getElementById('u-role')?.value;
-    const customGroup = document.getElementById('custom-perms-group');
-    const preview = document.getElementById('role-perm-preview');
-    if (!role) return;
-    if (role === 'custom') {
-      if (customGroup) customGroup.style.display = '';
-      if (preview) preview.innerHTML = '';
-      return;
-    }
-    if (customGroup) customGroup.style.display = 'none';
-    const perms = (ROLE_PRESETS[role] || {}).permissions || [];
-    if (preview) preview.innerHTML = `<div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.5rem;">Permissions included</div>
-      <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">${perms.map(p => `<span class="perm-chip" style="font-size:0.72rem;padding:2px 8px;background:var(--accent-light);color:var(--accent);border-radius:20px;font-weight:700;">${PERMISSIONS[p]?.label||p}</span>`).join('')}</div>`;
-  }
-
-  function saveNewUser() {
-    const name = document.getElementById('u-name').value.trim();
-    const username = document.getElementById('u-username').value.trim();
-    const password = document.getElementById('u-password').value;
-    const email = document.getElementById('u-email').value.trim();
-    const role = document.getElementById('u-role').value;
-    const permissions = role === 'custom'
-      ? Object.keys(PERMISSIONS).filter(k => document.getElementById('perm-' + k)?.checked)
-      : [];
-
-    if (!name || !username || !password) { showToast('Name, username and password are required.', 'error'); return; }
-    const res = createUser({ username, password, name, email, role, permissions });
-    if (res.success) { closeModal(); renderUsersTable(); showToast('User created!', 'success'); }
-    else showToast(res.message, 'error');
-  }
-
-  function saveEditUser(id) {
-    const updates = {
-      name: document.getElementById('u-name').value.trim(),
-      email: document.getElementById('u-email').value.trim(),
-      role: document.getElementById('u-role').value,
-    };
-    const pw = document.getElementById('u-password').value;
-    if (pw) updates.password = pw;
-    if (updates.role === 'custom') {
-      updates.permissions = Object.keys(PERMISSIONS).filter(k => document.getElementById('perm-' + k)?.checked);
-    }
-    const res = updateUser(id, updates);
-    if (res.success) { closeModal(); renderUsersTable(); showToast('User updated!', 'success'); }
-    else showToast(res.message, 'error');
-  }
-
-  // ============================================================
-  //  SEO PAGE
-  // ============================================================
-  const SEO_PAGES = [
-    { key: 'home',      title: 'Home',              url: 'index.html' },
-    { key: 'about',     title: 'About',             url: 'about.html' },
-    { key: 'gates',     title: 'Gate Systems',       url: 'gates.html' },
-    { key: 'shutters',  title: 'Rolling Shutters',   url: 'rolling-shutters.html' },
-    { key: 'autodoors', title: 'Automatic Doors',    url: 'automatic-doors.html' },
-    { key: 'windows',   title: 'Window Systems',     url: 'window-systems.html' },
-    { key: 'blog',      title: 'Blog',              url: 'blog.html' },
-    { key: 'contact',   title: 'Contact',           url: 'contact.html' },
-  ];
-
-  function getSEOData() {
-    const raw = localStorage.getItem('calisto_seo');
-    if (raw) { try { return JSON.parse(raw); } catch(e) {} }
-    return {};
-  }
-  function saveSEOData(d) { localStorage.setItem('calisto_seo', JSON.stringify(d)); }
-
-  function renderSEOPage() {
-    const seo = getSEOData();
-    const list = document.getElementById('seo-page-list');
-    if (!list) return;
-    list.innerHTML = SEO_PAGES.map((p, i) => {
-      const d = seo[p.key] || {};
-      return `<div class="seo-page-card">
-        <div class="seo-page-header" onclick="toggleSEOCard(this, 'seo-body-${i}')">
-          <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--accent);flex-shrink:0"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
-          <div class="seo-page-url"><strong>${p.title}</strong> <span>/ ${p.url}</span></div>
-          <svg class="seo-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+      <div id="seo-body-${i}" class="hidden" style="padding:18px 20px">
+        <div class="form-group">
+          <label class="form-label">Meta Title <span style="color:var(--text-3);font-weight:400">(recommended max 60 chars)</span></label>
+          <input class="form-input" id="seo-title-${i}" value="${p.title}" oninput="countChars(this,'seo-count-title-${i}',60)">
+          <div class="char-row"><span id="seo-count-title-${i}" class="char-count">${p.title.length}/60</span></div>
         </div>
-        <div class="seo-page-body" id="seo-body-${i}">
-          <div class="form-group" style="margin-bottom:1rem;">
-            <label style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">
-              Meta Title
-              <span class="seo-char-count" id="seo-title-count-${i}">0 / 60</span>
-            </label>
-            <input id="seo-title-${i}" value="${escHtml(d.title||'')}" maxlength="80" oninput="seoCount(this,'seo-title-count-${i}',60)"
-              style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;" placeholder="e.g. Gate Automation Systems | Calisto">
-          </div>
-          <div class="form-group" style="margin-bottom:1rem;">
-            <label style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">
-              Meta Description
-              <span class="seo-char-count" id="seo-desc-count-${i}">0 / 160</span>
-            </label>
-            <textarea id="seo-desc-${i}" maxlength="300" oninput="seoCount(this,'seo-desc-count-${i}',160)"
-              style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;min-height:80px;resize:vertical;" placeholder="Short description for search engines...">${escHtml(d.description||'')}</textarea>
-          </div>
-          <div class="form-group">
-            <label style="display:block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.4rem;">Keywords</label>
-            <input id="seo-kw-${i}" value="${escHtml(d.keywords||'')}"
-              style="width:100%;padding:0.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;" placeholder="gate automation, swing gates, Calisto Tech">
-          </div>
+        <div class="form-group">
+          <label class="form-label">Meta Description <span style="color:var(--text-3);font-weight:400">(recommended max 160 chars)</span></label>
+          <textarea class="form-textarea" id="seo-desc-${i}" oninput="countChars(this,'seo-count-desc-${i}',160)">${p.desc}</textarea>
+          <div class="char-row"><span id="seo-count-desc-${i}" class="char-count">${p.desc.length}/160</span></div>
         </div>
-      </div>`;
-    }).join('');
-
-    // Init char counts after render
-    SEO_PAGES.forEach((p, i) => {
-      const t = document.getElementById(`seo-title-${i}`);
-      const d2 = document.getElementById(`seo-desc-${i}`);
-      if (t) seoCount(t, `seo-title-count-${i}`, 60);
-      if (d2) seoCount(d2, `seo-desc-count-${i}`, 160);
-    });
-  }
-
-  function toggleSEOCard(header, bodyId) {
-    header.classList.toggle('open');
-    document.getElementById(bodyId).classList.toggle('open');
-  }
-
-  function seoCount(el, countId, max) {
-    const len = el.value.length;
-    const counter = document.getElementById(countId);
-    if (!counter) return;
-    counter.textContent = `${len} / ${max}`;
-    counter.className = 'seo-char-count' + (len > max ? ' over' : len > max * 0.85 ? ' warn' : '');
-  }
-
-  function saveSEO() {
-    const seo = {};
-    SEO_PAGES.forEach((p, i) => {
-      seo[p.key] = {
-        title: document.getElementById(`seo-title-${i}`)?.value || '',
-        description: document.getElementById(`seo-desc-${i}`)?.value || '',
-        keywords: document.getElementById(`seo-kw-${i}`)?.value || '',
-      };
-    });
-    saveSEOData(seo);
-    showToast('SEO data saved!', 'success');
-  }
-
-  // ============================================================
-  //  CONTACT FORMS PAGE
-  // ============================================================
-  function renderFormsPage() {
-    const forms = JSON.parse(localStorage.getItem('calisto_form_submissions') || '[]');
-    const el = document.getElementById('forms-list');
-    if (!el) return;
-    if (forms.length === 0) {
-      el.innerHTML = `<div class="empty-state">
-        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/></svg>
-        <h3>No form submissions yet</h3>
-        <p>When visitors submit the contact form, their messages will appear here.</p>
-        <p style="margin-top:0.5rem;font-size:0.8rem">To enable this, your contact form needs to save to <code>localStorage.calisto_form_submissions</code>.</p>
-      </div>`;
-      return;
-    }
-    el.innerHTML = forms.slice().reverse().map((f, i) => `
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:0.75rem;box-shadow:var(--shadow);">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
-          <div>
-            <strong>${escHtml(f.name || 'Anonymous')}</strong>
-            ${f.email ? `<a href="mailto:${escHtml(f.email)}" style="color:var(--accent);font-size:0.85rem;margin-left:0.5rem;">${escHtml(f.email)}</a>` : ''}
-            ${f.company ? `<span style="color:var(--muted);font-size:0.82rem;margin-left:0.5rem;">· ${escHtml(f.company)}</span>` : ''}
-          </div>
-          <span style="color:var(--muted);font-size:0.78rem;">${f.date || ''}</span>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Keywords</label>
+          <input class="form-input" value="${p.kw}" placeholder="comma, separated, keywords">
         </div>
-        ${f.message ? `<p style="color:var(--text);font-size:0.88rem;line-height:1.6;background:var(--bg);padding:0.75rem;border-radius:8px;">${escHtml(f.message)}</p>` : ''}
-      </div>`).join('');
-  }
+      </div>
+    </div>
+  `).join('');
+}
 
-  // ============================================================
-  //  PROFILE PAGE
-  // ============================================================
-  function renderProfilePage() {
-    const session = getSession();
-    if (!session) return;
-    const nameEl = document.getElementById('profile-name');
-    const emailEl = document.getElementById('profile-email');
-    if (nameEl) nameEl.value = session.name || '';
-    if (emailEl) {
-      const users = getAllUsers();
-      const user = users.find(u => u.id === session.id);
-      emailEl.value = user?.email || '';
-    }
-  }
+function toggleSEO(i) {
+  const body = document.getElementById('seo-body-' + i);
+  const chevron = document.getElementById('seo-chevron-' + i);
+  body.classList.toggle('hidden');
+  chevron.style.transform = body.classList.contains('hidden') ? '' : 'rotate(180deg)';
+}
 
-  function saveProfile() {
-    const session = getSession();
-    if (!session) return;
-    const name = document.getElementById('profile-name').value.trim();
-    const email = document.getElementById('profile-email').value.trim();
-    const pw = document.getElementById('profile-pw').value;
-    const updates = { name, email };
-    if (pw) updates.password = pw;
+function countChars(el, countId, max) {
+  const len = el.value.length;
+  const span = document.getElementById(countId);
+  span.textContent = `${len}/${max}`;
+  span.className = 'char-count' + (len > max ? ' over' : len > max * .85 ? ' warn' : '');
+}
 
-    if (session.id === 'superadmin') {
-      // For superadmin, just update session display only (no user record in storage by default)
-      showToast('Profile saved (session only).', 'success');
-      document.getElementById('topbar-name').textContent = name;
-    } else {
-      const res = updateUser(session.id, updates);
-      if (res.success) {
-        // Refresh session name
-        const newSession = { ...session, name };
-        sessionStorage.setItem('calisto_session', JSON.stringify(newSession));
-        document.getElementById('topbar-name').textContent = name;
-        document.getElementById('topbar-avatar').textContent = name.slice(0,2).toUpperCase();
-        showToast('Profile saved!', 'success');
-      } else showToast(res.message, 'error');
-    }
-    document.getElementById('profile-pw').value = '';
-  }
+function saveSEO() { toast('SEO settings saved successfully!'); }
 
-  // ============================================================
-  //  UTILS
-  // ============================================================
-  function slugify(s) { return s.toLowerCase().trim().replace(/[^\w\s-]/g,'').replace(/[\s_-]+/g,'-').replace(/^-+|-+$/g,''); }
-  function escHtml(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+/* ════════════════════════════════
+   CHARTS (Dashboard)
+════════════════════════════════ */
+let trafficChart = null, sourceChart = null;
+
+function initCharts() {
+  if (trafficChart) return;
+
+  const labels = Array.from({length: 30}, (_, i) => {
+    const d = new Date(); d.setDate(d.getDate() - (29 - i));
+    return d.toLocaleDateString('en', { month: 'short', day: 'numeric' });
+  });
+
+  const visits = labels.map(() => Math.round(500 + Math.random() * 900));
+  const enquiries = labels.map(() => Math.round(1 + Math.random() * 5));
+
+  const ctx1 = document.getElementById('trafficChart').getContext('2d');
+  const g1 = ctx1.createLinearGradient(0, 0, 0, 190);
+  g1.addColorStop(0, 'rgba(0,92,185,.12)');
+  g1.addColorStop(1, 'rgba(0,92,185,0)');
+
+  trafficChart = new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Visits',
+          data: visits,
+          borderColor: '#005cb9',
+          backgroundColor: g1,
+          borderWidth: 2,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          tension: .4,
+          fill: true,
+          yAxisID: 'y',
+        },
+        {
+          label: 'Enquiries',
+          data: enquiries,
+          borderColor: '#c27c0e',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          tension: .4,
+          fill: false,
+          borderDash: [4, 4],
+          yAxisID: 'y1',
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, position: 'top', align: 'end', labels: { color: '#8a96a8', font: { size: 12, family: 'Lato' }, boxWidth: 12, boxHeight: 2, padding: 16, usePointStyle: true, pointStyle: 'line' } },
+        tooltip: { backgroundColor: '#1a2332', padding: 10, cornerRadius: 8, titleColor: '#8a96a8', bodyColor: '#fff', bodyFont: { size: 13 } },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#8a96a8', font: { size: 11 }, maxTicksLimit: 8 }, border: { display: false } },
+        y: { position: 'left', grid: { color: '#eef1f6' }, ticks: { color: '#8a96a8', font: { size: 11 } }, border: { display: false } },
+        y1: { position: 'right', grid: { display: false }, ticks: { color: '#c27c0e', font: { size: 11 } }, border: { display: false } },
+      },
+    },
+  });
+
+  const ctx2 = document.getElementById('sourceChart').getContext('2d');
+  sourceChart = new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+      labels: ['Contact Form', 'Partner Apply', 'Product Query'],
+      datasets: [{
+        data: [46, 30, 24],
+        backgroundColor: ['#005cb9', '#1a9e5f', '#c27c0e'],
+        borderWidth: 0,
+        hoverOffset: 5,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '74%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { backgroundColor: '#1a2332', padding: 9, cornerRadius: 7 },
+      },
+    },
+  });
+}
+
+/* ════════════════════════════════
+   FORMS BADGE
+════════════════════════════════ */
+function updateFormsBadge() {
+  document.getElementById('forms-badge').textContent = '12';
+}
+
+/* ════════════════════════════════
+   INIT
+════════════════════════════════ */
+initAuth();
+updateFormsBadge();
+renderProducts();
+initCharts();
 </script>
 </body>
 </html>
