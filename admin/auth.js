@@ -72,13 +72,14 @@ function getSession() {
 }
 
 function setSession(user) {
+  const displayName = user.name || user.username || 'User';
   const session = {
     id: user.id,
     username: user.username,
-    name: user.name,
+    name: displayName,
     role: user.role,
     permissions: getUserPermissions(user),
-    avatar: user.avatar || user.name.slice(0,2).toUpperCase(),
+    avatar: user.avatar || displayName.slice(0, 2).toUpperCase(),
     loginAt: Date.now()
   };
   sessionStorage.setItem('calisto_session', JSON.stringify(session));
@@ -99,21 +100,26 @@ function getUserPermissions(user) {
 function authLogin(username, password) {
   if (!username || !password) return { success: false, message: 'Please enter username and password.' };
 
-  // Check superadmin first
-  if (username === SUPERADMIN.username && password === SUPERADMIN.password) {
-    setSession(SUPERADMIN);
-    return { success: true, user: SUPERADMIN };
-  }
+  try {
+    // Check superadmin first (always works even if localStorage is cleared)
+    if (username === SUPERADMIN.username && password === SUPERADMIN.password) {
+      setSession(SUPERADMIN);
+      return { success: true, user: SUPERADMIN };
+    }
 
-  // Check stored users
-  const users = getUsers();
-  const user = users.find(u => u.username === username && u.password === password && u.active !== false);
-  if (user) {
-    setSession(user);
-    return { success: true, user };
-  }
+    // Check stored users
+    const users = getUsers();
+    const user = users.find(u => u.username === username && u.password === password && u.active !== false);
+    if (user) {
+      setSession(user);
+      return { success: true, user };
+    }
 
-  return { success: false, message: 'Incorrect username or password.' };
+    return { success: false, message: 'Incorrect username or password.' };
+  } catch (e) {
+    console.error('authLogin error:', e);
+    return { success: false, message: 'Login error. Please try again.' };
+  }
 }
 
 function authLogout() {
@@ -144,16 +150,17 @@ function createUser({ username, password, name, email, role, permissions }) {
   if (users.find(u => u.username === username) || username === SUPERADMIN.username) {
     return { success: false, message: 'Username already exists.' };
   }
+  const displayName = name || username;
   const newUser = {
     id: 'user_' + Date.now(),
     username,
     password,
-    name,
+    name: displayName,
     email: email || '',
     role: role || 'viewer',
     permissions: permissions || [],
-    avatar: name.slice(0,2).toUpperCase(),
-    createdAt: new Date().toISOString().slice(0,10),
+    avatar: displayName.slice(0, 2).toUpperCase(),
+    createdAt: new Date().toISOString().slice(0, 10),
     active: true
   };
   users.push(newUser);
