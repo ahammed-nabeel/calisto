@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calisto Admin Dashboard</title>
+<style>body{visibility:hidden}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -1543,10 +1544,19 @@ let currentUser = null;
 function initAuth() {
   const stored = sessionStorage.getItem('calisto_user');
   if (!stored) {
-    // In the demo file, allow default login
-    currentUser = { username: 'admin', role: 'Super Admin', name: 'Admin', permissions: ['forms','products','seo','users','blog','export'] };
-  } else {
+    // No session — redirect to login immediately, show nothing
+    document.body.style.visibility = 'hidden';
+    window.location.replace('login.html');
+    return;
+  }
+
+  try {
     currentUser = JSON.parse(stored);
+  } catch(e) {
+    sessionStorage.removeItem('calisto_user');
+    document.body.style.visibility = 'hidden';
+    window.location.replace('login.html');
+    return;
   }
 
   // Populate user UI
@@ -1565,6 +1575,9 @@ function initAuth() {
       item.classList.add('locked');
     }
   });
+
+  // Auth passed — show the page
+  document.body.style.visibility = 'visible';
 }
 
 function signOut() {
