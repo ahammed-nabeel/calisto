@@ -2459,92 +2459,102 @@ function initCharts() {
 /* ════════════════════════════════
    USERS PAGE
 ════════════════════════════════ */
-const ROLE_LABELS = {
-  superadmin:  { label: 'Super Admin', cls: 'role-super' },
-  editor:      { label: 'Editor',      cls: 'role-editor' },
-  seo_manager: { label: 'SEO Manager', cls: 'role-seo' },
-  viewer:      { label: 'Viewer',      cls: 'role-viewer' },
-};
+let _userCache = [];
 
-function renderUsersPage() {
+async function renderUsersPage() {
   const tbody = document.getElementById('users-tbody');
   if (!tbody) return;
-  const users = getAllUsers(); // from auth.js — includes superadmin
-  tbody.innerHTML = users.map(u => {
-    const isSA   = u.id === 'superadmin';
-    const rl     = ROLE_LABELS[u.role] || { label: u.role, cls: 'role-viewer' };
-    const active = u.active !== false;
-    const initials = (u.name || u.username || '?').slice(0, 2).toUpperCase();
-    return `
-      <tr>
-        <td>
-          <div class="flex items-center gap-2">
-            <div class="avatar" style="width:28px;height:28px;font-size:11px;border-radius:7px">${initials}</div>
-            <div>
-              <div style="font-weight:700;font-size:13.5px">${u.name || u.username}</div>
-              <div style="font-size:12px;color:var(--text-3)">${u.username}${u.email ? ' · ' + u.email : ''}</div>
-            </div>
-          </div>
-        </td>
-        <td><span class="role-badge ${rl.cls}">${rl.label}</span></td>
-        <td><span class="pill ${active ? 'pill-green' : 'pill-amber'}">${active ? 'Active' : 'Inactive'}</span></td>
-        <td style="color:var(--text-3)">${u.createdAt || '—'}</td>
-        <td>
-          <div class="tbl-actions">
-            ${isSA ? '' : `
-              <button class="tbl-action" title="${active ? 'Deactivate' : 'Activate'}" onclick="toggleUser('${u.id}')">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
-              </button>
-              <button class="tbl-action del" title="Delete" onclick="removeUser('${u.id}')">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
-              </button>
-            `}
-          </div>
-        </td>
-      </tr>
-    `;
-  }).join('');
+
+  try {
+    const resp = await fetch('/api/auth', {
+      headers: { 'Authorization': 'Bearer ' + _adminApiToken }
+    });
+    const data = await resp.json();
+    if (data.success) {
+      _userCache = data.users;
+      tbody.innerHTML = data.users.map(u => {
+        const rl     = ROLE_LABELS[u.role] || { label: u.role, cls: 'role-viewer' };
+        const active = u.active !== false;
+        const initials = (u.full_name || u.email || '?').slice(0, 2).toUpperCase();
+        
+        return `
+          <tr>
+            <td>
+              <div class="flex items-center gap-2">
+                <div class="avatar" style="width:28px;height:28px;font-size:11px;border-radius:7px">${initials}</div>
+                <div>
+                  <div style="font-weight:700;font-size:13.5px">${u.full_name || 'Admin'}</div>
+                  <div style="font-size:12px;color:var(--text-3)">${u.email}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <select class="form-input" style="padding:4px 8px;font-size:12px;width:130px" onchange="changeUserRole('${u.id}', this.value)">
+                ${Object.keys(ROLE_LABELS).map(r => `<option value="${r}" ${r===u.role?'selected':''}>${ROLE_LABELS[r].label}</option>`).join('')}
+              </select>
+            </td>
+            <td><span class="pill ${active ? 'pill-green' : 'pill-amber'}">${active ? 'Active' : 'Inactive'}</span></td>
+            <td style="color:var(--text-3);font-size:11.5px">${new Date(u.updated_at).toLocaleDateString()}</td>
+            <td>
+              <div class="tbl-actions">
+                <button class="tbl-action" title="${active ? 'Deactivate' : 'Activate'}" onclick="toggleUserStatus('${u.id}', ${!active})">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                </button>
+                <button class="tbl-action del" title="Delete" onclick="removeUser('${u.id}')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+  } catch (err) {
+    console.error('Failed to load users:', err);
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-3)">Failed to load users from API.</td></tr>';
+  }
+}
+
+async function changeUserRole(userId, newRole) {
+  try {
+    const resp = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _adminApiToken },
+      body: JSON.stringify({ action: 'update_user', userId, updates: { role: newRole } })
+    });
+    if (resp.ok) toast('User role updated.');
+    else { const d = await resp.json(); toast(d.error || 'Update failed', 'error'); renderUsersPage(); }
+  } catch (err) { toast('Network error', 'error'); }
+}
+
+async function toggleUserStatus(userId, newStatus) {
+  try {
+    const resp = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _adminApiToken },
+      body: JSON.stringify({ action: 'update_user', userId, updates: { active: newStatus } })
+    });
+    if (resp.ok) { toast(newStatus ? 'User activated.' : 'User deactivated.'); renderUsersPage(); }
+    else { const d = await resp.json(); toast(d.error || 'Update failed', 'error'); }
+  } catch (err) { toast('Network error', 'error'); }
+}
+
+async function removeUser(userId) {
+  if (!confirm('Delete this user? This will permanently remove them from Supabase.')) return;
+  try {
+    const resp = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _adminApiToken },
+      body: JSON.stringify({ action: 'delete_user', userId })
+    });
+    if (resp.ok) { toast('User deleted.'); renderUsersPage(); }
+    else { const d = await resp.json(); toast(d.error || 'Delete failed', 'error'); }
+  } catch (err) { toast('Network error', 'error'); }
 }
 
 function submitNewUser() {
-  const name     = document.getElementById('nu-name').value.trim();
-  const username = document.getElementById('nu-username').value.trim();
-  const email    = document.getElementById('nu-email').value.trim();
-  const role     = document.getElementById('nu-role').value;
-  const password = document.getElementById('nu-password').value;
-
-  if (!name)     { toast('Display name is required.');  return; }
-  if (!username) { toast('Username is required.');      return; }
-  if (!password) { toast('Password is required.');      return; }
-
-  const result = createUser({ username, password, name, email, role }); // from auth.js
-  if (result.success) {
-    closeModal('add-user-modal');
-    renderUsersPage();
-    toast(`User "${name}" created successfully.`);
-    ['nu-name','nu-username','nu-email','nu-password'].forEach(id => document.getElementById(id).value = '');
-  } else {
-    toast(result.message || 'Could not create user.');
-  }
-}
-
-function toggleUser(id) {
-  const result = toggleUserActive(id); // from auth.js
-  if (result.success) {
-    renderUsersPage();
-    toast(result.active ? 'User activated.' : 'User deactivated.');
-  }
-}
-
-function removeUser(id) {
-  if (!confirm('Delete this user? This cannot be undone.')) return;
-  const result = deleteUser(id); // from auth.js
-  if (result.success) {
-    renderUsersPage();
-    toast('User deleted.');
-  } else {
-    toast(result.message || 'Could not delete user.');
-  }
+  toast('Please add new users via your Supabase Authentication dashboard for security. They will automatically appear here once added.', 'info', 6000);
+  closeModal('add-user-modal');
 }
 
 /* ════════════════════════════════
