@@ -469,20 +469,21 @@
     let apiToken = null;
     let apiUser = null;
     let loginError = null;
+    let apiData = null;
     try {
       const resp = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password: p })
       });
-      const data = await resp.json();
-      if (resp.ok && data.success) {
-        apiToken = data.token;
-        apiUser = data.user;
+      apiData = await resp.json();
+      if (resp.ok && apiData.success) {
+        apiToken = apiData.token;
+        apiUser = apiData.user;
         sessionStorage.setItem('calisto_api_token', apiToken);
       } else {
-        loginError = data.error || 'Invalid email or password.';
-        if (data.debugUrl) loginError += ` (DB: ${data.debugUrl})`;
+        loginError = apiData.error || 'Invalid email or password.';
+        if (apiData.debugUrl) loginError += ` (DB: ${apiData.debugUrl})`;
       }
     } catch (err) {
       console.warn('API auth error:', err.message);
@@ -504,7 +505,13 @@
       btnText.textContent = 'Sign In';
       arrow.style.display = '';
       btn.disabled = false;
-      showError(loginError || 'Invalid email or password.');
+      
+      let finalMsg = loginError || 'Invalid email or password.';
+      if (apiData && apiData.details) finalMsg += ` | Info: ${apiData.details}`;
+      if (apiData && apiData.stack) console.error('API Stack:', apiData.stack);
+
+      showError(finalMsg);
+      
       document.getElementById('password').value = '';
       document.getElementById('password').focus();
     }

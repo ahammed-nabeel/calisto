@@ -7,7 +7,7 @@ import { createClient } from '@supabase/supabase-js';
 
 function getSupabase() {
   let url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_ANON_KEY; // Safe for auth operations
+  const key = process.env.SUPABASE_ANON_KEY; 
   if (!url || !key) return null;
   // Clean trailing slash
   if (url.endsWith('/')) url = url.slice(0, -1);
@@ -29,10 +29,15 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const supabase = getSupabase();
-  let supUrl = process.env.SUPABASE_URL || '';
-
   try {
+    const supabase = getSupabase();
+    const supUrl = process.env.SUPABASE_URL || '';
+
+    // Safety check for body
+    if (!req.body) {
+       return res.status(400).json({ error: 'Request body is empty.' });
+    }
+
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const { email, password } = body || {};
 
@@ -41,7 +46,10 @@ export default async function handler(req, res) {
     }
 
     if (!supabase) {
-      return res.status(500).json({ error: 'Supabase not configured. Check environment variables.' });
+      return res.status(500).json({ 
+        error: 'Supabase configuration missing.',
+        details: `URL: ${supUrl ? 'Set' : 'Missing'} | Key: ${process.env.SUPABASE_ANON_KEY ? 'Set' : 'Missing'}`
+      });
     }
 
     // Sign in with Supabase Auth
@@ -72,6 +80,10 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     console.error('Auth error:', err);
-    return res.status(500).json({ error: 'Authentication failed.', details: err.message });
+    return res.status(500).json({ 
+      error: 'API Execution Error', 
+      details: err.message, 
+      stack: err.stack ? err.stack.split('\n')[0] : '' 
+    });
   }
 }
