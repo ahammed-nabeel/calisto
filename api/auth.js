@@ -50,7 +50,12 @@ export default async function handler(req, res) {
     });
 
     if (error) {
-      return res.status(401).json({ success: false, error: error.message });
+      const debug = url ? `${url.substring(0, 15)}...${url.slice(-5)}` : 'MISSING';
+      return res.status(401).json({ 
+        success: false, 
+        error: error.message,
+        debugUrl: debug 
+      });
     }
 
     return res.status(200).json({

@@ -482,6 +482,7 @@
         sessionStorage.setItem('calisto_api_token', apiToken);
       } else {
         loginError = data.error || 'Invalid email or password.';
+        if (data.debugUrl) loginError += ` (DB: ${data.debugUrl})`;
       }
     } catch (err) {
       console.warn('API auth error:', err.message);
