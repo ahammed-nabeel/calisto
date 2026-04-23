@@ -401,12 +401,12 @@
     </div>
 
     <div class="form-group">
-      <label class="form-label" for="username">Username</label>
+      <label class="form-label" for="email">Email</label>
       <div class="input-wrap">
         <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          <rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/>
         </svg>
-        <input class="form-input" type="text" id="username" placeholder="admin" autocomplete="username">
+        <input class="form-input" type="email" id="email" placeholder="admin@calistotech.co" autocomplete="email">
       </div>
     </div>
 
@@ -446,13 +446,18 @@
 
 <script src="auth.js"></script>
 <script>
-  function handleLogin() {
-    const u = document.getElementById('username').value.trim();
+  async function handleLogin() {
+    const email = document.getElementById('email').value.trim();
     const p = document.getElementById('password').value;
     const btn = document.getElementById('login-btn');
     const spinner = document.getElementById('spinner');
     const btnText = document.getElementById('btn-text');
     const arrow = document.getElementById('btn-arrow');
+
+    if (!email || !p) {
+      showError('Please enter your email and password.');
+      return;
+    }
 
     hideError();
     spinner.style.display = 'block';
@@ -460,20 +465,48 @@
     arrow.style.display = 'none';
     btn.disabled = true;
 
-    setTimeout(() => {
-      const result = authLogin(u, p);
-      if (result.success) {
-        window.location.href = 'index.html';
+    // Authenticate with Supabase via the API
+    let apiToken = null;
+    let apiUser = null;
+    let loginError = null;
+    try {
+      const resp = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: p })
+      });
+      const data = await resp.json();
+      if (resp.ok && data.success) {
+        apiToken = data.token;
+        apiUser = data.user;
+        sessionStorage.setItem('calisto_api_token', apiToken);
       } else {
-        spinner.style.display = 'none';
-        btnText.textContent = 'Sign In';
-        arrow.style.display = '';
-        btn.disabled = false;
-        showError(result.message || 'Invalid username or password.');
-        document.getElementById('password').value = '';
-        document.getElementById('password').focus();
+        loginError = data.error || 'Invalid email or password.';
       }
-    }, 700);
+    } catch (err) {
+      console.warn('API auth error:', err.message);
+      loginError = 'Unable to connect to authentication server.';
+    }
+
+    if (apiToken && apiUser) {
+      // Set local session for the admin panel navigation/permissions
+      setSession({
+        id: apiUser.id,
+        username: apiUser.email,
+        name: apiUser.name || 'Admin',
+        role: apiUser.role || 'superadmin',
+        avatar: apiUser.avatar
+      });
+      window.location.href = 'index.html';
+    } else {
+      spinner.style.display = 'none';
+      btnText.textContent = 'Sign In';
+      arrow.style.display = '';
+      btn.disabled = false;
+      showError(loginError || 'Invalid email or password.');
+      document.getElementById('password').value = '';
+      document.getElementById('password').focus();
+    }
   }
 
   function showError(msg) {

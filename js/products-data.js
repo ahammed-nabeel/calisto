@@ -1,6 +1,7 @@
 // ============================================================
-//  CALISTO PRODUCTS DATA STORE  v2
-//  Edit via Admin Panel at /admin/ — Export to overwrite this file
+//  CALISTO PRODUCTS DATA STORE  v3 — API-BACKED
+//  Products are loaded from /api/products (Vercel KV database).
+//  Falls back to the hardcoded CALISTO_PRODUCTS if API is unavailable.
 // ============================================================
 
 const CALISTO_PRODUCTS = {
@@ -187,6 +188,79 @@ const CALISTO_PRODUCTS = {
   ]
 };
 
+// ── API Cache ────────────────────────────────────────────────
+// Caches API response for 60 seconds to avoid excessive calls
+let _apiCache = null;
+let _apiCacheTime = 0;
+const API_CACHE_TTL = 60 * 1000; // 60 seconds
+
+// ── Detect base URL for API calls ───────────────────────────
+function _getApiBase() {
+  // If running on Vercel (or same domain), use relative path
+  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    // Get origin (handles both root and subdirectory deployments)
+    return window.location.origin;
+  }
+  // Local dev — try Vercel dev server or fallback
+  return window.location.origin;
+}
+
+// ── Load from API (async) ────────────────────────────────────
+async function loadProductsFromAPI() {
+  // Return cache if fresh
+  if (_apiCache && (Date.now() - _apiCacheTime) < API_CACHE_TTL) {
+    return _apiCache;
+  }
+
+  try {
+    const resp = await fetch(`${_getApiBase()}/api/products`, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (!resp.ok) throw new Error(`API returned ${resp.status}`);
+
+    const data = await resp.json();
+    if (data && data.categories) {
+      _apiCache = data;
+      _apiCacheTime = Date.now();
+      return data;
+    }
+  } catch (err) {
+    console.warn('Calisto: Could not load products from API, using fallback.', err.message);
+  }
+
+  return null;
+}
+
+// ── Synchronous fallback (original behavior) ─────────────────
+function loadProductsData() {
+  // If we have a cached API response, use it
+  if (_apiCache) return _apiCache;
+
+  // Fallback to localStorage (for backward compatibility)
+  const saved = localStorage.getItem('calisto_products');
+  if (saved) {
+    try { return JSON.parse(saved); } catch(e) {}
+  }
+
+  return CALISTO_PRODUCTS;
+}
+
+// ── Initialize: fetch from API as soon as the script loads ───
+// This pre-warms the cache so loadProductsData() returns API data
+(async function initProductsData() {
+  const apiData = await loadProductsFromAPI();
+  if (apiData) {
+    _apiCache = apiData;
+    _apiCacheTime = Date.now();
+    // Trigger re-render if any page is already loaded
+    if (typeof window._onProductsLoaded === 'function') {
+      window._onProductsLoaded(apiData);
+    }
+  }
+})();
+
 // ── Helpers ──────────────────────────────────────────────────
 function getCategoryBySlug(slug) {
   return loadProductsData().categories.find(c => c.slug === slug);
@@ -206,12 +280,4 @@ function getItemBySlug(categorySlug, subcatSlug, itemSlug) {
 
 function saveProductsData(data) {
   localStorage.setItem('calisto_products', JSON.stringify(data));
-}
-
-function loadProductsData() {
-  const saved = localStorage.getItem('calisto_products');
-  if (saved) {
-    try { return JSON.parse(saved); } catch(e) {}
-  }
-  return CALISTO_PRODUCTS;
 }

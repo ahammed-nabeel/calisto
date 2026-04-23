@@ -124,6 +124,7 @@ function authLogin(username, password) {
 
 function authLogout() {
   clearSession();
+  sessionStorage.removeItem('calisto_api_token');
   window.location.href = 'login.html';
 }
 

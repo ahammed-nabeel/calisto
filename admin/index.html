@@ -1021,20 +1021,19 @@ tr:hover td { background: var(--bg-2); }
             <div class="page-hd-sub">Manage categories, subcategories, and products that power every page of the website</div>
           </div>
           <div class="flex gap-2">
-            <button class="btn btn-primary btn-sm" onclick="exportProductsData()">
+            <button class="btn btn-outline btn-sm" onclick="exportProductsData()">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Export & Deploy
+              Download Backup
             </button>
           </div>
         </div>
 
-        <!-- Publish workflow notice -->
-        <div style="background:var(--blue-light);border:1px solid var(--blue-mid);border-radius:var(--radius);padding:13px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;font-size:13px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <span style="color:var(--blue-dark)">
-            <strong>How to publish:</strong> After adding or editing products, click <strong>Export & Deploy</strong> → download <code style="background:white;padding:1px 5px;border-radius:4px;font-size:12px">products-data.js</code> → replace <code style="background:white;padding:1px 5px;border-radius:4px;font-size:12px">js/products-data.js</code> in your repo → commit and push to GitHub → Vercel auto-deploys.
-          </span>
+        <!-- Live API status -->
+        <div id="api-status-banner" style="border-radius:var(--radius);padding:13px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;font-size:13px;background:var(--green-bg);border:1px solid #b8e6d0;transition:all .3s">
+          <div id="api-status-dot" style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite"></div>
+          <span id="api-status-text" style="color:var(--green)"><strong>Live Mode:</strong> Changes you save here are published to the live website instantly.</span>
         </div>
+        <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style>
 
         <!-- Two-column: tree + editor -->
         <div style="display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start">
@@ -1652,24 +1651,123 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 });
 
 /* ════════════════════════════════
-   PRODUCTS — CATALOG EDITOR
+   PRODUCTS — CATALOG EDITOR (API-BACKED)
 ════════════════════════════════ */
 
-// Working copy loaded from CALISTO_PRODUCTS (defined in products-data.js on the website)
-// In admin we keep a session copy
+// Working copy — loaded from API on init, falls back to seed
 let catalogData = null;
+let _adminApiToken = null; // Set after login via /api/auth
+let _apiConnected = false;
 
 function getCatalog() {
   if (!catalogData) {
-    const stored = localStorage.getItem('calisto_products');
-    if (stored) { try { catalogData = JSON.parse(stored); } catch(e) {} }
-    if (!catalogData) catalogData = JSON.parse(JSON.stringify(CALISTO_SEED));
+    catalogData = JSON.parse(JSON.stringify(CALISTO_SEED));
   }
   return catalogData;
 }
 
-function saveCatalog() {
+// Save to API (async) — publishes to live site instantly
+async function saveCatalog() {
+  // Always save locally as backup
   localStorage.setItem('calisto_products', JSON.stringify(catalogData));
+
+  // Save to API if we have a token
+  if (_adminApiToken) {
+    try {
+      const resp = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + _adminApiToken
+        },
+        body: JSON.stringify(catalogData)
+      });
+      if (resp.ok) {
+        _setApiStatus(true, 'Saved & published to live website.');
+        return true;
+      } else {
+        const err = await resp.json().catch(() => ({}));
+        _setApiStatus(false, 'Save failed: ' + (err.error || resp.status));
+        return false;
+      }
+    } catch (err) {
+      console.error('API save error:', err);
+      _setApiStatus(false, 'Network error — saved locally only.');
+      return false;
+    }
+  } else {
+    _setApiStatus(false, 'No API token — saved locally only. Re-login to enable live publishing.');
+    return false;
+  }
+}
+
+// Load catalog from API on startup
+async function loadCatalogFromAPI() {
+  try {
+    const resp = await fetch('/api/products');
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data && data.categories) {
+        catalogData = data;
+        _apiConnected = true;
+        _setApiStatus(true, 'Connected — changes are published to the live website instantly.');
+        return true;
+      }
+    }
+  } catch (err) {
+    console.warn('Could not load from API:', err.message);
+  }
+
+  // Fallback to localStorage
+  _apiConnected = false;
+  const stored = localStorage.getItem('calisto_products');
+  if (stored) { try { catalogData = JSON.parse(stored); } catch(e) {} }
+  if (!catalogData) catalogData = JSON.parse(JSON.stringify(CALISTO_SEED));
+  _setApiStatus(false, 'Offline mode — changes saved locally only.');
+  return false;
+}
+
+// Authenticate with API to get write token
+async function authenticateAPI(username, password) {
+  try {
+    const resp = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data.success && data.token) {
+        _adminApiToken = data.token;
+        sessionStorage.setItem('calisto_api_token', data.token);
+        return true;
+      }
+    }
+  } catch (err) {
+    console.warn('API auth failed, using localStorage auth only.', err.message);
+  }
+  return false;
+}
+
+// Status banner helper
+function _setApiStatus(connected, msg) {
+  const banner = document.getElementById('api-status-banner');
+  const dot = document.getElementById('api-status-dot');
+  const text = document.getElementById('api-status-text');
+  if (!banner) return;
+  if (connected) {
+    banner.style.background = 'var(--green-bg)';
+    banner.style.borderColor = '#b8e6d0';
+    dot.style.background = 'var(--green)';
+    text.style.color = 'var(--green)';
+    text.innerHTML = '<strong>Live Mode:</strong> ' + msg;
+  } else {
+    banner.style.background = 'var(--amber-bg)';
+    banner.style.borderColor = '#f0dba0';
+    dot.style.background = 'var(--amber)';
+    text.style.color = 'var(--amber)';
+    text.innerHTML = '<strong>Offline Mode:</strong> ' + msg;
+  }
 }
 
 // Seed data matching the real products-data.js structure
@@ -1790,9 +1888,11 @@ function updateCategory(ci) {
   cat.heroTitle = document.getElementById('e-cat-hero-title').value;
   cat.heroSubtitle = document.getElementById('e-cat-hero-sub').value;
   cat.heroImage = document.getElementById('e-cat-hero-img').value;
-  saveCatalog();
+  saveCatalog().then(ok => {
+    if (ok) toast('Category updated & published live!');
+    else toast('Category updated locally.');
+  });
   renderCatalogTree();
-  toast('Category updated! Export to apply to website.');
 }
 
 function deleteCategory(ci) {
@@ -1832,9 +1932,11 @@ function updateSubcat(ci, si) {
   sc.description = document.getElementById('e-sc-desc').value;
   sc.heroSubtitle = document.getElementById('e-sc-hero-sub').value;
   sc.pageFile = document.getElementById('e-sc-page').value;
-  saveCatalog();
+  saveCatalog().then(ok => {
+    if (ok) toast('Subcategory updated & published live!');
+    else toast('Subcategory updated locally.');
+  });
   renderCatalogTree();
-  toast('Subcategory updated! Export to apply to website.');
 }
 
 function deleteSubcat(ci, si) {
@@ -1921,9 +2023,11 @@ function updateProduct(ci, si, ii) {
   item.specs = document.getElementById('e-p-specs').value.split('\n').map(s => s.trim()).filter(Boolean).map(l => { const [p, ...v] = l.split('|'); return { param: p.trim(), value: v.join('|').trim() }; });
   item.images = _readGdriveImgList(`ep-img-list-${ii}`);
   item.datasheets = _readGdriveDsList(`ep-ds-list-${ii}`);
-  saveCatalog();
+  saveCatalog().then(ok => {
+    if (ok) toast('Product saved & published live!');
+    else toast('Product saved locally.');
+  });
   renderCatalogTree();
-  toast('Product saved! Export products-data.js to publish.');
 }
 
 function deleteProduct(ci, si, ii) {
@@ -1955,8 +2059,11 @@ function saveNewCategory() {
     heroImage: '', pageFile: (document.getElementById('new-cat-slug').value||name.toLowerCase().replace(/\s+/g,'-'))+'.html',
     subcategories: []
   });
-  saveCatalog(); renderCatalogTree(); closeModal('add-category-modal');
-  toast('Category added! Export to apply to website.');
+  saveCatalog().then(ok => {
+    if (ok) toast('Category added & published live!');
+    else toast('Category added locally.');
+  });
+  renderCatalogTree(); closeModal('add-category-modal');
 }
 
 function openAddSubcatModal(ci) {
@@ -1979,8 +2086,11 @@ function saveNewSubcategory() {
     pageFile: document.getElementById('new-subcat-page').value || slug+'.html',
     items:[]
   });
-  saveCatalog(); renderCatalogTree(); closeModal('add-subcat-modal');
-  toast('Subcategory added! Export to apply to website.');
+  saveCatalog().then(ok => {
+    if (ok) toast('Subcategory added & published live!');
+    else toast('Subcategory added locally.');
+  });
+  renderCatalogTree(); closeModal('add-subcat-modal');
 }
 
 // context for add-product modal
@@ -2139,10 +2249,12 @@ function saveProductFromModal() {
     characteristics: chars, specs, images, datasheets
   });
 
-  saveCatalog();
+  saveCatalog().then(ok => {
+    if (ok) toast('Product added & published live!');
+    else toast('Product added locally.');
+  });
   renderCatalogTree();
   closeModal('add-product-modal');
-  toast('Product added! Export products-data.js to publish.');
 }
 
 /* ── Export ── */
@@ -2445,7 +2557,17 @@ function updateFormsBadge() {
 initAuth();
 updateFormsBadge();
 initCharts();
-// Tree is rendered lazily when the products page is first opened
+
+// Restore API token from session
+_adminApiToken = sessionStorage.getItem('calisto_api_token') || null;
+
+// Load products from API and re-render tree if products page is open
+loadCatalogFromAPI().then(() => {
+  const pgProducts = document.getElementById('pg-products');
+  if (pgProducts && !pgProducts.classList.contains('hidden')) {
+    renderCatalogTree();
+  }
+});
 </script>
 </body>
 </html>

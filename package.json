@@ -1,0 +1,13 @@
+{
+  "name": "calisto-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Calisto Automation — Premium Entrance Solutions",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.0"
+  }
+}
