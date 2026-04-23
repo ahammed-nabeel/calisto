@@ -1687,7 +1687,9 @@ async function saveCatalog() {
         return true;
       } else {
         const err = await resp.json().catch(() => ({}));
-        _setApiStatus(false, 'Save failed: ' + (err.error || resp.status));
+        let msg = err.error || resp.status;
+        if (err.details) msg += ' (' + err.details + ')';
+        _setApiStatus(false, 'Save failed: ' + msg);
         return false;
       }
     } catch (err) {
