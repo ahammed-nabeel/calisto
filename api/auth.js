@@ -6,9 +6,11 @@ import { createClient } from '@supabase/supabase-js';
 
 function getSupabase(useServiceRole = false) {
   let url = process.env.SUPABASE_URL;
-  // Use service role for admin tasks like listing/updating all users
   const key = useServiceRole ? process.env.SUPABASE_SERVICE_ROLE_KEY : process.env.SUPABASE_ANON_KEY;
-  if (!url || !key) return null;
+  
+  if (!url) return { error: 'SUPABASE_URL is missing.' };
+  if (!key) return { error: useServiceRole ? 'SUPABASE_SERVICE_ROLE_KEY is missing.' : 'SUPABASE_ANON_KEY is missing.' };
+  
   // Clean trailing parts
   url = url.replace(/\/$/, "").replace(/\/rest\/v1$/, "").replace(/\/auth\/v1$/, "");
   return createClient(url, key);
@@ -24,16 +26,18 @@ export default async function handler(req, res) {
   }
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  const supabase = getSupabase(false); // Default to anon for login
-  const adminSupabase = getSupabase(true); // Service role for management
+  const supabase = getSupabase(false); 
+  const adminSupabase = getSupabase(true); 
 
   // ── GET: List All Users (Admin only) ──
   if (req.method === 'GET') {
+    if (adminSupabase.error) return res.status(500).json({ error: adminSupabase.error });
+
     const authHeader = req.headers.authorization || '';
     const token = authHeader.replace('Bearer ', '');
     if (!token) return res.status(401).json({ error: 'Auth required' });
 
-    // Verify token & check if user is admin
+    // Verify token
     const { data: { user }, error: authError } = await adminSupabase.auth.getUser(token);
     if (authError || !user) return res.status(401).json({ error: 'Invalid session' });
 
@@ -46,7 +50,7 @@ export default async function handler(req, res) {
       if (error) throw error;
       return res.status(200).json({ success: true, users: profiles });
     } catch (err) {
-      return res.status(500).json({ error: 'Failed to fetch users', details: err.message });
+      return res.status(500).json({ error: 'Database error', details: err.message });
     }
   }
 
@@ -57,14 +61,12 @@ export default async function handler(req, res) {
 
     // --- CASE 1: Login ---
     if (!action || action === 'login') {
-      if (!supabase) return res.status(500).json({ error: 'Supabase URL/Key missing' });
+      if (supabase.error) return res.status(500).json({ error: supabase.error });
 
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) return res.status(401).json({ error: 'Authentication failed', details: error.message });
 
       const { user, session } = data;
-      
-      // Fetch profile for role
       const { data: profile } = await adminSupabase.from('profiles').select('*').eq('id', user.id).single();
 
       return res.status(200).json({
@@ -81,11 +83,12 @@ export default async function handler(req, res) {
     }
 
     // --- CASE 2: User management (Update/Delete) ---
+    if (adminSupabase.error) return res.status(500).json({ error: adminSupabase.error });
+
     const authHeader = req.headers.authorization || '';
     const token = authHeader.replace('Bearer ', '');
     const { data: { user: adminUser } } = await adminSupabase.auth.getUser(token);
     
-    // Check if the requester is a superadmin
     const { data: adminProfile } = await adminSupabase.from('profiles').select('role').eq('id', adminUser?.id).single();
     if (adminProfile?.role !== 'superadmin') {
       return res.status(403).json({ error: 'Permission denied. SuperAdmin only.' });
@@ -98,7 +101,6 @@ export default async function handler(req, res) {
     }
 
     if (action === 'delete_user') {
-      // Delete from Auth (requires Service Role)
       const { error } = await adminSupabase.auth.admin.deleteUser(userId);
       if (error) return res.status(500).json({ error: 'Delete failed', details: error.message });
       return res.status(200).json({ success: true });
