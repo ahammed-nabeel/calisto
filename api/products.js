@@ -152,12 +152,13 @@ export default async function handler(req, res) {
         .single();
 
       if (error || !data) {
-        // First time — seed the database
-        await supabase.from(TABLE).upsert({
+        // Try to seed if table exists but key is missing
+        const { error: seedError } = await supabase.from(TABLE).upsert({
           key: CATALOG_KEY,
           data: SEED_DATA,
           updated_at: new Date().toISOString()
         }, { onConflict: 'key' });
+        
         return res.status(200).json(SEED_DATA);
       }
 
@@ -170,7 +171,6 @@ export default async function handler(req, res) {
 
   // ── POST: Save product catalog (auth required) ──
   if (req.method === 'POST') {
-    // Verify Supabase auth token
     const authHeader = req.headers.authorization || '';
     const token = authHeader.replace('Bearer ', '');
 
@@ -179,20 +179,20 @@ export default async function handler(req, res) {
     }
 
     if (!supabase) {
-      return res.status(500).json({ error: 'Database not configured.' });
+      return res.status(500).json({ error: 'Database configuration missing (Check SUPABASE_SERVICE_ROLE_KEY).' });
     }
 
     // Verify the user's JWT with Supabase
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) {
-      return res.status(401).json({ error: 'Invalid or expired session. Please re-login.' });
+      return res.status(401).json({ error: 'Invalid session. Please logout and login again.' });
     }
 
     try {
       const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
       if (!body || !body.categories) {
-        return res.status(400).json({ error: 'Invalid data. Expected { categories: [...] }' });
+        return res.status(400).json({ error: 'Invalid data format.' });
       }
 
       const { error: upsertError } = await supabase.from(TABLE).upsert({
@@ -203,7 +203,11 @@ export default async function handler(req, res) {
 
       if (upsertError) {
         console.error('Supabase upsert error:', upsertError);
-        return res.status(500).json({ error: 'Failed to save data.', details: upsertError.message });
+        return res.status(500).json({ 
+            error: 'Save failed', 
+            details: upsertError.message,
+            code: upsertError.code 
+        });
       }
 
       return res.status(200).json({
@@ -213,7 +217,7 @@ export default async function handler(req, res) {
       });
     } catch (err) {
       console.error('Save error:', err);
-      return res.status(500).json({ error: 'Failed to save data.', details: err.message });
+      return res.status(500).json({ error: 'API Error while saving.', details: err.message });
     }
   }
 
