@@ -30,6 +30,7 @@ export default async function handler(req, res) {
   }
 
   const supabase = getSupabase();
+  let supUrl = process.env.SUPABASE_URL || '';
 
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
@@ -50,7 +51,7 @@ export default async function handler(req, res) {
     });
 
     if (error) {
-      const debug = url ? `${url.substring(0, 15)}...${url.slice(-5)}` : 'MISSING';
+      const debug = supUrl ? `${supUrl.substring(0, 15)}...${supUrl.slice(-5)}` : 'MISSING';
       return res.status(401).json({ 
         success: false, 
         error: error.message,
