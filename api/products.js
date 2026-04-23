@@ -10,9 +10,11 @@ const TABLE = 'catalog_data';
 const CATALOG_KEY = 'products';
 
 function getSupabase() {
-  const url = process.env.SUPABASE_URL;
+  let url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY; // Server-side only — never expose!
   if (!url || !key) return null;
+  // Clean trailing slash
+  if (url.endsWith('/')) url = url.slice(0, -1);
   return createClient(url, key);
 }
 

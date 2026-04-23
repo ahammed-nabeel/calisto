@@ -6,9 +6,11 @@
 import { createClient } from '@supabase/supabase-js';
 
 function getSupabase() {
-  const url = process.env.SUPABASE_URL;
+  let url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_ANON_KEY; // Safe for auth operations
   if (!url || !key) return null;
+  // Clean trailing slash
+  if (url.endsWith('/')) url = url.slice(0, -1);
   return createClient(url, key);
 }
 
