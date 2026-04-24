@@ -860,6 +860,13 @@
                 btn.style.opacity = '1';
             }
         }
+
+        // Visitor Tracking
+        fetch('/api/analytics', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ path: window.location.pathname })
+        }).catch(err => console.error('Tracking failed'));
     </script>
 </body>
 

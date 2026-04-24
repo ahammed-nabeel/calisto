@@ -1644,6 +1644,17 @@ async function updateStats() {
       }
       if (document.getElementById('dash-stat-products')) document.getElementById('dash-stat-products').textContent = pCount;
     }
+
+    // 4. Visitors
+    const analyticResp = await fetch('/api/analytics', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (analyticResp.ok) {
+      const { total_visits } = await analyticResp.json();
+      if (document.getElementById('dash-stat-visitors')) {
+        document.getElementById('dash-stat-visitors').textContent = total_visits.toLocaleString();
+      }
+    }
   } catch (e) { console.error('Stats update error:', e); }
 }
 
