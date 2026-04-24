@@ -884,7 +884,7 @@ tr:hover td { background: var(--bg-2); }
                 <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>+14%
               </span>
             </div>
-            <div class="stat-val" id="dash-stat-visitors">24,521</div>
+            <div class="stat-val" id="dash-stat-visitors">0</div>
             <div class="stat-lbl">Site Visitors</div>
           </div>
 
@@ -1651,9 +1651,12 @@ async function updateStats() {
     });
     if (analyticResp.ok) {
       const { total_visits } = await analyticResp.json();
+      console.log('Visitors fetched:', total_visits);
       if (document.getElementById('dash-stat-visitors')) {
-        document.getElementById('dash-stat-visitors').textContent = total_visits.toLocaleString();
+        document.getElementById('dash-stat-visitors').textContent = (total_visits || 0).toLocaleString();
       }
+    } else {
+      console.error('Analytics API failed:', analyticResp.status);
     }
   } catch (e) { console.error('Stats update error:', e); }
 }
