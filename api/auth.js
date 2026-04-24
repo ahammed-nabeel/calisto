@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 
   // ── GET USER LIST ──
   if (req.method === 'GET') {
-    const { data: profiles, error: dbErr } = await adminSupabase.from('profiles').select('*').order('created_at', { ascending: false });
+    const { data: profiles, error: dbErr } = await adminSupabase.from('profiles').select('id, email, full_name, role, active, updated_at');
     return res.status(200).json({ 
       success: !dbErr, 
       users: profiles || [], 
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
       if (authErr) return res.status(400).json({ success: false, error: authErr.message });
 
       await adminSupabase.from('profiles').upsert({
-        id: authUser.user.id, email, full_name, role: role || 'viewer', updated_at: new Date()
+        id: authUser.user.id, email, full_name, role: role || 'viewer', updated_at: new Date(), active: true
       });
       return res.status(200).json({ success: true });
     }
@@ -80,14 +80,14 @@ export default async function handler(req, res) {
       let log = [];
 
       // 1. Fetch Profile (Safe check)
-      const { data: existing, error: fetchErr } = await adminSupabase.from('profiles').select('*').eq('id', user.id);
+      const { data: existing, error: fetchErr } = await adminSupabase.from('profiles').select('id, email, full_name, role, active, updated_at').eq('id', user.id);
       let profile = existing && existing.length > 0 ? existing[0] : null;
 
       // 2. Create if missing
       if (!profile) {
         log.push('Profile record missing. Creating...');
         const { data: created, error: insErr } = await adminSupabase.from('profiles').insert([
-          { id: user.id, email: user.email, full_name: user.user_metadata?.full_name || 'Admin', role: 'viewer' }
+          { id: user.id, email: user.email, full_name: user.user_metadata?.full_name || 'Admin', role: 'viewer', updated_at: new Date() }
         ]).select();
         
         if (insErr) {
