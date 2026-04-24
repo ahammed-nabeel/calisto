@@ -492,13 +492,7 @@
 
     if (apiToken && apiUser) {
       // Set local session for the admin panel navigation/permissions
-      setSession({
-        id: apiUser.id,
-        username: apiUser.email,
-        name: apiUser.name || 'Admin',
-        role: apiUser.role || 'superadmin',
-        avatar: apiUser.avatar
-      });
+      setSession(apiUser, apiToken);
       window.location.href = 'index.html';
     } else {
       spinner.style.display = 'none';
