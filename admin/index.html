@@ -2467,43 +2467,18 @@ const ROLE_LABELS = {
 };
 
 async function renderUsersPage() {
-  const container = document.getElementById('view-content');
-  if (!container) return;
-
-  container.innerHTML = `
-    <div class="view-header">
-      <div>
-        <h1 class="view-title">User Management</h1>
-        <p class="view-subtitle">Manage administrative access and roles</p>
-      </div>
-    </div>
-    <div class="card">
-      <table class="tbl">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Last Updated</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="users-tbody">
-          <tr><td colspan="5" style="text-align:center;padding:20px"><div class="loader"></div></td></tr>
-        </tbody>
-      </table>
-    </div>
-  `;
-
   const tbody = document.getElementById('users-tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px"><div class="loader"></div></td></tr>';
+
   try {
+    const apiToken = sessionStorage.getItem('calisto_api_token');
     const resp = await fetch('/api/auth', {
-      headers: { 'Authorization': 'Bearer ' + _adminApiToken }
+      headers: { 'Authorization': 'Bearer ' + apiToken }
     });
     const data = await resp.json();
     
-    if (!tbody) return;
-
     if (data.success && data.users) {
       _userCache = data.users;
       if (data.users.length === 0) {
