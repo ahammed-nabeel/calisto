@@ -1067,7 +1067,7 @@ tr:hover td { background: var(--bg-2); }
             <div class="page-hd-title">Blog Posts</div>
             <div class="page-hd-sub">Manage articles, news, and technical updates</div>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="openModal('add-blog-modal')">
+          <button class="btn btn-primary btn-sm" onclick="openBlogModal()">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             New Article
           </button>
@@ -1076,51 +1076,8 @@ tr:hover td { background: var(--bg-2); }
         <div class="tbl-card">
           <table>
             <thead><tr><th>Title</th><th>Category</th><th>Author</th><th>Status</th><th>Date</th><th></th></tr></thead>
-            <tbody>
-              <tr>
-                <td style="font-weight:700;max-width:260px">The Future of Smart Gate Automation</td>
-                <td><span class="pill pill-blue">Tech</span></td>
-                <td style="color:var(--text-2)">Admin</td>
-                <td><span class="pill pill-green">Published</span></td>
-                <td style="color:var(--text-3)">Oct 24, 2025</td>
-                <td><div class="tbl-actions">
-                  <button class="tbl-action" onclick="toast('Editing post…')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                  <button class="tbl-action del" onclick="toast('Confirm delete?')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
-                </div></td>
-              </tr>
-              <tr>
-                <td style="font-weight:700;max-width:260px">Choosing the Right Motor for Industrial Shutters</td>
-                <td><span class="pill pill-purple">Guide</span></td>
-                <td style="color:var(--text-2)">Admin</td>
-                <td><span class="pill pill-green">Published</span></td>
-                <td style="color:var(--text-3)">Sep 15, 2025</td>
-                <td><div class="tbl-actions">
-                  <button class="tbl-action" onclick="toast('Editing post…')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                  <button class="tbl-action del" onclick="toast('Confirm delete?')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
-                </div></td>
-              </tr>
-              <tr>
-                <td style="font-weight:700;max-width:260px">Calisto Launches New Tubular Series</td>
-                <td><span class="pill pill-amber">News</span></td>
-                <td style="color:var(--text-2)">Admin</td>
-                <td><span class="pill pill-green">Published</span></td>
-                <td style="color:var(--text-3)">Aug 02, 2025</td>
-                <td><div class="tbl-actions">
-                  <button class="tbl-action" onclick="toast('Editing post…')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                  <button class="tbl-action del" onclick="toast('Confirm delete?')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
-                </div></td>
-              </tr>
-              <tr>
-                <td style="font-weight:700;max-width:260px">Partner Training Events 2025</td>
-                <td><span class="pill pill-green">Events</span></td>
-                <td style="color:var(--text-2)">Admin</td>
-                <td><span class="pill pill-amber">Draft</span></td>
-                <td style="color:var(--text-3)">Jul 10, 2025</td>
-                <td><div class="tbl-actions">
-                  <button class="tbl-action" onclick="toast('Editing post…')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                  <button class="tbl-action del" onclick="toast('Confirm delete?')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
-                </div></td>
-              </tr>
+            <tbody id="blog-tbody">
+              <!-- Dynamically loaded -->
             </tbody>
           </table>
         </div>
@@ -1177,53 +1134,8 @@ tr:hover td { background: var(--bg-2); }
           </div>
           <table>
             <thead><tr><th>Name</th><th>Email</th><th>Type</th><th>Message</th><th>Status</th><th>Date</th><th></th></tr></thead>
-            <tbody>
-              <tr>
-                <td style="font-weight:700">Rajan Menon</td>
-                <td style="color:var(--text-3)">rajan@example.com</td>
-                <td>Contact</td>
-                <td style="color:var(--text-3);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Interested in rolling shutter automation for my warehouse…</td>
-                <td><span class="pill pill-blue">New</span></td>
-                <td style="color:var(--text-3)">2h ago</td>
-                <td><div class="tbl-actions">
-                  <button class="tbl-action" onclick="viewEnquiry('Rajan Menon','rajan@example.com','Contact','Interested in rolling shutter automation for my warehouse in Calicut. Please send a quote.')">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                  </button>
-                </div></td>
-              </tr>
-              <tr>
-                <td style="font-weight:700">Ahmed Al Farsi</td>
-                <td style="color:var(--text-3)">ahmed@partner.ae</td>
-                <td>Partner Apply</td>
-                <td style="color:var(--text-3);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">We are a licensed installer in UAE looking to partner…</td>
-                <td><span class="pill pill-amber">Pending</span></td>
-                <td style="color:var(--text-3)">5h ago</td>
-                <td><div class="tbl-actions"><button class="tbl-action" onclick="viewEnquiry('Ahmed Al Farsi','ahmed@partner.ae','Partner Apply','We are a licensed installer in UAE looking to become a certified Calisto partner. We have 8 years of experience.')">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </button></div></td>
-              </tr>
-              <tr>
-                <td style="font-weight:700">Suresh Kumar</td>
-                <td style="color:var(--text-3)">suresh@bizco.in</td>
-                <td>Product Query</td>
-                <td style="color:var(--text-3);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Need datasheet for Vortex Calarm 350 swing gate operator…</td>
-                <td><span class="pill pill-green">Replied</span></td>
-                <td style="color:var(--text-3)">1d ago</td>
-                <td><div class="tbl-actions"><button class="tbl-action" onclick="viewEnquiry('Suresh Kumar','suresh@bizco.in','Product Query','Need datasheet for Vortex Calarm 350 swing gate operator. Also want to know about bulk pricing.')">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </button></div></td>
-              </tr>
-              <tr>
-                <td style="font-weight:700">Maria Santos</td>
-                <td style="color:var(--text-3)">maria@example.com</td>
-                <td>Contact</td>
-                <td style="color:var(--text-3);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Looking for installation support in our new building project…</td>
-                <td><span class="pill pill-green">Replied</span></td>
-                <td style="color:var(--text-3)">2d ago</td>
-                <td><div class="tbl-actions"><button class="tbl-action" onclick="viewEnquiry('Maria Santos','maria@example.com','Contact','Looking for installation support in our new building project in Kochi. Need residential gate automation.')">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </button></div></td>
-              </tr>
+            <tbody id="enquiries-tbody">
+              <!-- Dynamically loaded -->
             </tbody>
           </table>
         </div>
@@ -1431,34 +1343,38 @@ tr:hover td { background: var(--bg-2); }
   </div>
 </div>
 
-<!-- Add Blog Post -->
-<div class="modal-overlay hidden" id="add-blog-modal">
-  <div class="modal">
+<!-- ══ MODAL: Add / Edit Blog Post ══ -->
+<div class="modal-overlay hidden" id="blog-modal">
+  <div class="modal" style="max-width:600px">
     <div class="modal-head">
-      <div class="modal-title">New Blog Article</div>
-      <button class="modal-close" onclick="closeModal('add-blog-modal')">
+      <div class="modal-title" id="blog-modal-title">New Blog Article</div>
+      <button class="modal-close" onclick="closeModal('blog-modal')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Title</label><input class="form-input" placeholder="Article title…"></div>
+    <div class="modal-body" style="max-height:70vh;overflow-y:auto">
+      <input type="hidden" id="bm-id">
+      <div class="form-group"><label class="form-label">Article Title</label><input class="form-input" id="bm-title" placeholder="e.g. The Future of Gate Automation"></div>
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Category</label>
-          <select class="form-input"><option>Tech</option><option>Guide</option><option>News</option><option>Events</option></select>
+          <select class="form-input" id="bm-category"><option value="Tech">Tech</option><option value="Guide">Guide</option><option value="News">News</option><option value="Events">Events</option></select>
         </div>
         <div class="form-group">
           <label class="form-label">Status</label>
-          <select class="form-input"><option>Draft</option><option>Published</option></select>
+          <select class="form-input" id="bm-published"><option value="false">Draft</option><option value="true">Published</option></select>
         </div>
       </div>
-      <div class="form-group"><label class="form-label">Excerpt</label><textarea class="form-textarea" placeholder="Brief summary shown in article cards on the website…" style="min-height:70px"></textarea></div>
-      <div class="form-group"><label class="form-label">Cover Image URL</label><input class="form-input" placeholder="https://…"></div>
-      <div class="form-group" style="margin-bottom:0"><label class="form-label">Article URL anchor (blog.html#)</label><input class="form-input" placeholder="smart-automation"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Author</label><input class="form-input" id="bm-author" placeholder="Admin"></div>
+        <div class="form-group"><label class="form-label">Slug / Anchor</label><input class="form-input" id="bm-slug" placeholder="e.g. future-automation"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Excerpt (Short Summary)</label><textarea class="form-textarea" id="bm-excerpt" placeholder="Brief summary shown in article cards…" style="min-height:60px"></textarea></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Article Content (HTML)</label><textarea class="form-textarea" id="bm-content" placeholder="Full article HTML content…" style="min-height:200px"></textarea></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal('add-blog-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="toast('Article saved!'); closeModal('add-blog-modal')">Save Article</button>
+      <button class="btn btn-outline" onclick="closeModal('blog-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveBlogPost()" id="bm-save-btn">Save Article</button>
     </div>
   </div>
 </div>
@@ -1516,7 +1432,11 @@ tr:hover td { background: var(--bg-2); }
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('view-enquiry-modal')">Close</button>
-      <button class="btn btn-primary" onclick="toast('Reply sent!'); closeModal('view-enquiry-modal')">
+      <button class="btn btn-outline" id="eq-mark-read-btn" style="color:var(--green)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Mark as Read
+      </button>
+      <button class="btn btn-primary" onclick="toast('Reply feature not connected to mail server yet.'); closeModal('view-enquiry-modal')">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         Send Reply
       </button>
@@ -1598,7 +1518,9 @@ function nav(page, el) {
 
   closeSidebar();
 
-  if (page === 'seo') buildSEO();
+  if (page === 'seo') loadSEO();
+  if (page === 'forms') loadEnquiries();
+  if (page === 'blog') loadBlog();
   if (page === 'products') renderCatalogTree();
   if (page === 'users') renderUsersPage();
   if (page === 'dashboard') initCharts();
@@ -1635,12 +1557,61 @@ function toast(msg) {
 function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
 function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-function viewEnquiry(name, email, type, msg) {
+async function viewEnquiry(name, email, type, msg, id, status) {
   document.getElementById('eq-name').textContent = name;
   document.getElementById('eq-email').textContent = email;
   document.getElementById('eq-type').textContent = type;
   document.getElementById('eq-msg').textContent = msg;
+  
+  const btn = document.getElementById('eq-mark-read-btn');
+  if (status === 'unread') {
+    btn.style.display = '';
+    btn.onclick = () => markEnquiryRead(id);
+  } else {
+    btn.style.display = 'none';
+  }
+  
   openModal('view-enquiry-modal');
+}
+
+async function markEnquiryRead(id) {
+  const token = sessionStorage.getItem('calisto_api_token');
+  try {
+    const resp = await fetch('/api/enquiries', {
+      method: 'PATCH',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token 
+      },
+      body: JSON.stringify({ id, status: 'read' })
+    });
+    if (resp.ok) {
+      toast('Enquiry marked as read.');
+      closeModal('view-enquiry-modal');
+      loadEnquiries();
+      updateBadges();
+    }
+  } catch (err) { toast('Error updating status.'); }
+}
+
+async function updateBadges() {
+  const token = sessionStorage.getItem('calisto_api_token');
+  if (!token) return;
+  try {
+    const resp = await fetch('/api/enquiries', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const data = await resp.json();
+    const unreadCount = data.filter(e => e.status === 'unread').length;
+    const badge = document.getElementById('forms-badge');
+    if (badge) {
+      badge.textContent = unreadCount || '0';
+      badge.style.display = unreadCount > 0 ? '' : 'none';
+    }
+    // Also update dashboard stat card if visible
+    const dashVal = document.querySelector('.stat-card:nth-child(2) .stat-val');
+    if (dashVal) dashVal.textContent = unreadCount;
+  } catch (e) {}
 }
 
 // Close modal on overlay click
@@ -2306,22 +2277,28 @@ function _esc(s) { return (s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); 
 /* ════════════════════════════════
    SEO
 ════════════════════════════════ */
-const SEO_PAGES = [
-  { file: 'index.html', label: 'Home', title: 'Calisto Automation | Premium Entrance Solutions', desc: 'Calisto delivers engineered entrance automation systems for residential and industrial applications — rolling shutters, gates, and barriers.', kw: 'gate automation, rolling shutters, entrance automation, Calisto' },
-  { file: 'automation.html', label: 'Automation Operators', title: 'Automation Operators — Shutters, Gates & Barriers | Calisto', desc: 'Explore Calisto\'s full range of automation operators including rolling shutter motors, swing and sliding gate operators, and traffic barriers.', kw: 'gate operator, shutter motor, sliding gate, barrier' },
-  { file: 'hardware.html', label: 'Hardware & Components', title: 'Hardware & Components | Calisto Automation', desc: 'Quality springs, slats, guides and mechanical components to complement Calisto automation systems.', kw: 'shutter springs, aluminum slats, guide rails, hardware' },
-  { file: 'controls.html', label: 'Controls & Accessories', title: 'Controls & Accessories — Remotes & Sensors | Calisto', desc: 'Remotes, receivers, sensors and control boards designed for seamless Calisto system integration.', kw: 'remote control, gate sensor, automation accessories' },
-  { file: 'blog.html', label: 'Blog', title: 'Automation Insights & News | Calisto Blog', desc: 'Read expert articles, product launches, and technical guides from the Calisto automation team.', kw: 'gate automation news, shutter guide, automation blog' },
-];
+let seoData = [];
 
-function buildSEO() {
+async function loadSEO() {
   const container = document.getElementById('seo-cards');
-  if (container.children.length) return; // already built
+  container.innerHTML = '<div style="padding:40px;text-align:center"><div class="loader"></div></div>';
+  
+  try {
+    const resp = await fetch('/api/seo');
+    seoData = await resp.json();
+    renderSEO();
+  } catch (err) {
+    console.error('SEO Load Error:', err);
+    toast('Failed to load SEO settings.');
+  }
+}
 
-  container.innerHTML = SEO_PAGES.map((p, i) => `
+function renderSEO() {
+  const container = document.getElementById('seo-cards');
+  container.innerHTML = seoData.map((p, i) => `
     <div class="card" style="overflow:hidden">
       <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none" onclick="toggleSEO(${i})">
-        <div style="font-family:'Raleway',sans-serif;font-weight:700;font-size:14px">${p.label}</div>
+        <div style="font-family:'Raleway',sans-serif;font-weight:700;font-size:14px">${p.label || p.file}</div>
         <div style="font-size:12px;color:var(--text-3)">${p.file}</div>
         <div style="margin-left:auto" id="seo-chevron-${i}">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
@@ -2340,7 +2317,7 @@ function buildSEO() {
         </div>
         <div class="form-group" style="margin-bottom:0">
           <label class="form-label">Keywords</label>
-          <input class="form-input" value="${p.kw}" placeholder="comma, separated, keywords">
+          <input class="form-input" id="seo-kw-${i}" value="${p.kw}" placeholder="comma, separated, keywords">
         </div>
       </div>
     </div>
@@ -2354,14 +2331,227 @@ function toggleSEO(i) {
   chevron.style.transform = body.classList.contains('hidden') ? '' : 'rotate(180deg)';
 }
 
-function countChars(el, countId, max) {
-  const len = el.value.length;
-  const span = document.getElementById(countId);
-  span.textContent = `${len}/${max}`;
-  span.className = 'char-count' + (len > max ? ' over' : len > max * .85 ? ' warn' : '');
+async function saveSEO() {
+  const updated = seoData.map((p, i) => ({
+    file: p.file,
+    label: p.label,
+    title: document.getElementById('seo-title-' + i).value,
+    desc: document.getElementById('seo-desc-' + i).value,
+    kw: document.getElementById('seo-kw-' + i).value
+  }));
+
+  const token = sessionStorage.getItem('calisto_api_token');
+  try {
+    const resp = await fetch('/api/seo', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(updated)
+    });
+    if (resp.ok) {
+      seoData = updated;
+      toast('SEO settings published successfully!');
+    } else {
+      toast('Save failed.');
+    }
+  } catch (err) {
+    toast('Network error saving SEO.');
+  }
 }
 
-function saveSEO() { toast('SEO settings saved successfully!'); }
+/* ════════════════════════════════
+   ENQUIRIES
+════════════════════════════════ */
+async function loadEnquiries() {
+  const tbody = document.getElementById('enquiries-tbody');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px"><div class="loader"></div></td></tr>';
+  
+  try {
+    const token = sessionStorage.getItem('calisto_api_token');
+    const resp = await fetch('/api/enquiries', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const data = await resp.json();
+    renderEnquiries(data);
+  } catch (err) {
+    toast('Failed to load enquiries.');
+  }
+}
+
+function renderEnquiries(list) {
+  const tbody = document.getElementById('enquiries-tbody');
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text-3)">No enquiries found.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = list.map(eq => {
+    const statusPill = eq.status === 'unread' ? 'pill-blue' : (eq.status === 'read' ? 'pill-green' : 'pill-gray');
+    const dateStr = new Date(eq.created_at).toLocaleDateString();
+    
+    return `
+      <tr>
+        <td style="font-weight:700">${eq.name}</td>
+        <td style="color:var(--text-3)">${eq.email}</td>
+        <td>${eq.subject || 'Contact'}</td>
+        <td style="color:var(--text-3);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${eq.message}</td>
+        <td><span class="pill ${statusPill}">${eq.status}</span></td>
+        <td style="color:var(--text-3)">${dateStr}</td>
+        <td><div class="tbl-actions">
+          <button class="tbl-action" onclick="viewEnquiry('${_esc(eq.name)}','${_esc(eq.email)}','${_esc(eq.subject)}','${_esc(eq.message)}', '${eq.id}', '${eq.status}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          <button class="tbl-action del" onclick="deleteEnquiry('${eq.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+        </div></td>
+      </tr>
+    `;
+  }).join('');
+  updateBadges();
+}
+
+async function deleteEnquiry(id) {
+  if (!confirm('Delete this enquiry?')) return;
+  const token = sessionStorage.getItem('calisto_api_token');
+  try {
+    await fetch('/api/enquiries?id=' + id, { 
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    loadEnquiries();
+    toast('Enquiry deleted.');
+  } catch (err) { toast('Delete failed.'); }
+}
+
+/* ════════════════════════════════
+   BLOG
+════════════════════════════════ */
+async function loadBlog() {
+  const tbody = document.getElementById('blog-tbody');
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px"><div class="loader"></div></td></tr>';
+  
+  try {
+    const token = sessionStorage.getItem('calisto_api_token');
+    const resp = await fetch('/api/blog', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const data = await resp.json();
+    blogList = data; // Cache for editing
+    renderBlog(data);
+  } catch (err) {
+    toast('Failed to load blog posts.');
+  }
+}
+
+function renderBlog(list) {
+  const tbody = document.getElementById('blog-tbody');
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-3)">No blog posts found.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = list.map(post => {
+    const statusPill = post.published ? 'pill-green' : 'pill-amber';
+    const dateStr = new Date(post.created_at).toLocaleDateString();
+    
+    return `
+      <tr>
+        <td style="font-weight:700;max-width:260px">${post.title}</td>
+        <td><span class="pill pill-blue">${post.category || 'Tech'}</span></td>
+        <td style="color:var(--text-2)">${post.author || 'Admin'}</td>
+        <td><span class="pill ${statusPill}">${post.published ? 'Published' : 'Draft'}</span></td>
+        <td style="color:var(--text-3)">${dateStr}</td>
+        <td><div class="tbl-actions">
+          <button class="tbl-action" onclick="openBlogModal('${post.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="tbl-action del" onclick="deleteBlogPost('${post.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+        </div></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+let blogList = []; // Local cache for editing
+
+function openBlogModal(id) {
+  const modal = document.getElementById('blog-modal');
+  const title = document.getElementById('blog-modal-title');
+  const btn = document.getElementById('bm-save-btn');
+  
+  if (id) {
+    const post = blogList.find(p => p.id === id);
+    if (!post) return;
+    title.textContent = 'Edit Blog Article';
+    btn.textContent = 'Save Changes';
+    document.getElementById('bm-id').value = post.id;
+    document.getElementById('bm-title').value = post.title;
+    document.getElementById('bm-slug').value = post.slug || '';
+    document.getElementById('bm-category').value = post.category || 'Tech';
+    document.getElementById('bm-author').value = post.author || '';
+    document.getElementById('bm-published').value = post.published ? 'true' : 'false';
+    document.getElementById('bm-excerpt').value = post.excerpt || '';
+    document.getElementById('bm-content').value = post.content || '';
+  } else {
+    title.textContent = 'New Blog Article';
+    btn.textContent = 'Create Article';
+    document.getElementById('bm-id').value = '';
+    ['bm-title','bm-slug','bm-author','bm-excerpt','bm-content'].forEach(i => document.getElementById(i).value = '');
+    document.getElementById('bm-category').value = 'Tech';
+    document.getElementById('bm-published').value = 'false';
+  }
+  
+  openModal('blog-modal');
+}
+
+async function saveBlogPost() {
+  const title = document.getElementById('bm-title').value.trim();
+  if (!title) { toast('Title is required.'); return; }
+
+  const post = {
+    title,
+    slug: document.getElementById('bm-slug').value.trim() || title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    category: document.getElementById('bm-category').value,
+    author: document.getElementById('bm-author').value.trim(),
+    published: document.getElementById('bm-published').value === 'true',
+    excerpt: document.getElementById('bm-excerpt').value.trim(),
+    content: document.getElementById('bm-content').value.trim()
+  };
+
+  const id = document.getElementById('bm-id').value;
+  if (id) post.id = id;
+
+  const token = sessionStorage.getItem('calisto_api_token');
+  try {
+    const resp = await fetch('/api/blog', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(post)
+    });
+    if (resp.ok) {
+      toast(id ? 'Article updated!' : 'Article created!');
+      closeModal('blog-modal');
+      loadBlog();
+    } else {
+      toast('Failed to save article.');
+    }
+  } catch (err) { toast('Network error saving article.'); }
+}
+
+async function deleteBlogPost(id) {
+  if (!confirm('Delete this blog post?')) return;
+  const token = sessionStorage.getItem('calisto_api_token');
+  try {
+    await fetch('/api/blog?id=' + id, { 
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    loadBlog();
+    toast('Post deleted.');
+  } catch (err) { toast('Delete failed.'); }
+}
 
 /* ════════════════════════════════
    CHARTS (Dashboard)
@@ -2600,7 +2790,7 @@ async function submitNewUser() {
 /* ════════════════════════════════
 ════════════════════════════════ */
 function updateFormsBadge() {
-  document.getElementById('forms-badge').textContent = '12';
+  updateBadges();
 }
 
 /* ════════════════════════════════

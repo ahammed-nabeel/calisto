@@ -381,22 +381,22 @@
                 <div class="form-grid-3">
                     <div class="form-group">
                         <label for="name">Name *</label>
-                        <input type="text" id="name" class="form-control" required>
+                        <input type="text" id="name" name="name" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label for="email">Email *</label>
-                        <input type="email" id="email" class="form-control" required>
+                        <input type="email" id="email" name="email" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label for="subject">Subject</label>
-                        <input type="text" id="subject" class="form-control">
+                        <input type="text" id="subject" name="subject" class="form-control">
                     </div>
                 </div>
 
                 <!-- Row 2: Message -->
                 <div class="form-group">
                     <label for="message">Message</label>
-                    <textarea id="message" class="form-control"></textarea>
+                    <textarea id="message" name="message" class="form-control"></textarea>
                 </div>
 
                 <!-- Privacy Checkbox -->
@@ -811,23 +811,54 @@
 
         });
 
-        function handleSubmit(e) {
+        async function handleSubmit(e) {
             e.preventDefault();
-            const btn = e.target.querySelector('button');
+            const form = e.target;
+            const btn = form.querySelector('button');
             const originalText = btn.innerText;
 
             btn.innerText = 'SENDING...';
             btn.disabled = true;
             btn.style.opacity = '0.7';
 
-            setTimeout(() => {
-                document.getElementById('form-success').style.display = 'block';
-                btn.style.display = 'none';
-                window.scrollTo({
-                    top: document.querySelector('.contact-form-section').offsetTop - 100,
-                    behavior: 'smooth'
+            const formData = new FormData(form);
+            const data = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                subject: formData.get('subject') || 'Contact Form',
+                message: formData.get('message'),
+                status: 'unread'
+            };
+
+            try {
+                const resp = await fetch('/api/enquiries', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
                 });
-            }, 1000);
+
+                if (resp.ok) {
+                    document.getElementById('form-success').style.display = 'block';
+                    btn.style.display = 'none';
+                    form.reset();
+                    window.scrollTo({
+                        top: document.querySelector('.contact-form-section').offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    const err = await resp.json();
+                    alert('Submission failed: ' + (err.error || 'Unknown error'));
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                }
+            } catch (err) {
+                console.error('Contact Error:', err);
+                alert('Connection error. Please try again later.');
+                btn.innerText = originalText;
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
         }
     </script>
 </body>
