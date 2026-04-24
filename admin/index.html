@@ -884,7 +884,7 @@ tr:hover td { background: var(--bg-2); }
                 <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>+14%
               </span>
             </div>
-            <div class="stat-val">24,521</div>
+            <div class="stat-val" id="dash-stat-visitors">24,521</div>
             <div class="stat-lbl">Site Visitors</div>
           </div>
 
@@ -897,7 +897,7 @@ tr:hover td { background: var(--bg-2); }
                 <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>+8%
               </span>
             </div>
-            <div class="stat-val">47</div>
+            <div class="stat-val" id="dash-stat-enquiries">0</div>
             <div class="stat-lbl">New Enquiries</div>
           </div>
 
@@ -910,7 +910,7 @@ tr:hover td { background: var(--bg-2); }
                 <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>+3
               </span>
             </div>
-            <div class="stat-val">128</div>
+            <div class="stat-val" id="dash-stat-products">0</div>
             <div class="stat-lbl">Total Products</div>
           </div>
 
@@ -923,7 +923,7 @@ tr:hover td { background: var(--bg-2); }
                 <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>+2
               </span>
             </div>
-            <div class="stat-val">12</div>
+            <div class="stat-val" id="dash-stat-blogs">0</div>
             <div class="stat-lbl">Blog Articles</div>
           </div>
         </div>
@@ -1101,21 +1101,21 @@ tr:hover td { background: var(--bg-2); }
             <div class="stat-top">
               <div class="stat-icon" style="background:#e8f1fb"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#005cb9" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
             </div>
-            <div class="stat-val">47</div>
+            <div class="stat-val" id="forms-stat-total">0</div>
             <div class="stat-lbl">Total Enquiries</div>
           </div>
           <div class="stat-card">
             <div class="stat-top">
               <div class="stat-icon" style="background:#fef6e4"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c27c0e" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
             </div>
-            <div class="stat-val">12</div>
+            <div class="stat-val" id="forms-stat-pending">0</div>
             <div class="stat-lbl">Awaiting Reply</div>
           </div>
           <div class="stat-card">
             <div class="stat-top">
               <div class="stat-icon" style="background:#e6f7f0"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1a9e5f" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
             </div>
-            <div class="stat-val">35</div>
+            <div class="stat-val" id="forms-stat-replied">0</div>
             <div class="stat-lbl">Replied</div>
           </div>
         </div>
@@ -1594,25 +1594,61 @@ async function markEnquiryRead(id) {
   } catch (err) { toast('Error updating status.'); }
 }
 
-async function updateBadges() {
+async function updateStats() {
   const token = sessionStorage.getItem('calisto_api_token');
   if (!token) return;
+
   try {
-    const resp = await fetch('/api/enquiries', {
+    // 1. Enquiries
+    const eqResp = await fetch('/api/enquiries', {
       headers: { 'Authorization': 'Bearer ' + token }
     });
-    const data = await resp.json();
-    const unreadCount = data.filter(e => e.status === 'unread').length;
-    const badge = document.getElementById('forms-badge');
-    if (badge) {
-      badge.textContent = unreadCount || '0';
-      badge.style.display = unreadCount > 0 ? '' : 'none';
+    if (eqResp.ok) {
+      const data = await eqResp.json();
+      const unread = data.filter(e => e.status === 'unread');
+      const read = data.filter(e => e.status === 'read');
+      
+      const badge = document.getElementById('forms-badge');
+      if (badge) {
+        badge.textContent = unread.length || '0';
+        badge.style.display = unread.length > 0 ? '' : 'none';
+      }
+      
+      if (document.getElementById('dash-stat-enquiries')) document.getElementById('dash-stat-enquiries').textContent = unread.length;
+      if (document.getElementById('forms-stat-total')) document.getElementById('forms-stat-total').textContent = data.length;
+      if (document.getElementById('forms-stat-pending')) document.getElementById('forms-stat-pending').textContent = unread.length;
+      if (document.getElementById('forms-stat-replied')) document.getElementById('forms-stat-replied').textContent = read.length;
     }
-    // Also update dashboard stat card if visible
-    const dashVal = document.querySelector('.stat-card:nth-child(2) .stat-val');
-    if (dashVal) dashVal.textContent = unreadCount;
-  } catch (e) {}
+
+    // 2. Blog Posts
+    const blogResp = await fetch('/api/blog');
+    if (blogResp.ok) {
+      const blogs = await blogResp.json();
+      if (document.getElementById('dash-stat-blogs')) document.getElementById('dash-stat-blogs').textContent = blogs.length;
+    }
+
+    // 3. Products (from catalog data)
+    const prodResp = await fetch('/api/products');
+    if (prodResp.ok) {
+      const catalog = await prodResp.json();
+      let pCount = 0;
+      if (catalog && catalog.categories) {
+        catalog.categories.forEach(cat => {
+          if (cat.items) pCount += cat.items.length;
+          if (cat.subcategories) {
+            cat.subcategories.forEach(sub => {
+              if (sub.items) pCount += sub.items.length;
+            });
+          }
+        });
+      }
+      if (document.getElementById('dash-stat-products')) document.getElementById('dash-stat-products').textContent = pCount;
+    }
+  } catch (e) { console.error('Stats update error:', e); }
 }
+
+// Map updateBadges to updateStats for compatibility
+const updateBadges = updateStats;
 
 // Close modal on overlay click
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
