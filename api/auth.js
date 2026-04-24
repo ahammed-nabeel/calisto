@@ -13,6 +13,11 @@ function getSupabase(useServiceRole = false) {
 }
 
 export default async function handler(req, res) {
+  // DISABLE CACHING
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -30,7 +35,7 @@ export default async function handler(req, res) {
     if (authError || !user) return res.status(401).json({ error: 'Invalid session' });
 
     const { data: profiles, error } = await adminSupabase.from('profiles').select('*').order('updated_at', { ascending: false });
-    return res.status(error ? 500 : 200).json({ success: !error, users: profiles || [] });
+    return res.status(error ? 500 : 200).json({ success: !error, users: profiles || [], count: profiles?.length || 0 });
   }
 
   // ── POST: Login / Management ──
@@ -45,29 +50,42 @@ export default async function handler(req, res) {
       if (loginErr) return res.status(401).json({ error: 'Login failed', details: loginErr.message });
 
       const { user, session } = data;
-      
+      let logTrace = [];
+
       // ENSURE PROFILE EXISTS
       let { data: profile } = await adminSupabase.from('profiles').select('*').eq('id', user.id).single();
       
       if (!profile) {
-        // Create profile if missing
+        logTrace.push(`Profile missing for ${user.id}. Attempting create...`);
         const { data: newProf, error: insErr } = await adminSupabase.from('profiles').insert([
           { id: user.id, email: user.email, full_name: user.user_metadata?.full_name || 'Admin', role: 'viewer' }
         ]).select().single();
-        profile = newProf;
+        
+        if (insErr) {
+          logTrace.push(`Insert failed: ${insErr.message}`);
+        } else {
+          profile = newProf;
+          logTrace.push('Profile created.');
+        }
       }
 
       // Check for any SuperAdmin
-      const { data: anyAdmin } = await adminSupabase.from('profiles').select('id').eq('role', 'superadmin').limit(1);
-      if (!anyAdmin || anyAdmin.length === 0) {
-        // Promote this user to SuperAdmin
-        const { data: updatedProf } = await adminSupabase.from('profiles').update({ role: 'superadmin' }).eq('id', user.id).select().single();
-        profile = updatedProf;
+      const { data: allAdmins } = await adminSupabase.from('profiles').select('id').eq('role', 'superadmin');
+      if (!allAdmins || allAdmins.length === 0) {
+        logTrace.push('Found zero superadmins. Promoting this user...');
+        const { data: updatedProf, error: updErr } = await adminSupabase.from('profiles').update({ role: 'superadmin' }).eq('id', user.id).select().single();
+        if (updErr) {
+          logTrace.push(`Promotion failed: ${updErr.message}`);
+        } else {
+          profile = updatedProf;
+          logTrace.push('Promoted successfully.');
+        }
       }
 
       return res.status(200).json({
         success: true,
         token: session.access_token,
+        trace: logTrace,
         user: {
           id: user.id, email: user.email,
           name: profile?.full_name || 'Admin',
