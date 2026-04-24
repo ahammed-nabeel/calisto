@@ -2468,6 +2468,8 @@ const ROLE_LABELS = {
 
 async function renderUsersPage() {
   const container = document.getElementById('view-content');
+  if (!container) return;
+
   container.innerHTML = `
     <div class="view-header">
       <div>
@@ -2499,8 +2501,16 @@ async function renderUsersPage() {
       headers: { 'Authorization': 'Bearer ' + _adminApiToken }
     });
     const data = await resp.json();
-    if (data.success) {
+    
+    if (!tbody) return;
+
+    if (data.success && data.users) {
       _userCache = data.users;
+      if (data.users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-3)">No users found. Login again to sync profiles.</td></tr>';
+        return;
+      }
+
       tbody.innerHTML = data.users.map(u => {
         const rl = ROLE_LABELS[u.role] || { label: u.role, cls: 'pill-gray' };
         const active = u.active !== false;
@@ -2538,13 +2548,14 @@ async function renderUsersPage() {
         `;
       }).join('');
     } else {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-3)">${data.error || 'Unknown error'} ${data.details ? `(${data.details})` : ''}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-3)">${data.error || 'Unknown error'}</td></tr>`;
     }
   } catch (err) {
     console.error('Failed to load users:', err);
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-3)">Failed to connect to API.</td></tr>';
+    if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-3)">Failed to connect to API.</td></tr>';
   }
 }
+
 
 async function changeUserRole(userId, newRole) {
   try {
