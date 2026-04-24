@@ -1,5 +1,5 @@
 // ============================================================
-//  CALISTO API — AUTH & USER MANAGEMENT (Supabase)
+//  CALISTO API — AUTH & PROFILES (Diagnostics Mode)
 // ============================================================
 
 import { createClient } from '@supabase/supabase-js';
@@ -13,11 +13,7 @@ function getSupabase(useServiceRole = false) {
 }
 
 export default async function handler(req, res) {
-  // DISABLE CACHING
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
-
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -26,16 +22,21 @@ export default async function handler(req, res) {
   const supabase = getSupabase(false); 
   const adminSupabase = getSupabase(true); 
 
-  // ── GET: List All Users ──
+  // ── GET: User List ──
   if (req.method === 'GET') {
     if (!adminSupabase) return res.status(500).json({ error: 'Config missing' });
     const authHeader = req.headers.authorization || '';
     const token = authHeader.replace('Bearer ', '');
     const { data: { user }, error: authError } = await adminSupabase.auth.getUser(token);
-    if (authError || !user) return res.status(401).json({ error: 'Invalid session' });
+    if (authError || !user) return res.status(401).json({ error: 'Session invalid' });
 
-    const { data: profiles, error } = await adminSupabase.from('profiles').select('*').order('updated_at', { ascending: false });
-    return res.status(error ? 500 : 200).json({ success: !error, users: profiles || [], count: profiles?.length || 0 });
+    const { data: profiles, error: dbErr } = await adminSupabase.from('profiles').select('*');
+    return res.status(200).json({ 
+      success: !dbErr, 
+      users: profiles || [], 
+      error: dbErr?.message,
+      debug: { count: profiles?.length, table: 'profiles' } 
+    });
   }
 
   // ── POST: Login / Management ──
@@ -43,49 +44,50 @@ export default async function handler(req, res) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const { action, email, password, userId, updates } = body;
 
-    // LOGIN
     if (!action || action === 'login') {
-      if (!supabase) return res.status(500).json({ error: 'Config missing' });
+      if (!supabase) return res.status(500).json({ error: 'Supabase keys missing' });
       const { data, error: loginErr } = await supabase.auth.signInWithPassword({ email, password });
       if (loginErr) return res.status(401).json({ error: 'Login failed', details: loginErr.message });
 
       const { user, session } = data;
-      let logTrace = [];
+      let log = [];
 
-      // ENSURE PROFILE EXISTS
-      let { data: profile } = await adminSupabase.from('profiles').select('*').eq('id', user.id).single();
-      
+      // 1. Fetch Profile (Safe check)
+      const { data: existing, error: fetchErr } = await adminSupabase.from('profiles').select('*').eq('id', user.id);
+      let profile = existing && existing.length > 0 ? existing[0] : null;
+
+      // 2. Create if missing
       if (!profile) {
-        logTrace.push(`Profile missing for ${user.id}. Attempting create...`);
-        const { data: newProf, error: insErr } = await adminSupabase.from('profiles').insert([
+        log.push('Profile record missing. Creating...');
+        const { data: created, error: insErr } = await adminSupabase.from('profiles').insert([
           { id: user.id, email: user.email, full_name: user.user_metadata?.full_name || 'Admin', role: 'viewer' }
-        ]).select().single();
+        ]).select();
         
         if (insErr) {
-          logTrace.push(`Insert failed: ${insErr.message}`);
+          log.push(`FAILED CREATE: ${insErr.message} (Code: ${insErr.code})`);
         } else {
-          profile = newProf;
-          logTrace.push('Profile created.');
+          profile = created[0];
+          log.push('Profile created successfully.');
         }
       }
 
-      // Check for any SuperAdmin
-      const { data: allAdmins } = await adminSupabase.from('profiles').select('id').eq('role', 'superadmin');
-      if (!allAdmins || allAdmins.length === 0) {
-        logTrace.push('Found zero superadmins. Promoting this user...');
-        const { data: updatedProf, error: updErr } = await adminSupabase.from('profiles').update({ role: 'superadmin' }).eq('id', user.id).select().single();
+      // 3. Promote first user
+      const { data: currentAdmins } = await adminSupabase.from('profiles').select('id').eq('role', 'superadmin');
+      if (!currentAdmins || currentAdmins.length === 0) {
+        log.push('System has no admin. Promoting current user...');
+        const { data: updated, error: updErr } = await adminSupabase.from('profiles').update({ role: 'superadmin' }).eq('id', user.id).select();
         if (updErr) {
-          logTrace.push(`Promotion failed: ${updErr.message}`);
+          log.push(`FAILED PROMOTION: ${updErr.message}`);
         } else {
-          profile = updatedProf;
-          logTrace.push('Promoted successfully.');
+          profile = updated[0];
+          log.push('PROMOTED TO SUPERADMIN.');
         }
       }
 
       return res.status(200).json({
         success: true,
         token: session.access_token,
-        trace: logTrace,
+        trace: log,
         user: {
           id: user.id, email: user.email,
           name: profile?.full_name || 'Admin',
@@ -95,7 +97,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // MANAGEMENT ACTIONS
+    // Management (Update/Delete)
     const authHeader = req.headers.authorization || '';
     const token = authHeader.replace('Bearer ', '');
     const { data: { user: adminUser } } = await adminSupabase.auth.getUser(token);
@@ -104,10 +106,6 @@ export default async function handler(req, res) {
 
     if (action === 'update_user') {
       const { error } = await adminSupabase.from('profiles').update(updates).eq('id', userId);
-      return res.status(error ? 500 : 200).json({ success: !error });
-    }
-    if (action === 'delete_user') {
-      const { error } = await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(error ? 500 : 200).json({ success: !error });
     }
   }
