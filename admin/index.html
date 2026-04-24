@@ -978,34 +978,16 @@ tr:hover td { background: var(--bg-2); }
             </div>
             <table>
               <thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Time</th></tr></thead>
-              <tbody>
-                <tr><td>Rajan Menon</td><td style="color:var(--text-3)">Contact</td><td><span class="pill pill-blue">New</span></td><td style="color:var(--text-3)">2h ago</td></tr>
-                <tr><td>Ahmed Al Farsi</td><td style="color:var(--text-3)">Partner</td><td><span class="pill pill-amber">Pending</span></td><td style="color:var(--text-3)">5h ago</td></tr>
-                <tr><td>Suresh Kumar</td><td style="color:var(--text-3)">Product</td><td><span class="pill pill-green">Replied</span></td><td style="color:var(--text-3)">1d ago</td></tr>
-                <tr><td>Maria Santos</td><td style="color:var(--text-3)">Contact</td><td><span class="pill pill-green">Replied</span></td><td style="color:var(--text-3)">2d ago</td></tr>
+              <tbody id="dash-recent-enquiries">
+                <!-- Dynamically loaded -->
               </tbody>
             </table>
           </div>
 
           <div class="tbl-card">
             <div class="tbl-head"><div class="tbl-title">Recent Activity</div></div>
-            <div>
-              <div class="feed-item">
-                <div class="feed-dot" style="background:var(--blue)"></div>
-                <div><div class="feed-text"><strong>Product added</strong> — Calarm 350 (Rolling Shutters)</div><div class="feed-time">30 min ago</div></div>
-              </div>
-              <div class="feed-item">
-                <div class="feed-dot" style="background:var(--amber)"></div>
-                <div><div class="feed-text"><strong>New enquiry</strong> — Rajan Menon via contact form</div><div class="feed-time">2 hours ago</div></div>
-              </div>
-              <div class="feed-item">
-                <div class="feed-dot" style="background:var(--green)"></div>
-                <div><div class="feed-text"><strong>Blog published</strong> — "Future of Smart Gate Automation"</div><div class="feed-time">Oct 24, 2025</div></div>
-              </div>
-              <div class="feed-item">
-                <div class="feed-dot" style="background:var(--purple)"></div>
-                <div><div class="feed-text"><strong>SEO updated</strong> — gates.html meta description</div><div class="feed-time">Oct 22, 2025</div></div>
-              </div>
+            <div id="dash-activity-feed" style="padding:4px 16px 16px">
+              <!-- Dynamically loaded -->
             </div>
           </div>
         </div>
@@ -1651,12 +1633,62 @@ async function updateStats() {
     });
     if (analyticResp.ok) {
       const { total_visits } = await analyticResp.json();
-      console.log('Visitors fetched:', total_visits);
       if (document.getElementById('dash-stat-visitors')) {
         document.getElementById('dash-stat-visitors').textContent = (total_visits || 0).toLocaleString();
       }
-    } else {
-      console.error('Analytics API failed:', analyticResp.status);
+    }
+
+    // 5. Recent Enquiries & Source Chart
+    if (eqResp.ok) {
+      const data = await eqResp.json();
+      // Table
+      const recentTbody = document.getElementById('dash-recent-enquiries');
+      if (recentTbody) {
+        const top5 = data.slice(0, 5);
+        recentTbody.innerHTML = top5.map(eq => {
+          const statusCls = eq.status === 'unread' ? 'pill-blue' : 'pill-green';
+          const time = new Date(eq.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          return `<tr><td>${eq.name}</td><td style="color:var(--text-3)">${eq.subject || 'Contact'}</td><td><span class="pill ${statusCls}">${eq.status === 'unread' ? 'New' : 'Read'}</span></td><td style="color:var(--text-3)">${time}</td></tr>`;
+        }).join('');
+      }
+
+      // Chart Update
+      if (sourceChart) {
+        const counts = { 'Contact': 0, 'Partner Apply': 0, 'Product Query': 0 };
+        data.forEach(e => {
+          const type = e.subject || 'Contact';
+          if (counts[type] !== undefined) counts[type]++;
+        });
+        sourceChart.data.datasets[0].data = [counts['Contact'], counts['Partner Apply'], counts['Product Query']];
+        sourceChart.update();
+        
+        // Update percentages in UI
+        const total = data.length || 1;
+        const p1 = Math.round((counts['Contact'] / total) * 100);
+        const p2 = Math.round((counts['Partner Apply'] / total) * 100);
+        const p3 = Math.round((counts['Product Query'] / total) * 100);
+        const labels = document.querySelectorAll('.chart-card:nth-child(2) span[style="font-weight:700"]');
+        if (labels.length >= 3) {
+          labels[0].textContent = p1 + '%';
+          labels[1].textContent = p2 + '%';
+          labels[2].textContent = p3 + '%';
+        }
+      }
+
+      // Activity Feed
+      const feed = document.getElementById('dash-activity-feed');
+      if (feed) {
+        const last3 = data.slice(0, 3);
+        feed.innerHTML = last3.map(eq => {
+          const time = new Date(eq.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' });
+          return `
+            <div class="feed-item">
+              <div class="feed-dot" style="background:var(--blue)"></div>
+              <div><div class="feed-text"><strong>New enquiry</strong> — ${eq.name} via ${eq.subject || 'contact form'}</div><div class="feed-time">${time}</div></div>
+            </div>
+          `;
+        }).join('');
+      }
     }
   } catch (e) { console.error('Stats update error:', e); }
 }
