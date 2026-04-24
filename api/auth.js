@@ -67,7 +67,17 @@ export default async function handler(req, res) {
       if (error) return res.status(401).json({ error: 'Authentication failed', details: error.message });
 
       const { user, session } = data;
-      const { data: profile } = await adminSupabase.from('profiles').select('*').eq('id', user.id).single();
+      // Fetch profile for role
+      let { data: profile } = await adminSupabase.from('profiles').select('*').eq('id', user.id).single();
+
+      // AUTO-PROMOTION: If no superadmins exist, make this user a superadmin
+      const { data: anyAdmin } = await adminSupabase.from('profiles').select('id').eq('role', 'superadmin').limit(1);
+      if (!anyAdmin || anyAdmin.length === 0) {
+        await adminSupabase.from('profiles').update({ role: 'superadmin' }).eq('id', user.id);
+        // Refresh profile local variable
+        const { data: updatedProf } = await adminSupabase.from('profiles').select('*').eq('id', user.id).single();
+        profile = updatedProf;
+      }
 
       return res.status(200).json({
         success: true,
