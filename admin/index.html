@@ -2569,9 +2569,32 @@ async function removeUser(userId) {
   } catch (err) { toast('Network error', 'error'); }
 }
 
-function submitNewUser() {
-  toast('Please add new users via your Supabase Authentication dashboard for security. They will automatically appear here once added.', 'info', 6000);
-  closeModal('add-user-modal');
+async function submitNewUser() {
+  const name = document.getElementById('nu-name').value.trim();
+  const email = document.getElementById('nu-email').value.trim();
+  const role = document.getElementById('nu-role').value;
+  const password = document.getElementById('nu-password').value;
+
+  if (!email || !password) return toast('Email and password required', 'error');
+
+  try {
+    const apiToken = sessionStorage.getItem('calisto_api_token');
+    const resp = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiToken },
+      body: JSON.stringify({ action: 'create', full_name: name, email, password, role })
+    });
+    const data = await resp.json();
+    if (data.success) {
+      toast('User created successfully.');
+      closeModal('add-user-modal');
+      renderUsersPage();
+      // Clear form
+      ['nu-name', 'nu-email', 'nu-password'].forEach(id => document.getElementById(id).value = '');
+    } else {
+      toast(data.error || 'Failed to create user', 'error');
+    }
+  } catch (err) { toast('Network error', 'error'); }
 }
 
 /* ════════════════════════════════

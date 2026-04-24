@@ -22,21 +22,48 @@ export default async function handler(req, res) {
   const supabase = getSupabase(false); 
   const adminSupabase = getSupabase(true); 
 
-  // ── GET: User List ──
-  if (req.method === 'GET') {
-    if (!adminSupabase) return res.status(500).json({ error: 'Config missing' });
-    const authHeader = req.headers.authorization || '';
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await adminSupabase.auth.getUser(token);
-    if (authError || !user) return res.status(401).json({ error: 'Session invalid' });
+  if (!adminSupabase) return res.status(500).json({ error: 'Config missing' });
 
-    const { data: profiles, error: dbErr } = await adminSupabase.from('profiles').select('*');
+  // ── GET USER LIST ──
+  if (req.method === 'GET') {
+    const { data: profiles, error: dbErr } = await adminSupabase.from('profiles').select('*').order('created_at', { ascending: false });
     return res.status(200).json({ 
       success: !dbErr, 
       users: profiles || [], 
-      error: dbErr?.message,
-      debug: { count: profiles?.length, table: 'profiles' } 
+      error: dbErr?.message 
     });
+  }
+
+  if (req.method === 'POST') {
+    const { action, userId, updates, email, password, full_name, role } = req.body;
+
+    // A. CREATE NEW USER
+    if (action === 'create') {
+      if (!email || !password) return res.status(400).json({ success: false, error: "Email and password required" });
+      const { data: authUser, error: authErr } = await adminSupabase.auth.admin.createUser({
+        email, password, email_confirm: true, user_metadata: { full_name }
+      });
+      if (authErr) return res.status(400).json({ success: false, error: authErr.message });
+
+      await adminSupabase.from('profiles').upsert({
+        id: authUser.user.id, email, full_name, role: role || 'viewer', updated_at: new Date()
+      });
+      return res.status(200).json({ success: true });
+    }
+
+    // B. DELETE USER
+    if (action === 'delete_user') {
+      const { error: authErr } = await adminSupabase.auth.admin.deleteUser(userId);
+      if (authErr) return res.status(400).json({ success: false, error: authErr.message });
+      await adminSupabase.from('profiles').delete().eq('id', userId);
+      return res.status(200).json({ success: true });
+    }
+
+    // C. UPDATE USER (Existing)
+    if (action === 'update_user') {
+      const { error } = await adminSupabase.from('profiles').update(updates).eq('id', userId);
+      return res.status(200).json({ success: !error, error: error?.message });
+    }
   }
 
   // ── POST: Login / Management ──
