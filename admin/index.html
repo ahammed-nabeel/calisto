@@ -2188,15 +2188,26 @@ function populatePmSubcats() {
 ════════════════════════════════ */
 
 // Convert any Google Drive URL to a direct-access URL
-function _gdUrl(url, download) {
+function gdUrl(url, download = false) {
   if (!url) return '';
-  // Already a direct URL or not a Drive link — return as-is
-  const idMatch = url.match(/\/d\/([\w-]+)/) || url.match(/id=([\w-]+)/);
-  if (!idMatch) return url;
+
+  const str = String(url).trim();
+
+  if (!str.includes('drive.google.com')) return str;
+
+  const idMatch =
+    str.match(/\/d\/([^/]+)/) ||
+    str.match(/[?&]id=([^&]+)/);
+
+  if (!idMatch) return str;
+
   const id = idMatch[1];
-  return download
-    ? `https://drive.google.com/uc?export=download&id=${id}`
-    : `https://drive.google.com/uc?export=view&id=${id}`;
+
+  if (download) {
+    return `https://drive.google.com/uc?export=download&id=${id}`;
+  }
+
+  return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
 }
 
 // Live-preview image when user pastes a link
