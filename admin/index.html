@@ -2972,7 +2972,7 @@ function renderNetworkEditor() {
     
     container.appendChild(contDiv);
     
-    const regionsContainer = contDiv.querySelector(\`#cont-\${cIdx}-regions\`);
+    const regionsContainer = contDiv.querySelector(`#cont-${cIdx}-regions`);
     if(!cont.regions) cont.regions = [];
     
     cont.regions.forEach((reg, rIdx) => {
@@ -2989,7 +2989,7 @@ function renderNetworkEditor() {
       `;
       regionsContainer.appendChild(regDiv);
       
-      const dealersContainer = regDiv.querySelector(\`#reg-\${cIdx}-\${rIdx}-dealers\`);
+      const dealersContainer = regDiv.querySelector(`#reg-${cIdx}-${rIdx}-dealers`);
       if(!reg.dealers) reg.dealers = [];
       
       reg.dealers.forEach((dlr, dIdx) => {
@@ -3013,7 +3013,7 @@ function renderNetworkEditor() {
         `;
         dealersContainer.appendChild(dlrDiv);
         
-        const scContainer = dlrDiv.querySelector(\`#dlr-\${cIdx}-\${rIdx}-\${dIdx}-sc\`);
+        const scContainer = dlrDiv.querySelector(`#dlr-${cIdx}-${rIdx}-${dIdx}-sc`);
         if(!dlr.serviceCenters) dlr.serviceCenters = [];
         
         dlr.serviceCenters.forEach((sc, sIdx) => {
