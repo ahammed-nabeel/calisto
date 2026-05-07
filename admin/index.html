@@ -2188,7 +2188,7 @@ function populatePmSubcats() {
 ════════════════════════════════ */
 
 // Convert any Google Drive URL to a direct-access URL
-function gdUrl(url, download = false) {
+function _gdUrl(url, download = false) {
   if (!url) return '';
 
   const str = String(url).trim();

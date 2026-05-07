@@ -5,10 +5,14 @@
 
 // ── CATEGORY PAGE (e.g. gates.html) ─────────────────────────
 // Convert Google Drive share links to direct-embed links
-function _parseGdUrl(url) {
+function _parseGdUrl(url, download = false) {
   if (!url) return '';
   const idMatch = url.match(/drive\.google\.com.*(?:id=|\/d\/)([\w-]+)/);
-  if (idMatch) return `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+  if (idMatch) {
+    const id = idMatch[1];
+    if (download) return `https://drive.google.com/uc?export=download&id=${id}`;
+    return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
+  }
   return url;
 }
 
@@ -117,10 +121,14 @@ function renderProductPage(categorySlug, subcategorySlug, itemSlug) {
   if (!item) { _showProductError('Product not found.'); return; }
 
   // Resolve paths — product pages are inside /products/, assets need ../
-  function rp(p) {
+  function rp(p, download = false) {
     if (!p) return '';
     const idMatch = p.match(/drive\.google\.com.*(?:id=|\/d\/)([\w-]+)/);
-    if (idMatch) return `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+    if (idMatch) {
+      const id = idMatch[1];
+      if (download) return `https://drive.google.com/uc?export=download&id=${id}`;
+      return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
+    }
     if (p.startsWith('http') || p.startsWith('/') || p.startsWith('../') || p.startsWith('data:')) return p;
     return '../' + p;
   }
