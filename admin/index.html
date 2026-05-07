@@ -806,6 +806,13 @@ tr:hover td { background: var(--bg-2); }
         <span class="nav-badge amber" id="forms-badge">—</span>
       </div>
 
+      <div class="nav-item" data-page="network" data-perm="network" onclick="nav('network', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        Global Network
+      </div>
+
       <div class="nav-section" style="margin-top:6px">System</div>
 
       <div class="nav-item" data-page="seo" data-perm="seo" onclick="nav('seo', this)">
@@ -1120,6 +1127,26 @@ tr:hover td { background: var(--bg-2); }
               <!-- Dynamically loaded -->
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- ══ GLOBAL NETWORK ══ -->
+      <div id="pg-network" class="hidden">
+        <div class="page-hd">
+          <div>
+            <div class="page-hd-title">Global Network</div>
+            <div class="page-hd-sub">Manage continents, regions, dealers, and service centers</div>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn btn-primary btn-sm" onclick="saveNetworkAPI()">Save Changes</button>
+          </div>
+        </div>
+
+        <div class="card" style="padding: 20px;">
+          <div id="network-editor-container">
+            Loading network data...
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top:20px" onclick="addContinent()">+ Add Continent</button>
         </div>
       </div>
 
@@ -1482,6 +1509,7 @@ const pageMeta = {
   products:  { title: 'Products & Categories', desc: 'Manage your full product catalog' },
   blog:      { title: 'Blog Posts', desc: 'Articles, news, and technical updates' },
   forms:     { title: 'Enquiries', desc: 'Contact form and partner applications' },
+  network:   { title: 'Global Network', desc: 'Manage regions, dealers, and service centers' },
   seo:       { title: 'SEO Settings', desc: 'Page-level meta tags and keywords' },
   users:     { title: 'Users & Roles', desc: 'Admin accounts and permissions' },
   profile:   { title: 'My Profile', desc: 'Your account settings' },
@@ -1502,6 +1530,7 @@ function nav(page, el) {
 
   if (page === 'seo') loadSEO();
   if (page === 'forms') loadEnquiries();
+  if (page === 'network') loadNetwork();
   if (page === 'blog') loadBlog();
   if (page === 'products') renderCatalogTree();
   if (page === 'users') renderUsersPage();
@@ -2903,6 +2932,171 @@ loadCatalogFromAPI().then(() => {
     renderCatalogTree();
   }
 });
+
+/* ════════════════════════════════
+   GLOBAL NETWORK LOGIC
+════════════════════════════════ */
+let networkData = { continents: [] };
+
+async function loadNetwork() {
+  document.getElementById('network-editor-container').innerHTML = 'Loading...';
+  try {
+    const res = await fetch('/api/network');
+    const data = await res.json();
+    networkData = data || { continents: [] };
+    renderNetworkEditor();
+  } catch (err) {
+    document.getElementById('network-editor-container').innerHTML = 'Error loading data.';
+    toast('Failed to load network data', 'error');
+  }
+}
+
+function renderNetworkEditor() {
+  const container = document.getElementById('network-editor-container');
+  container.innerHTML = '';
+  
+  if (!networkData.continents) networkData.continents = [];
+  
+  networkData.continents.forEach((cont, cIdx) => {
+    const contDiv = document.createElement('div');
+    contDiv.style.cssText = 'border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 15px; padding: 15px; background: #fff;';
+    
+    contDiv.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+        <input type="text" class="form-input" style="width:250px; font-weight:bold" value="${cont.name || ''}" placeholder="Continent Name (e.g. Europe)" onchange="updateNetworkVal(['continents', ${cIdx}, 'name'], this.value)">
+        <button class="btn btn-danger btn-sm" onclick="removeNetworkItem(['continents', ${cIdx}])">Delete Continent</button>
+      </div>
+      <div style="padding-left: 20px; border-left: 2px solid var(--border-lt); margin-left: 10px;" id="cont-${cIdx}-regions"></div>
+      <button class="btn btn-outline btn-sm" style="margin-left: 30px; margin-top:10px" onclick="addRegion(${cIdx})">+ Add Region</button>
+    `;
+    
+    container.appendChild(contDiv);
+    
+    const regionsContainer = contDiv.querySelector(\`#cont-\${cIdx}-regions\`);
+    if(!cont.regions) cont.regions = [];
+    
+    cont.regions.forEach((reg, rIdx) => {
+      const regDiv = document.createElement('div');
+      regDiv.style.cssText = 'margin-top: 15px; padding: 10px; border: 1px dashed var(--border); border-radius: var(--radius-sm); background: var(--bg-2);';
+      
+      regDiv.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+          <input type="text" class="form-input" style="width:200px; font-weight:600" value="${reg.name || ''}" placeholder="Region Name (e.g. France)" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'name'], this.value)">
+          <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="removeNetworkItem(['continents', ${cIdx}, 'regions', ${rIdx}])">Remove Region</button>
+        </div>
+        <div style="padding-left: 15px;" id="reg-${cIdx}-${rIdx}-dealers"></div>
+        <button class="btn btn-outline btn-sm" style="margin-left: 15px; margin-top:10px" onclick="addDealer(${cIdx}, ${rIdx})">+ Add Dealer</button>
+      `;
+      regionsContainer.appendChild(regDiv);
+      
+      const dealersContainer = regDiv.querySelector(\`#reg-\${cIdx}-\${rIdx}-dealers\`);
+      if(!reg.dealers) reg.dealers = [];
+      
+      reg.dealers.forEach((dlr, dIdx) => {
+        const dlrDiv = document.createElement('div');
+        dlrDiv.style.cssText = 'margin-top: 10px; padding: 10px; border: 1px solid var(--border-lt); border-radius: var(--radius-sm); background: #fff;';
+        
+        dlrDiv.innerHTML = `
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom: 10px;">
+            <input type="text" class="form-input" value="${dlr.city || ''}" placeholder="City" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'city'], this.value)">
+            <input type="text" class="form-input" value="${dlr.name || ''}" placeholder="Dealer Name" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'name'], this.value)">
+            <input type="text" class="form-input" value="${dlr.email || ''}" placeholder="Email" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'email'], this.value)">
+            <input type="text" class="form-input" value="${dlr.phone || ''}" placeholder="Phone" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'phone'], this.value)">
+          </div>
+          <div style="text-align: right; margin-bottom: 10px;">
+            <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="removeNetworkItem(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}])">Remove Dealer</button>
+          </div>
+          <div style="padding-left: 15px; border-left: 2px solid var(--amber-bg);" id="dlr-${cIdx}-${rIdx}-${dIdx}-sc">
+            <div style="font-size:12px; font-weight:700; color:var(--text-3); margin-bottom:5px">Service Centers:</div>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-left: 15px; margin-top:5px; font-size:11px; padding:4px 8px" onclick="addServiceCenter(${cIdx}, ${rIdx}, ${dIdx})">+ Add Service Center</button>
+        `;
+        dealersContainer.appendChild(dlrDiv);
+        
+        const scContainer = dlrDiv.querySelector(\`#dlr-\${cIdx}-\${rIdx}-\${dIdx}-sc\`);
+        if(!dlr.serviceCenters) dlr.serviceCenters = [];
+        
+        dlr.serviceCenters.forEach((sc, sIdx) => {
+          const scDiv = document.createElement('div');
+          scDiv.style.cssText = 'margin-bottom: 8px; padding: 8px; background: var(--bg); border-radius: 4px; display:flex; gap:8px; align-items:center';
+          scDiv.innerHTML = `
+            <div style="flex:1; display:flex; flex-direction:column; gap:5px">
+              <input type="text" class="form-input" style="padding:4px 8px; font-size:12px" value="${sc.name || ''}" placeholder="Service Center Name" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'serviceCenters', ${sIdx}, 'name'], this.value)">
+              <input type="text" class="form-input" style="padding:4px 8px; font-size:12px" value="${sc.address || ''}" placeholder="Address" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'serviceCenters', ${sIdx}, 'address'], this.value)">
+              <input type="text" class="form-input" style="padding:4px 8px; font-size:12px" value="${sc.phone || ''}" placeholder="Phone" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'serviceCenters', ${sIdx}, 'phone'], this.value)">
+            </div>
+            <button class="tbl-action del" onclick="removeNetworkItem(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'serviceCenters', ${sIdx}])" title="Remove Service Center">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+          `;
+          scContainer.appendChild(scDiv);
+        });
+      });
+    });
+  });
+}
+
+function updateNetworkVal(path, val) {
+  let curr = networkData;
+  for(let i=0; i<path.length-1; i++) curr = curr[path[i]];
+  curr[path[path.length-1]] = val;
+}
+
+function removeNetworkItem(path) {
+  if(!confirm("Are you sure you want to remove this item?")) return;
+  let curr = networkData;
+  for(let i=0; i<path.length-1; i++) curr = curr[path[i]];
+  curr.splice(path[path.length-1], 1);
+  renderNetworkEditor();
+}
+
+const genId = () => Math.random().toString(36).substr(2, 9);
+
+function addContinent() {
+  networkData.continents.push({ id: genId(), name: '', regions: [] });
+  renderNetworkEditor();
+}
+function addRegion(cIdx) {
+  if(!networkData.continents[cIdx].regions) networkData.continents[cIdx].regions = [];
+  networkData.continents[cIdx].regions.push({ id: genId(), name: '', dealers: [] });
+  renderNetworkEditor();
+}
+function addDealer(cIdx, rIdx) {
+  if(!networkData.continents[cIdx].regions[rIdx].dealers) networkData.continents[cIdx].regions[rIdx].dealers = [];
+  networkData.continents[cIdx].regions[rIdx].dealers.push({ id: genId(), city: '', name: '', email: '', phone: '', serviceCenters: [] });
+  renderNetworkEditor();
+}
+function addServiceCenter(cIdx, rIdx, dIdx) {
+  if(!networkData.continents[cIdx].regions[rIdx].dealers[dIdx].serviceCenters) networkData.continents[cIdx].regions[rIdx].dealers[dIdx].serviceCenters = [];
+  networkData.continents[cIdx].regions[rIdx].dealers[dIdx].serviceCenters.push({ id: genId(), name: '', address: '', phone: '' });
+  renderNetworkEditor();
+}
+
+async function saveNetworkAPI() {
+  const btn = document.querySelector('#pg-network .btn-primary');
+  const ogText = btn.textContent;
+  btn.textContent = 'Saving...';
+  try {
+    const apiToken = sessionStorage.getItem('calisto_api_token');
+    const resp = await fetch('/api/network', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + apiToken
+      },
+      body: JSON.stringify(networkData)
+    });
+    const data = await resp.json();
+    if (data.success) {
+      toast('Network data saved successfully');
+    } else {
+      toast(data.error || 'Failed to save', 'error');
+    }
+  } catch (err) {
+    toast('Network error', 'error');
+  }
+  btn.textContent = ogText;
+}
 </script>
 </body>
 </html>
