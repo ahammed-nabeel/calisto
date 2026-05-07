@@ -4,6 +4,14 @@
 // ============================================================
 
 // ── CATEGORY PAGE (e.g. gates.html) ─────────────────────────
+// Convert Google Drive share links to direct-embed links
+function _parseGdUrl(url) {
+  if (!url) return '';
+  const idMatch = url.match(/drive\.google\.com.*(?:id=|\/d\/)([\w-]+)/);
+  if (idMatch) return `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+  return url;
+}
+
 // Shows subcategory cards linking to their dedicated .html pages
 function renderCategoryPage(categorySlug) {
   const d = loadProductsData();
@@ -30,7 +38,8 @@ function renderCategoryPage(categorySlug) {
     // Use first item image if available, otherwise hero image
     const firstItemImg = sc.items && sc.items.length > 0 && sc.items[0].images && sc.items[0].images.length > 0
       ? sc.items[0].images[0].url : null;
-    const displayImg = firstItemImg || sc.heroImage || cat.heroImage || '';
+    let displayImg = firstItemImg || sc.heroImage || cat.heroImage || '';
+    displayImg = _parseGdUrl(displayImg);
     const isPhoto = displayImg && (displayImg.startsWith('http') || displayImg.match(/\.(jpg|jpeg|png|webp)/i));
 
     const card = document.createElement('div');
@@ -76,7 +85,8 @@ function renderSubcategoryPage(categorySlug, subcategorySlug) {
   }
 
   sc.items.forEach(item => {
-    const mainImg = item.images && item.images.length > 0 ? item.images[0].url : sc.heroImage || '';
+    let mainImg = item.images && item.images.length > 0 ? item.images[0].url : sc.heroImage || '';
+    mainImg = _parseGdUrl(mainImg);
     const templateUrl = `products/product-template.html?cat=${categorySlug}&sub=${subcategorySlug}&item=${item.slug}`;
 
     const card = document.createElement('div');
@@ -109,6 +119,8 @@ function renderProductPage(categorySlug, subcategorySlug, itemSlug) {
   // Resolve paths — product pages are inside /products/, assets need ../
   function rp(p) {
     if (!p) return '';
+    const idMatch = p.match(/drive\.google\.com.*(?:id=|\/d\/)([\w-]+)/);
+    if (idMatch) return `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
     if (p.startsWith('http') || p.startsWith('/') || p.startsWith('../') || p.startsWith('data:')) return p;
     return '../' + p;
   }
