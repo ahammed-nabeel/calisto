@@ -8,12 +8,13 @@ const PERMISSIONS = {
   manage_products:  { label: 'Add / Edit Products' },
   manage_seo:       { label: 'SEO Details' },
   manage_users:     { label: 'User Management' },
+  manage_network:   { label: 'Manage Global Network' },
   export_data:      { label: 'Export & Deploy' },
 };
 
 const ROLE_PRESETS = {
   superadmin: { permissions: Object.keys(PERMISSIONS) },
-  editor:     { permissions: ['view_forms', 'manage_products', 'manage_seo'] },
+  editor:     { permissions: ['view_forms', 'manage_products', 'manage_seo', 'manage_network'] },
   viewer:     { permissions: ['view_forms'] },
 };
 
@@ -59,7 +60,7 @@ function can(permission) {
   // Superadmin always has all permissions
   if (session.role === 'superadmin') return true;
   
-  return session.permissions.includes(permission);
+  return (session.permissions || []).includes(permission);
 }
 
 function authLogout() {

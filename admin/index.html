@@ -1471,22 +1471,43 @@ function initAuth() {
 
   // Populate user UI
   const initials = (session.name || session.username || 'A').slice(0, 1).toUpperCase();
-  document.getElementById('sidebar-avatar').textContent = initials;
-  document.getElementById('sidebar-name').textContent = session.name || session.username;
-  document.getElementById('sidebar-role').textContent = session.role || 'Admin';
-  document.getElementById('profile-avatar-big').textContent = initials;
-  document.getElementById('profile-name-big').textContent = session.name || session.username;
-  document.getElementById('profile-role-big').textContent = `${session.role || 'Admin'} · ${session.username}@calistotech.co`;
+  const avatarEl = document.getElementById('sidebar-avatar');
+  if (avatarEl) avatarEl.textContent = initials;
+  
+  const nameEl = document.getElementById('sidebar-name');
+  if (nameEl) nameEl.textContent = session.name || session.username;
+  
+  const roleEl = document.getElementById('sidebar-role');
+  if (roleEl) roleEl.textContent = session.role || 'Admin';
+  
+  const pAvatarEl = document.getElementById('profile-avatar-big');
+  if (pAvatarEl) pAvatarEl.textContent = initials;
+  
+  const pNameEl = document.getElementById('profile-name-big');
+  if (pNameEl) pNameEl.textContent = session.name || session.username;
+  
+  const pRoleEl = document.getElementById('profile-role-big');
+  if (pRoleEl) pRoleEl.textContent = `${session.role || 'Admin'} · ${session.username}@calistotech.co`;
 
   // Lock nav items without permission
   document.querySelectorAll('[data-perm]').forEach(item => {
     const perm = item.dataset.perm;
-    const allowed = session.permissions || [];
-    // Map old permission keys to auth.js keys
-    const permMap = { forms: 'view_forms', products: 'manage_products', seo: 'manage_seo', users: 'manage_users', export: 'export_data', blog: 'manage_products' };
+    // Map nav perm keys to auth.js keys
+    const permMap = { 
+      forms: 'view_forms', 
+      products: 'manage_products', 
+      seo: 'manage_seo', 
+      users: 'manage_users', 
+      export: 'export_data', 
+      blog: 'manage_products',
+      network: 'manage_network' 
+    };
     const authKey = permMap[perm] || perm;
-    if (!allowed.includes(perm) && !allowed.includes(authKey)) {
+    
+    if (!can(authKey)) {
       item.classList.add('locked');
+    } else {
+      item.classList.remove('locked');
     }
   });
 
@@ -2691,7 +2712,9 @@ function initCharts() {
   const visits = labels.map(() => Math.round(500 + Math.random() * 900));
   const enquiries = labels.map(() => Math.round(1 + Math.random() * 5));
 
-  const ctx1 = document.getElementById('trafficChart').getContext('2d');
+  const trafficEl = document.getElementById('trafficChart');
+  if (!trafficEl) return;
+  const ctx1 = trafficEl.getContext('2d');
   const g1 = ctx1.createLinearGradient(0, 0, 0, 190);
   g1.addColorStop(0, 'rgba(0,92,185,.12)');
   g1.addColorStop(1, 'rgba(0,92,185,0)');
@@ -2744,7 +2767,9 @@ function initCharts() {
     },
   });
 
-  const ctx2 = document.getElementById('sourceChart').getContext('2d');
+  const sourceEl = document.getElementById('sourceChart');
+  if (!sourceEl) return;
+  const ctx2 = sourceEl.getContext('2d');
   sourceChart = new Chart(ctx2, {
     type: 'doughnut',
     data: {
@@ -2918,9 +2943,14 @@ function updateFormsBadge() {
 /* ════════════════════════════════
    INIT
 ════════════════════════════════ */
-initAuth();
-updateFormsBadge();
-initCharts();
+try {
+  initAuth();
+  updateStats();
+  initCharts();
+} catch (e) {
+  console.error("Dashboard init error:", e);
+  document.body.style.visibility = 'visible';
+}
 
 // Restore API token from session
 _adminApiToken = sessionStorage.getItem('calisto_api_token') || null;
