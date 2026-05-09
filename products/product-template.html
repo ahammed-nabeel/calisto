@@ -417,7 +417,7 @@
             margin: 0 auto;
             background: var(--surface);
             border-radius: var(--radius-lg);
-            overflow: hidden;
+            overflow-x: auto;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             border: 1px solid rgba(0, 0, 0, 0.05);
         }
@@ -439,13 +439,13 @@
         .specs-table td {
             padding: 0.75rem 1.5rem;
             text-align: left;
+            white-space: nowrap;
         }
 
         .specs-table th {
             background: var(--primary-light);
             font-weight: 700;
             color: var(--primary-dark);
-            width: 40%;
             font-family: var(--font-head);
         }
 
