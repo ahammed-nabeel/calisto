@@ -1317,7 +1317,25 @@ tr:hover td { background: var(--bg-2); }
       <div class="form-group"><label class="form-label">Full Description (HTML) <span style="font-weight:400;color:var(--text-3)">(product page hero)</span></label><textarea class="form-textarea" id="pm-description" style="min-height:90px" placeholder="&lt;p&gt;Full HTML description…&lt;/p&gt;"></textarea></div>
       <div class="form-group"><label class="form-label">Card Highlights <span style="font-weight:400;color:var(--text-3)">(comma-separated)</span></label><input class="form-input" id="pm-highlights" placeholder="Articulated arm, For large pillars, Smooth movement"></div>
       <div class="form-group"><label class="form-label">Characteristics <span style="font-weight:400;color:var(--text-3)">(one per line — shown as pills on product page)</span></label><textarea class="form-textarea" id="pm-characteristics" style="min-height:80px" placeholder="DC motor & Backup Battery&#10;Smart Stop-on-Obstacle&#10;Auto Closing Function"></textarea></div>
-      <div class="form-group"><label class="form-label">Technical Specs <span style="font-weight:400;color:var(--text-3)">(one per line: Param | Value)</span></label><textarea class="form-textarea" id="pm-specs" style="min-height:90px" placeholder="Unit Model | SW300DC&#10;Power Supply | AC220V/50Hz&#10;Max Loading Weight | 300 KG / Leaf"></textarea></div>
+      <div class="form-group">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <label class="form-label" style="margin-bottom:0">Technical Specs</label>
+          <div style="display:flex;align-items:center;gap:12px;font-size:12px">
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer">
+              <input type="radio" name="pm-specs-mode" value="list" checked onchange="toggleSpecsInput('pm')"> List
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer">
+              <input type="radio" name="pm-specs-mode" value="html" onchange="toggleSpecsInput('pm')"> HTML
+            </label>
+          </div>
+        </div>
+        <div id="pm-specs-list-wrap">
+          <textarea class="form-textarea" id="pm-specs" style="min-height:90px" placeholder="Unit Model | SW300DC&#10;Power Supply | AC220V/50Hz&#10;Max Loading Weight | 300 KG / Leaf"></textarea>
+        </div>
+        <div id="pm-specs-html-wrap" class="hidden">
+          <textarea class="form-textarea" id="pm-specs-html" style="min-height:90px" placeholder="&lt;table&gt;... custom HTML ...&lt;/table&gt;"></textarea>
+        </div>
+      </div>
       <!-- Images — Google Drive links -->
       <div class="form-group">
         <label class="form-label">Product Images <span style="font-weight:400;color:var(--text-3)">(first link = main/thumbnail)</span></label>
@@ -2074,7 +2092,25 @@ function showProductEditor(ci, si, ii) {
       <div class="form-group"><label class="form-label">Full Description (HTML) <span style="font-weight:400;color:var(--text-3)">(product page)</span></label><textarea class="form-textarea" id="e-p-desc" style="min-height:90px">${item.description||''}</textarea></div>
       <div class="form-group"><label class="form-label">Card Highlights <span style="font-weight:400;color:var(--text-3)">(comma-separated)</span></label><input class="form-input" id="e-p-highlights" value="${_esc((item.highlights||[]).join(', '))}"></div>
       <div class="form-group"><label class="form-label">Characteristics <span style="font-weight:400;color:var(--text-3)">(one per line)</span></label><textarea class="form-textarea" id="e-p-chars" style="min-height:80px">${(item.characteristics||[]).map(c=>c.label).join('\n')}</textarea></div>
-      <div class="form-group"><label class="form-label">Technical Specs <span style="font-weight:400;color:var(--text-3)">(Param | Value, one per line)</span></label><textarea class="form-textarea" id="e-p-specs" style="min-height:90px">${(item.specs||[]).map(s=>s.param+' | '+s.value).join('\n')}</textarea></div>
+      <div class="form-group">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <label class="form-label" style="margin-bottom:0">Technical Specs</label>
+          <div style="display:flex;align-items:center;gap:12px;font-size:12px">
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer">
+              <input type="radio" name="e-p-specs-mode" value="list" ${item.specsMode!=='html'?'checked':''} onchange="toggleSpecsInput('e-p')"> List
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer">
+              <input type="radio" name="e-p-specs-mode" value="html" ${item.specsMode==='html'?'checked':''} onchange="toggleSpecsInput('e-p')"> HTML
+            </label>
+          </div>
+        </div>
+        <div id="e-p-specs-list-wrap" class="${item.specsMode==='html'?'hidden':''}">
+          <textarea class="form-textarea" id="e-p-specs" style="min-height:90px" placeholder="Param | Value, one per line">${(item.specs||[]).map(s=>s.param+' | '+s.value).join('\n')}</textarea>
+        </div>
+        <div id="e-p-specs-html-wrap" class="${item.specsMode!=='html'?'hidden':''}">
+          <textarea class="form-textarea" id="e-p-specs-html" style="min-height:90px" placeholder="Enter custom HTML here">${item.specsHtml||''}</textarea>
+        </div>
+      </div>
       <div class="form-group"><label class="form-label">Images <span style="font-weight:400;color:var(--text-3)">(first = main image)</span></label>
         <div id="ep-img-list-${ii}" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px">
           ${(item.images||[]).map((img,idx)=>`
@@ -2125,7 +2161,17 @@ function updateProduct(ci, si, ii) {
   item.description = document.getElementById('e-p-desc').value;
   item.highlights = document.getElementById('e-p-highlights').value.split(',').map(s => s.trim()).filter(Boolean);
   item.characteristics = document.getElementById('e-p-chars').value.split('\n').map(s => s.trim()).filter(Boolean).map(l => ({ label: l, icon: 'check' }));
-  item.specs = document.getElementById('e-p-specs').value.split('\n').map(s => s.trim()).filter(Boolean).map(l => { const [p, ...v] = l.split('|'); return { param: p.trim(), value: v.join('|').trim() }; });
+  
+  const specsMode = document.querySelector('input[name="e-p-specs-mode"]:checked').value;
+  item.specsMode = specsMode;
+  if (specsMode === 'html') {
+    item.specsHtml = document.getElementById('e-p-specs-html').value;
+    item.specs = []; // Clear list if in HTML mode
+  } else {
+    item.specs = document.getElementById('e-p-specs').value.split('\n').map(s => s.trim()).filter(Boolean).map(l => { const [p, ...v] = l.split('|'); return { param: p.trim(), value: v.join('|').trim() }; });
+    item.specsHtml = '';
+  }
+
   item.images = _readGdriveImgList(`ep-img-list-${ii}`);
   item.datasheets = _readGdriveDsList(`ep-ds-list-${ii}`);
   saveCatalog().then(ok => {
@@ -2206,7 +2252,14 @@ function openAddProductModal(ci, si) {
   document.getElementById('product-modal-title').textContent = 'Add Product';
   document.getElementById('pm-save-btn').textContent = 'Add Product';
   ['pm-name','pm-slug','pm-short-desc','pm-highlights'].forEach(id=>document.getElementById(id).value='');
-  ['pm-description','pm-characteristics','pm-specs'].forEach(id=>document.getElementById(id).value='');
+  ['pm-description','pm-characteristics','pm-specs','pm-specs-html'].forEach(id=>document.getElementById(id).value='');
+  
+  // Reset specs mode to list
+  const listRadio = document.querySelector('input[name="pm-specs-mode"][value="list"]');
+  if (listRadio) {
+    listRadio.checked = true;
+    toggleSpecsInput('pm');
+  }
   // Clear link lists
   document.getElementById('pm-img-list').innerHTML = '';
   document.getElementById('pm-ds-list').innerHTML = '';
@@ -2353,7 +2406,16 @@ function saveProductFromModal() {
   const slug = document.getElementById('pm-slug').value.trim() || name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
   const chars      = document.getElementById('pm-characteristics').value.split('\n').map(s => s.trim()).filter(Boolean).map(l => ({ label: l, icon: 'check' }));
-  const specs      = document.getElementById('pm-specs').value.split('\n').map(s => s.trim()).filter(Boolean).map(l => { const [p, ...v] = l.split('|'); return { param: p.trim(), value: v.join('|').trim() }; });
+  
+  let specs = [];
+  let specsHtml = '';
+  const specsMode = document.querySelector('input[name="pm-specs-mode"]:checked').value;
+  if (specsMode === 'html') {
+    specsHtml = document.getElementById('pm-specs-html').value;
+  } else {
+    specs = document.getElementById('pm-specs').value.split('\n').map(s => s.trim()).filter(Boolean).map(l => { const [p, ...v] = l.split('|'); return { param: p.trim(), value: v.join('|').trim() }; });
+  }
+
   const images     = _readGdriveImgList('pm-img-list');
   const datasheets = _readGdriveDsList('pm-ds-list');
 
@@ -2362,7 +2424,12 @@ function saveProductFromModal() {
     shortDescription: document.getElementById('pm-short-desc').value,
     description:      document.getElementById('pm-description').value,
     highlights:       document.getElementById('pm-highlights').value.split(',').map(s => s.trim()).filter(Boolean),
-    characteristics: chars, specs, images, datasheets
+    characteristics: chars, 
+    specs, 
+    specsMode,
+    specsHtml,
+    images, 
+    datasheets
   });
 
   saveCatalog().then(ok => {
@@ -2416,6 +2483,19 @@ function loadProductsData() {
 }
 
 function _esc(s) { return (s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+function toggleSpecsInput(prefix) {
+  const mode = document.querySelector(`input[name="${prefix}-specs-mode"]:checked`).value;
+  const listWrap = document.getElementById(`${prefix}-specs-list-wrap`);
+  const htmlWrap = document.getElementById(`${prefix}-specs-html-wrap`);
+  if (mode === 'html') {
+    listWrap.classList.add('hidden');
+    htmlWrap.classList.remove('hidden');
+  } else {
+    listWrap.classList.remove('hidden');
+    htmlWrap.classList.add('hidden');
+  }
+}
 
 /* ════════════════════════════════
    SEO

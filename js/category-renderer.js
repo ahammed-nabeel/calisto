@@ -194,7 +194,13 @@ function renderProductPage(categorySlug, subcategorySlug, itemSlug) {
   // Specs table
   const specsTable = document.getElementById('specs-table-body');
   if (specsTable) {
-    if (item.specs && item.specs.length > 0) {
+    if (item.specsMode === 'html') {
+      // For HTML mode, we replace the whole table with a div containing the HTML
+      const container = document.querySelector('.specs-container');
+      if (container) {
+        container.innerHTML = `<div style="padding: 2rem;">${item.specsHtml || ''}</div>`;
+      }
+    } else if (item.specs && item.specs.length > 0) {
       specsTable.innerHTML = item.specs.map(s => `<tr><th>${s.param}</th><td>${s.value}</td></tr>`).join('');
     } else {
       const btn = document.getElementById('toggleSpecsBtn');
