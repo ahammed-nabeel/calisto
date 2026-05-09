@@ -3048,16 +3048,23 @@ function renderNetworkEditor() {
         
         dlr.serviceCenters.forEach((sc, sIdx) => {
           const scDiv = document.createElement('div');
-          scDiv.style.cssText = 'margin-bottom: 8px; padding: 8px; background: var(--bg); border-radius: 4px; display:flex; gap:8px; align-items:center';
+          scDiv.style.cssText = 'margin-bottom: 10px; padding: 10px; background: var(--bg); border-radius: 6px; border: 1px solid var(--border-lt);';
           scDiv.innerHTML = `
-            <div style="flex:1; display:flex; flex-direction:column; gap:5px">
-              <input type="text" class="form-input" style="padding:4px 8px; font-size:12px" value="${sc.name || ''}" placeholder="Service Center Name" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'serviceCenters', ${sIdx}, 'name'], this.value)">
-              <input type="text" class="form-input" style="padding:4px 8px; font-size:12px" value="${sc.address || ''}" placeholder="Address" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'serviceCenters', ${sIdx}, 'address'], this.value)">
-              <input type="text" class="form-input" style="padding:4px 8px; font-size:12px" value="${sc.phone || ''}" placeholder="Phone" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'serviceCenters', ${sIdx}, 'phone'], this.value)">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+              <span style="font-size:12px; font-weight:700; color:var(--text-2)">Service Center #${sIdx + 1}</span>
+              <button class="tbl-action del" onclick="removeNetworkItem(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'serviceCenters', ${sIdx}])" title="Remove Service Center">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
             </div>
-            <button class="tbl-action del" onclick="removeNetworkItem(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'serviceCenters', ${sIdx}])" title="Remove Service Center">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-            </button>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-bottom:6px">
+              <input type="text" class="form-input" style="padding:5px 8px; font-size:12px" value="${sc.city || ''}" placeholder="Area / City" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'serviceCenters', ${sIdx}, 'city'], this.value)">
+              <input type="text" class="form-input" style="padding:5px 8px; font-size:12px" value="${sc.name || ''}" placeholder="Company / Center Name" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'serviceCenters', ${sIdx}, 'name'], this.value)">
+            </div>
+            <textarea class="form-input" style="padding:5px 8px; font-size:12px; min-height:50px; resize:vertical; width:100%; margin-bottom:6px" placeholder="Address (multi-line)" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'serviceCenters', ${sIdx}, 'address'], this.value)">${sc.address || ''}</textarea>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px">
+              <input type="text" class="form-input" style="padding:5px 8px; font-size:12px" value="${sc.phone || ''}" placeholder="Phone" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'serviceCenters', ${sIdx}, 'phone'], this.value)">
+              <input type="text" class="form-input" style="padding:5px 8px; font-size:12px" value="${sc.email || ''}" placeholder="Email" onchange="updateNetworkVal(['continents', ${cIdx}, 'regions', ${rIdx}, 'dealers', ${dIdx}, 'serviceCenters', ${sIdx}, 'email'], this.value)">
+            </div>
           `;
           scContainer.appendChild(scDiv);
         });
@@ -3098,7 +3105,7 @@ function addDealer(cIdx, rIdx) {
 }
 function addServiceCenter(cIdx, rIdx, dIdx) {
   if(!networkData.continents[cIdx].regions[rIdx].dealers[dIdx].serviceCenters) networkData.continents[cIdx].regions[rIdx].dealers[dIdx].serviceCenters = [];
-  networkData.continents[cIdx].regions[rIdx].dealers[dIdx].serviceCenters.push({ id: genId(), name: '', address: '', phone: '' });
+  networkData.continents[cIdx].regions[rIdx].dealers[dIdx].serviceCenters.push({ id: genId(), city: '', name: '', address: '', phone: '', email: '' });
   renderNetworkEditor();
 }
 
