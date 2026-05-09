@@ -258,3 +258,16 @@ function _showProductError(msg) {
   const main = document.querySelector('main');
   if (main) main.innerHTML = `<div style="text-align:center;padding:6rem 2rem;color:#64748b"><h2>Product not found</h2><p>${msg}</p><a href="../gates.html" style="color:#005cb9">← Back to catalog</a></div>`;
 }
+
+// ── RE-RENDER ON DATA LOAD ──────────────────────────────────
+window._onProductsLoaded = function() {
+  const p = new URLSearchParams(window.location.search);
+  const cat = p.get('cat');
+  const sub = p.get('sub');
+  const item = p.get('item');
+
+  if (window.isProductPage && cat && sub && item) {
+    console.log('Calisto: Re-rendering product page with fresh API data');
+    renderProductPage(cat, sub, item);
+  }
+};

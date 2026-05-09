@@ -213,7 +213,7 @@ async function loadProductsFromAPI() {
   }
 
   try {
-    const resp = await fetch(`${_getApiBase()}/api/products`, {
+    const resp = await fetch(`${_getApiBase()}/api/products?t=${Date.now()}`, {
       method: 'GET',
       headers: { 'Accept': 'application/json' }
     });
