@@ -363,8 +363,8 @@
                 </div>
                 <h3 class="method-title">Email</h3>
                 <div class="method-details">
-                    <p><a href="mailto:info@calistotech.com" class="info-blue"
-                            style="color:#005cb9;">info@calistotech.com</a></p>
+                    <p><a href="mailto:info@calistotech.co" class="info-blue"
+                            style="color:#005cb9;">info@calistotech.co</a></p>
                 </div>
             </div>
         </section>
@@ -542,7 +542,7 @@
                 }
 
                 .sc-item:hover {
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
                 }
 
                 .sc-header {
@@ -665,7 +665,7 @@
                     toggleBtn.classList.toggle('active');
                     const content = toggleBtn.nextElementSibling;
                     const arrow = toggleBtn.querySelector('.arrow');
-                    
+
                     if (content.style.display === 'none') {
                         content.style.display = 'block';
                         arrow.style.transform = 'rotate(180deg)';
@@ -687,7 +687,7 @@
                         const res = await fetch('/api/network');
                         if (!res.ok) throw new Error('Failed to fetch network data');
                         const data = await res.json();
-                        
+
                         if (!data || !data.continents || data.continents.length === 0) {
                             container.innerHTML = '<p style="text-align: center; width: 100%; color: #888;">No network data available.</p>';
                             return;
@@ -698,7 +698,7 @@
                         data.continents.forEach(continent => {
                             html += `<div class="continent-col">
                                 <h3 class="continent-title">${continent.name || 'Unnamed Continent'}</h3>`;
-                            
+
                             if (continent.regions && continent.regions.length > 0) {
                                 continent.regions.forEach(region => {
                                     html += `
@@ -707,7 +707,7 @@
                                             <span>${region.name || 'Unnamed Region'}</span> <span class="arrow">▼</span>
                                         </div>
                                         <div class="region-content">`;
-                                    
+
                                     if (region.dealers && region.dealers.length > 0) {
                                         region.dealers.forEach(dealer => {
                                             html += `
@@ -715,14 +715,14 @@
                                                 <div class="centre-city">${dealer.city || ''}</div>
                                                 <div class="centre-name">${dealer.name || 'Unnamed Dealer'}</div>
                                                 <div class="centre-details">`;
-                                            
+
                                             if (dealer.email) {
                                                 html += `<p><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg> <a href="mailto:${dealer.email}" style="color: inherit; text-decoration: none;">${dealer.email}</a></p>`;
                                             }
                                             if (dealer.phone) {
                                                 html += `<p><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> <a href="tel:${dealer.phone.replace(/[^0-9+]/g, '')}" style="color: inherit; text-decoration: none;">${dealer.phone}</a></p>`;
                                             }
-                                            
+
                                             html += `</div>`;
 
                                             if (dealer.serviceCenters && dealer.serviceCenters.length > 0) {
@@ -732,7 +732,7 @@
                                                 </div>
                                                 <div class="sc-content" style="display: none; margin-top: 10px;">
                                                     <div class="sc-accordion-list">`;
-                                                
+
                                                 dealer.serviceCenters.forEach(sc => {
                                                     const scArea = sc.city || sc.name || 'Service Center';
                                                     html += `
@@ -742,7 +742,7 @@
                                                             <span class="sc-arrow">▼</span>
                                                         </div>
                                                         <div class="sc-body">`;
-                                                    
+
                                                     // Company Details
                                                     if (sc.name) {
                                                         html += `
@@ -767,14 +767,14 @@
                                                         <div class="sc-detail-group">
                                                             <div class="sc-detail-label">Contact</div>
                                                             <div class="sc-detail-value">`;
-                                                        
+
                                                         if (sc.phone) {
                                                             html += `<div class="sc-contact-row"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> <a href="tel:${sc.phone.replace(/[^0-9+]/g, '')}">${sc.phone}</a></div>`;
                                                         }
                                                         if (sc.email) {
                                                             html += `<div class="sc-contact-row"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg> <a href="mailto:${sc.email}">${sc.email}</a></div>`;
                                                         }
-                                                        
+
                                                         html += `</div>
                                                         </div>`;
                                                     }
@@ -783,7 +783,7 @@
                                                         </div>
                                                     </div>`;
                                                 });
-                                                
+
                                                 html += `</div></div>`;
                                             }
 
@@ -792,7 +792,7 @@
                                     } else {
                                         html += `<p style="font-size: 0.85rem; color: #888; padding: 10px;">No dealers listed in this region.</p>`;
                                     }
-                                    
+
                                     html += `
                                         </div>
                                     </div>`;
@@ -800,7 +800,7 @@
                             } else {
                                 html += `<p style="font-size: 0.85rem; color: #888;">No regions listed.</p>`;
                             }
-                            
+
                             html += `</div>`; // Close continent-col
                         });
 
