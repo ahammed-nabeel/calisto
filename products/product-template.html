@@ -422,36 +422,34 @@
             border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .specs-table {
+        .specs-container table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 0.8rem;
         }
 
-        .specs-table tr {
+        .specs-container table tr {
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .specs-table tr:last-child {
-            border-bottom: none;
-        }
-
-        .specs-table th,
-        .specs-table td {
-            padding: 0.6rem 1.2rem;
+        .specs-container table th,
+        .specs-container table td {
+            padding: 0.5rem 0.8rem;
             text-align: left;
-            white-space: nowrap;
-            font-size: 0.85rem;
         }
 
-        .specs-table th {
+        .specs-container table td {
+            white-space: nowrap;
+            color: var(--text-body);
+        }
+
+        .specs-container table th {
             background: var(--primary-light);
             font-weight: 700;
             color: var(--primary-dark);
             font-family: var(--font-head);
-        }
-
-        .specs-table td {
-            color: var(--text-body);
+            white-space: normal; /* Allow headers to wrap to save width */
+            line-height: 1.2;
         }
 
         /* Drawings Expansion */
