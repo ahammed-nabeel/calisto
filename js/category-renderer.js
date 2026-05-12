@@ -18,6 +18,9 @@ function _parseGdUrl(url, download = false) {
 
 // Shows subcategory cards linking to their dedicated .html pages
 function renderCategoryPage(categorySlug) {
+  window.activeCategory = categorySlug;
+  window.activeSubcategory = null;
+  
   const d = loadProductsData();
   const cat = d.categories.find(c => c.slug === categorySlug);
   if (!cat) return;
@@ -66,6 +69,9 @@ function renderCategoryPage(categorySlug) {
 // ── SUBCATEGORY PAGE (e.g. swing-gate-operators.html) ────────
 // Shows product cards linking to product-template.html
 function renderSubcategoryPage(categorySlug, subcategorySlug) {
+  window.activeCategory = categorySlug;
+  window.activeSubcategory = subcategorySlug;
+
   const d = loadProductsData();
   const cat = d.categories.find(c => c.slug === categorySlug);
   if (!cat) return;
@@ -269,5 +275,11 @@ window._onProductsLoaded = function() {
   if (window.isProductPage && cat && sub && item) {
     console.log('Calisto: Re-rendering product page with fresh API data');
     renderProductPage(cat, sub, item);
+  } else if (window.activeSubcategory) {
+    console.log('Calisto: Re-rendering subcategory page with fresh API data');
+    renderSubcategoryPage(window.activeCategory, window.activeSubcategory);
+  } else if (window.activeCategory) {
+    console.log('Calisto: Re-rendering category page with fresh API data');
+    renderCategoryPage(window.activeCategory);
   }
 };
