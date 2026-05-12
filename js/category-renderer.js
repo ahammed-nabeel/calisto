@@ -23,7 +23,13 @@ function renderCategoryPage(categorySlug) {
   
   const d = loadProductsData();
   const cat = d.categories.find(c => c.slug === categorySlug);
-  if (!cat) return;
+  if (!cat) {
+    const grid = document.getElementById('category-grid');
+    if (grid) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:#64748b"><h3>Coming soon</h3><p>This category will be available shortly.</p></div>`;
+    const sectionTitle = document.getElementById('section-title');
+    if (sectionTitle) sectionTitle.textContent = 'Coming Soon';
+    return;
+  }
 
   // Section header
   const sectionTitle = document.getElementById('section-title');
@@ -74,9 +80,17 @@ function renderSubcategoryPage(categorySlug, subcategorySlug) {
 
   const d = loadProductsData();
   const cat = d.categories.find(c => c.slug === categorySlug);
-  if (!cat) return;
+  if (!cat || !cat.subcategories) {
+    const grid = document.getElementById('category-grid');
+    if (grid) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:#64748b"><h3>Coming soon</h3><p>This category is currently being updated.</p></div>`;
+    return;
+  }
   const sc = cat.subcategories.find(s => s.slug === subcategorySlug);
-  if (!sc) return;
+  if (!sc) {
+    const grid = document.getElementById('category-grid');
+    if (grid) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:#64748b"><h3>Coming soon</h3><p>This subcategory will be available shortly.</p></div>`;
+    return;
+  }
 
   // Section header
   const sectionTitle = document.getElementById('section-title');
