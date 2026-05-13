@@ -184,6 +184,32 @@ const CALISTO_PRODUCTS = {
           items: []
         }
       ]
+    },
+
+    // ── HARDWARE & COMPONENTS ─────────────────────────────────
+    {
+      id: "hardware",
+      name: "Hardware & Components",
+      slug: "hardware",
+      description: "High-quality hardware components designed for durability, precision, and reliable performance across all your automation needs.",
+      heroTitle: "Hardware & Components,",
+      heroSubtitle: "Built for Strength and Precision.",
+      heroImage: "https://media.istockphoto.com/id/2208802495/photo/metal-roller-brackets-and-pulleys-for-sliding-gates.jpg?s=612x612&w=0&k=20&c=rTFgdf-hRI-yc8LyU6-umSm4w7VP3UMmZ3Hl7JUoeHQ=",
+      pageFile: "hardware.html",
+      subcategories: []
+    },
+
+    // ── CONTROLS & ACCESSORIES ────────────────────────────────
+    {
+      id: "controls",
+      name: "Controls & Accessories",
+      slug: "controls",
+      description: "Enhance functionality with our smart remotes, sensors, and intelligent access control accessories.",
+      heroTitle: "Controls & Accessories,",
+      heroSubtitle: "Smart Access at Your Fingertips.",
+      heroImage: "https://img.freepik.com/premium-photo/automatic-pick-place-machine-quickly-installs-components-generic-circuit-board-electronics_629685-4733.jpg",
+      pageFile: "controls.html",
+      subcategories: []
     }
   ]
 };
@@ -254,6 +280,7 @@ function loadProductsData() {
   if (apiData) {
     _apiCache = apiData;
     _apiCacheTime = Date.now();
+    saveProductsData(apiData); // Keep localStorage updated
     // Trigger re-render if any page is already loaded
     if (typeof window._onProductsLoaded === 'function') {
       window._onProductsLoaded(apiData);

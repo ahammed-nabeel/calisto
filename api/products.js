@@ -111,16 +111,44 @@ const SEED_DATA = {
         { id: "swing-door-operators", name: "Swing Door Operators", slug: "swing-door-operators", description: "Automated swing door systems for accessible entry points.", heroImage: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80", heroSubtitle: "Reliable automated swing doors for every environment.", pageFile: "swing-door-operators.html", items: [] }
       ]
     },
+    // ── WINDOW SYSTEMS ────────────────────────────────────────
     {
-      id: "window-systems", name: "Window Systems", slug: "window-systems",
+      id: "window-systems",
+      name: "Window Systems",
+      slug: "window-systems",
       description: "Intelligent window automation for comfort, ventilation, and energy efficiency.",
-      heroTitle: "Window Automation,", heroSubtitle: "Comfort at Your Command.",
+      heroTitle: "Window Automation,",
+      heroSubtitle: "Comfort at Your Command.",
       heroImage: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
       pageFile: "window-systems.html",
       subcategories: [
         { id: "window-operators", name: "Window Operators", slug: "window-operators", description: "Motorized window openers for roof, awning, and casement windows.", heroImage: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80", heroSubtitle: "Smart window control for ventilation and energy efficiency.", pageFile: "window-operators.html", items: [] },
         { id: "awning-operators", name: "Awning Operators", slug: "awning-operators", description: "Motorized awning and blind systems for outdoor comfort.", heroImage: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80", heroSubtitle: "Automated awnings for shade, comfort, and style.", pageFile: "awning-operators.html", items: [] }
       ]
+    },
+    // ── HARDWARE & COMPONENTS ─────────────────────────────────
+    {
+      id: "hardware",
+      name: "Hardware & Components",
+      slug: "hardware",
+      description: "High-quality hardware components designed for durability, precision, and reliable performance across all your automation needs.",
+      heroTitle: "Hardware & Components,",
+      heroSubtitle: "Built for Strength and Precision.",
+      heroImage: "https://media.istockphoto.com/id/2208802495/photo/metal-roller-brackets-and-pulleys-for-sliding-gates.jpg?s=612x612&w=0&k=20&c=rTFgdf-hRI-yc8LyU6-umSm4w7VP3UMmZ3Hl7JUoeHQ=",
+      pageFile: "hardware.html",
+      subcategories: []
+    },
+    // ── CONTROLS & ACCESSORIES ────────────────────────────────
+    {
+      id: "controls",
+      name: "Controls & Accessories",
+      slug: "controls",
+      description: "Enhance functionality with our smart remotes, sensors, and intelligent access control accessories.",
+      heroTitle: "Controls & Accessories,",
+      heroSubtitle: "Smart Access at Your Fingertips.",
+      heroImage: "https://img.freepik.com/premium-photo/automatic-pick-place-machine-quickly-installs-components-generic-circuit-board-electronics_629685-4733.jpg",
+      pageFile: "controls.html",
+      subcategories: []
     }
   ]
 };
