@@ -111,7 +111,8 @@ function renderSubcategoryPage(categorySlug, subcategorySlug) {
   sc.items.forEach(item => {
     let mainImg = item.images && item.images.length > 0 ? item.images[0].url : sc.heroImage || '';
     mainImg = _parseGdUrl(mainImg);
-    const templateUrl = `products/product-template.html?cat=${categorySlug}&sub=${subcategorySlug}&item=${item.slug}`;
+    const itemSlug = item.slug || item.id || item.name;
+    const templateUrl = `products/product-template.html?cat=${encodeURIComponent(categorySlug)}&sub=${encodeURIComponent(subcategorySlug)}&item=${encodeURIComponent(itemSlug)}`;
 
     const card = document.createElement('div');
     card.className = 'automation-card';
@@ -132,13 +133,15 @@ function renderSubcategoryPage(categorySlug, subcategorySlug) {
 
 // ── PRODUCT PAGE (product-template.html) ─────────────────────
 function renderProductPage(categorySlug, subcategorySlug, itemSlug) {
-  const d = loadProductsData();
-  const cat = d.categories.find(c => c.slug === categorySlug);
-  if (!cat) { _showProductError('Category not found.'); return; }
-  const sc = cat.subcategories.find(s => s.slug === subcategorySlug);
-  if (!sc)  { _showProductError('Subcategory not found.'); return; }
-  const item = sc.items.find(i => i.slug === itemSlug);
-  if (!item) { _showProductError('Product not found.'); return; }
+  const item = getItemBySlug(categorySlug, subcategorySlug, itemSlug);
+  if (!item) {
+    const d = loadProductsData();
+    const cat = getCategoryBySlug(categorySlug);
+    if (!cat) { _showProductError('Category not found.'); return; }
+    const sc = getSubcategoryBySlug(categorySlug, subcategorySlug);
+    if (!sc)  { _showProductError('Subcategory not found.'); return; }
+    _showProductError('Product not found.'); return;
+  }
 
   // Resolve paths — product pages are inside /products/, assets need ../
   function rp(p, download = false) {

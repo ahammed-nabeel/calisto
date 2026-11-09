@@ -1,310 +1,1751 @@
 // ============================================================
-//  CALISTO PRODUCTS DATA STORE  v3 — API-BACKED
-//  Products are loaded from /api/products (Vercel KV database).
-//  Falls back to the hardcoded CALISTO_PRODUCTS if API is unavailable.
+//  CALISTO PRODUCTS DATA LAYER
+//  - Serves products directly from server-side data store (/api/products)
+//  - Bundles embedded fallback catalog for instant client-side rendering
 // ============================================================
 
 const CALISTO_PRODUCTS = {
-  categories: [
-    // ── GATES ────────────────────────────────────────────────
+  "categories": [
     {
-      id: "gates",
-      name: "Gates",
-      slug: "gates",
-      description: "Discover our specialized range of gate automation solutions designed for seamless operation and long-lasting performance.",
-      heroTitle: "Gate Automation Systems,",
-      heroSubtitle: "Engineered for Reliability.",
-      heroImage: "https://images.unsplash.com/photo-1558002038-1091a16606f3?auto=format&fit=crop&w=1920&q=80",
-      pageFile: "gates.html",
-      subcategories: [
+      "id": "gates",
+      "name": "Gates",
+      "slug": "gates",
+      "pageFile": "gates.html",
+      "heroImage": "https://images.unsplash.com/photo-1558002038-1091a16606f3?auto=format&fit=crop&w=1920&q=80",
+      "heroTitle": "Gate Automation Systems,",
+      "description": "Discover our specialized range of gate automation solutions designed for seamless operation and long-lasting performance.",
+      "heroSubtitle": "Engineered for Reliability.",
+      "subcategories": [
         {
-          id: "swing-gate-operators",
-          name: "Swing Gate Operators",
-          slug: "swing-gate-operators",
-          description: "Choose from our wide range of operators designed to suit different gate weights, lengths, and usage frequencies.",
-          heroImage: "https://images.unsplash.com/photo-1558002038-1091a16606f3?auto=format&fit=crop&w=1920&q=80",
-          heroSubtitle: "Premium automation solutions for residential and industrial swing gates.",
-          pageFile: "swing-gate-operators.html",
-          items: [
+          "id": "swing-gate-operators",
+          "name": "Swing Gate Operators",
+          "slug": "swing-gate-operators",
+          "pageFile": "swing-gate-operators.html",
+          "heroImage": "https://images.unsplash.com/photo-1558002038-1091a16606f3?auto=format&fit=crop&w=1920&q=80",
+          "description": "Choose from our wide range of operators designed to suit different gate weights, lengths, and usage frequencies.",
+          "heroSubtitle": "Premium automation solutions for residential and industrial swing gates.",
+          "items": [
             {
-              id: "vortex-calarm-350",
-              name: "Vortex CALARM 350",
-              slug: "vortex-calarm-350",
-              shortDescription: "Articulated arm operator for large pillars with smooth movement.",
-              description: "<p><strong>Vortex CALARM 350</strong> was developed to automate swing gates, available in <strong>230V</strong>, <strong>110V</strong> and <strong>24V</strong>, featuring screw driven piston precision for maximum reliability.</p><p>With a consumption of just <strong>2A</strong>, this motor minimizes environmental impact, in line with the search for energy-responsible solutions.</p><p>In addition to being practical, safe and powerful, it features <strong>slow start and stop</strong> technology for smooth operation and no inertia.</p>",
-              highlights: ["Articulated arm", "For large pillars", "Smooth movement"],
-              characteristics: [
-                { label: "DC motor & Backup Battery", icon: "battery" },
-                { label: "Smart Stop-on-Obstacle", icon: "shield" },
-                { label: "Slow Start/Stop Operation", icon: "play" },
-                { label: "Auto Closing Function", icon: "refresh" },
-                { label: "Access Control Support", icon: "lock" },
-                { label: "WIFI Function (Optional)", icon: "wifi" }
+              "id": "VORTEX CALARM 350",
+              "name": "VORTEX CALARM 350",
+              "slug": "VORTEX CALARM 350",
+              "specs": [
+                {
+                  "param": "Unit Model",
+                  "value": "SW300DC"
+                },
+                {
+                  "param": "Power Supply",
+                  "value": "AC220V/50Hz ; AC110V/60Hz"
+                },
+                {
+                  "param": "Maximum Loading Weight",
+                  "value": "300 KG / Leaf"
+                },
+                {
+                  "param": "Motor Power",
+                  "value": "DC24V / 50W"
+                },
+                {
+                  "param": "Driving Method",
+                  "value": "Screw driven piston type"
+                },
+                {
+                  "param": "Limit Switch",
+                  "value": "Electromechanical limit switch / hall sensor"
+                },
+                {
+                  "param": "Max Single-Leaf Length",
+                  "value": "3.0 m"
+                },
+                {
+                  "param": "Gate Moving Speed",
+                  "value": "2.5 cm/s"
+                },
+                {
+                  "param": "Remote Control Range",
+                  "value": "≥ 30 m"
+                },
+                {
+                  "param": "Recording of Up Remotes",
+                  "value": "32"
+                },
+                {
+                  "param": "Remote Frequency",
+                  "value": "433.92 MHz"
+                },
+                {
+                  "param": "Work Duty",
+                  "value": "S2, 30 min"
+                },
+                {
+                  "param": "Working Temperature",
+                  "value": "-20°C ~ 70°C"
+                },
+                {
+                  "param": "Package Weight",
+                  "value": "15 KG"
+                }
               ],
-              specs: [
-                { param: "Unit Model", value: "SW300DC" },
-                { param: "Power Supply", value: "AC220V/50Hz ; AC110V/60Hz" },
-                { param: "Maximum Loading Weight", value: "300 KG / Leaf" },
-                { param: "Motor Power", value: "DC24V / 50W" },
-                { param: "Driving Method", value: "Screw driven piston type" },
-                { param: "Limit Switch", value: "Electromechanical limit switch / hall sensor" },
-                { param: "Max Single-Leaf Length", value: "3.0 m" },
-                { param: "Gate Moving Speed", value: "2.5 cm/s" },
-                { param: "Remote Control Range", value: "≥ 30 m" },
-                { param: "Recording of Up Remotes", value: "32" },
-                { param: "Remote Frequency", value: "433.92 MHz" },
-                { param: "Work Duty", value: "S2, 30 min" },
-                { param: "Working Temperature", value: "-20°C ~ 70°C" },
-                { param: "Package Weight", value: "15 KG" }
+              "images": [
+                {
+                  "alt": "Vortex CALARM 350.jpeg",
+                  "url": "assets/Vortex CALARM 350.jpeg"
+                },
+                {
+                  "alt": "Vortex CALARM 350 (2).jpeg",
+                  "url": "assets/Vortex CALARM 350 (2).jpeg"
+                },
+                {
+                  "alt": "Vortex CALARM 350 (3).jpeg",
+                  "url": "assets/Vortex CALARM 350 (3).jpeg"
+                },
+                {
+                  "alt": "Vortex CALARM 350 (4).jpeg",
+                  "url": "assets/Vortex CALARM 350 (4).jpeg"
+                }
               ],
-              images: [
-                { url: "assets/Vortex CALARM 350.jpeg", alt: "Vortex CALARM 350 Main" },
-                { url: "assets/Vortex CALARM 350 (2).jpeg", alt: "Vortex CALARM 350 Detail 1" },
-                { url: "assets/Vortex CALARM 350 (3).jpeg", alt: "Vortex CALARM 350 Detail 2" },
-                { url: "assets/Vortex CALARM 350 (4).jpeg", alt: "Vortex CALARM 350 Detail 3" }
+              "datasheets": [
+                {
+                  "file": "assets/vortex-specs.png",
+                  "name": "Technical Drawings",
+                  "type": "drawing"
+                }
               ],
-              datasheets: [
-                { name: "Product Brochure", file: "", type: "brochure" },
-                { name: "Installation Manual", file: "", type: "manual" },
-                { name: "Technical Drawings", file: "assets/vortex-specs.png", type: "drawing" }
-              ]
+              "highlights": [
+                "Articulated arm",
+                "For large pillars",
+                "Smooth movement"
+              ],
+              "description": "<p><strong>Vortex CALARM 350</strong> was developed to automate swing gates, available in <strong>230V</strong>, <strong>110V</strong> and <strong>24V</strong>, featuring screw driven piston precision for maximum reliability.</p>",
+              "characteristics": [
+                {
+                  "icon": "check",
+                  "label": "DC motor & Backup Battery"
+                },
+                {
+                  "icon": "check",
+                  "label": "Smart Stop-on-Obstacle"
+                },
+                {
+                  "icon": "check",
+                  "label": "Slow Start/Stop Operation"
+                },
+                {
+                  "icon": "check",
+                  "label": "Auto Closing Function"
+                },
+                {
+                  "icon": "check",
+                  "label": "Access Control Support"
+                },
+                {
+                  "icon": "check",
+                  "label": "WIFI Function (Optional)"
+                }
+              ],
+              "shortDescription": "Articulated arm operator for large pillars with smooth movement."
+            },
+            {
+              "id": "ARMOX CALARM 650",
+              "name": "ARMOX CALARM 650",
+              "slug": "ARMOX CALARM 650",
+              "specs": [
+                {
+                  "param": "Model No",
+                  "value": "CALARM 650"
+                },
+                {
+                  "param": "Voltage",
+                  "value": "Dc24V"
+                },
+                {
+                  "param": "Power",
+                  "value": "100W"
+                },
+                {
+                  "param": "Max.gate weight per leaf",
+                  "value": "650KG"
+                },
+                {
+                  "param": "Max.gate length per leaf",
+                  "value": "3-5m"
+                },
+                {
+                  "param": "Travel",
+                  "value": "10SEC"
+                },
+                {
+                  "param": "Limit switch",
+                  "value": "Electrical limit switch"
+                },
+                {
+                  "param": "Noise",
+                  "value": "≤ 56db"
+                },
+                {
+                  "param": "Temperature",
+                  "value": "-45⁰ C - + 65⁰ C"
+                },
+                {
+                  "param": "Protection class",
+                  "value": "IP44"
+                },
+                {
+                  "param": "Certification",
+                  "value": "CCC, CE"
+                }
+              ],
+              "images": [
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1hZzZtyUuoFORqmC4jqo1ZiKFf7MAiEZg&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1fsEEt01JNSyfcXcMhHN7U7z6o77o8v2x&sz=w1000"
+                }
+              ],
+              "specsHtml": "",
+              "specsMode": "list",
+              "datasheets": [
+                {
+                  "file": "https://drive.google.com/uc?export=download&id=1fU5GrFANxRMlO92-5bSTjL6Q-k3ZW6Wi",
+                  "name": "INSTALATION DIAGRAM",
+                  "type": "drawing"
+                },
+                {
+                  "file": "https://drive.google.com/uc?export=download&id=1UKTaE8ixv83eOCpDElQGM60XOfnzh_No",
+                  "name": "CATALOUGE",
+                  "type": "brochure"
+                },
+                {
+                  "file": "https://drive.google.com/uc?export=download&id=1brlQmjox-24Ot4sn7WEUIStvuB1R98Nz",
+                  "name": "MANUAL",
+                  "type": "manual"
+                }
+              ],
+              "highlights": [],
+              "description": "A heavy-duty arm motor for swing gates, engineered to deliver powerful and reliable performance for gates weighing up to 650 kg per leaf. Built with a robust motor and precision mechanical components, it ensures smooth, consistent operation even under frequent use. The system is designed for residential, commercial, and light industrial applications, offering strong pushing force and stable movement across wide gate angles.\n\nConstructed from high-quality, weather-resistant materials, the motor is suitable for outdoor environments and provides long-lasting durability against dust, rain, and varying temperatures. It features advanced safety mechanisms such as obstacle detection and auto-stop functionality to prevent accidents and protect both the gate and users.\n\nThe arm motor supports easy installation on a variety of gate types, including metal and wooden swing gates, and is compatible with remote control systems, access control units, and smart automation setups. Its low-noise operation ensures minimal disturbance, while the efficient motor design helps reduce energy consumption.\n\nOverall, this gate arm motor combines strength, safety, and convenience, making it an ideal solution for automating heavy swing gates up to 650 kg per leaf with dependable performance.",
+              "characteristics": [
+                {
+                  "icon": "check",
+                  "label": "Single or dual operation mode"
+                },
+                {
+                  "icon": "check",
+                  "label": "Over time protection"
+                },
+                {
+                  "icon": "check",
+                  "label": "Adjestable closing time deferance"
+                },
+                {
+                  "icon": "check",
+                  "label": "Backup power interface(optional)"
+                },
+                {
+                  "icon": "check",
+                  "label": "Overload protection"
+                },
+                {
+                  "icon": "check",
+                  "label": "Infrared sensor interface"
+                },
+                {
+                  "icon": "check",
+                  "label": "Optional automatic closing"
+                }
+              ],
+              "shortDescription": "A heavy-duty gate arm motor designed to reliably open and close swing gates weighing up to 650 kg per leaf."
+            },
+            {
+              "id": "GUARDIA CALARM450",
+              "name": "GUARDIA CALARM450",
+              "slug": "GUARDIA CALARM450",
+              "specs": [
+                {
+                  "param": "Unit Model",
+                  "value": "CALARM450"
+                },
+                {
+                  "param": "Power Supply",
+                  "value": "110VAC/60Hz; 220VAC/50Hz"
+                },
+                {
+                  "param": "Gate moving speed",
+                  "value": "22-26s/90°"
+                },
+                {
+                  "param": "Limit Switch",
+                  "value": "Blocked rotor /Magnetic"
+                },
+                {
+                  "param": "Max.force",
+                  "value": "3800N"
+                },
+                {
+                  "param": "Max.piston stroke",
+                  "value": "45cm"
+                },
+                {
+                  "param": "Noise",
+                  "value": "<60dB"
+                },
+                {
+                  "param": "Working Duty",
+                  "value": "S2, 30min"
+                },
+                {
+                  "param": "Working Temperature",
+                  "value": "-20°℃-+70°℃"
+                },
+                {
+                  "param": "Remote control distance",
+                  "value": ">30m"
+                },
+                {
+                  "param": "Remote Mode",
+                  "value": "Single/Four button"
+                },
+                {
+                  "param": "Storage battery (optional)",
+                  "value": "DC24V(4.5Ah or 9Ah)"
+                },
+                {
+                  "param": "Remote Frequency",
+                  "value": "433.92 MHz"
+                },
+                {
+                  "param": "Remote Up Pairing",
+                  "value": "32"
+                }
+              ],
+              "images": [
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1QT_INAl_tEaMXLnfCG6jsTvsVxUwSUxt"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1zVIv5kETIcH-VplVsOIAS7jsV7Rzw4kd"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1Z6lzM-0ZhANYRMoNhBQ5uxggXAA4ASOM"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1ZM2IDC4D0VL8kAuh8rWi9V0nxZ-_xL-z"
+                }
+              ],
+              "datasheets": [],
+              "highlights": [],
+              "description": "A high-performance swing arm gate motor engineered for reliable automation of residential, commercial, and light industrial swing gates, capable of handling gate leaves weighing up to 450 kg each. Built with a robust motor and durable mechanical components, it ensures smooth, powerful, and quiet operation even under frequent use. The system is designed for easy installation on a wide range of gate types, including metal and wooden gates, and offers adjustable opening and closing speeds for enhanced control. Equipped with safety features such as obstacle detection, auto-stop, and manual override during power failures, it provides both convenience and peace of mind. Weather-resistant construction ensures long-lasting performance in various environmental conditions, making it a dependable solution for secure and efficient gate automation.\n",
+              "characteristics": [
+                {
+                  "icon": "check",
+                  "label": "Obstacle sensibility, slow speed distance and gate moving speed setting."
+                },
+                {
+                  "icon": "check",
+                  "label": "Remote control quick learning."
+                },
+                {
+                  "icon": "check",
+                  "label": "Automatic close with waiting time adjustable."
+                },
+                {
+                  "icon": "check",
+                  "label": "One of the gates open, stop and close."
+                }
+              ],
+              "shortDescription": "Heavy-duty swing arm gate motor designed to smoothly operate gates up to 450 kg per leaf."
+            },
+            {
+              "id": "CENTURION CAL280",
+              "name": "CENTURION CAL280",
+              "slug": "CENTURION CAL280",
+              "specs": [
+                {
+                  "param": "MODEL",
+                  "value": "CAL280"
+                },
+                {
+                  "param": "INPUT VOLATAGE",
+                  "value": "DC24"
+                },
+                {
+                  "param": "CURRENT",
+                  "value": "1.2A"
+                },
+                {
+                  "param": "POWER",
+                  "value": "150W"
+                },
+                {
+                  "param": "MAX.GATE WEIGHT",
+                  "value": "<800KG"
+                },
+                {
+                  "param": "FREQUENCY",
+                  "value": "50Hz"
+                },
+                {
+                  "param": "DIMENSION OF GATE OPENE",
+                  "value": "340*168*178MM"
+                },
+                {
+                  "param": "PACKING WEIGHT",
+                  "value": "SET:31.2KG"
+                }
+              ],
+              "images": [
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1EcqpnBEAkG59f2ZtChWKwWLPypk_hY-T"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1wI91nVjJcLA1lJpy82UAh9F35TRJiBf0"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1ztdjGFRzoZhY7mJ-PRinhVOBjG7727yA"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1wnXOhITmWc2mWyMvdezuYMJelUTk92ci"
+                }
+              ],
+              "datasheets": [],
+              "highlights": [],
+              "description": "A high-performance articulated swing arm DC motor designed for seamless automation of heavy-duty swing gates, capable of handling gate leaves up to 600 kg each. The articulated arm mechanism makes it ideal for gates with large or irregular pillars, ensuring smooth and efficient movement even in challenging installations. Powered by a reliable DC motor, it offers quiet operation, low power consumption, and the option for battery backup during power failures. Built with robust, weather-resistant materials, it delivers consistent performance in diverse environmental conditions. The system features adjustable speed and soft start/stop functions for controlled operation, along with integrated safety mechanisms such as obstacle detection, auto-reverse, and manual release for emergency access. Suitable for residential, commercial, and industrial applications, this motor provides a dependable and user-friendly solution for secure gate automation.\n",
+              "characteristics": [
+                {
+                  "icon": "check",
+                  "label": "Automatic travel learning and automatic error correction."
+                },
+                {
+                  "icon": "check",
+                  "label": "The encryption systems is more secure and  anti-interference"
+                },
+                {
+                  "icon": "check",
+                  "label": "Compatible with various access control systems"
+                },
+                {
+                  "icon": "check",
+                  "label": "Suitable for courtyard ,industrial gate ,folding gate etc"
+                },
+                {
+                  "icon": "check",
+                  "label": "Multiple installation methodes"
+                }
+              ],
+              "shortDescription": "Heavy-duty articulated swing arm gate motor built for smooth, reliable automation of gates up to 600 kg per leaf."
+            },
+            {
+              "id": "VELOCE CXRM180",
+              "name": "VELOCE CXRM180",
+              "slug": "VELOCE CXRM180",
+              "specs": [
+                {
+                  "param": "INPUT VOLTAGE (Vac 50Hz)",
+                  "value": "220"
+                },
+                {
+                  "param": "FORCE MAX(N)",
+                  "value": "600"
+                },
+                {
+                  "param": "AMPERE(A)",
+                  "value": "5"
+                },
+                {
+                  "param": "RUNNING SPEED(M/MIN)",
+                  "value": "20"
+                },
+                {
+                  "param": "OPERATION TEMPERATURE(C)",
+                  "value": "-40~+50"
+                },
+                {
+                  "param": "PROTECTION LEVEL(IP)",
+                  "value": "IP44"
+                },
+                {
+                  "param": "DIMENTION OF GATE OPENER",
+                  "value": "330*100*185"
+                }
+              ],
+              "images": [
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1-wPJ7hD1-uu_ESQiMIosQZs1t7FLprtZ&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=10OSM6S51F71n5YlMth-mlYvgkhLv_zoD&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1jvTWbG-1y7Rpwsg4Tn6nM5BQc3oXXzvq&sz=w1000"
+                }
+              ],
+              "specsHtml": "",
+              "specsMode": "list",
+              "datasheets": [
+                {
+                  "file": "https://drive.google.com/uc?export=download&id=1CA8LT16LTnDgfhWQi952Yb6LOCZMecjF",
+                  "name": "INSTALLATION DIAGRAM",
+                  "type": "drawing"
+                }
+              ],
+              "highlights": [],
+              "description": "A high-performance DC roller gate motor designed for reliable and efficient automation of rolling shutter and sliding roller gates, capable of handling loads up to 600 kg per leaf. Powered by a durable DC motor, it ensures smooth, quiet operation with low energy consumption and supports battery backup for uninterrupted performance during power outages. The system features soft start and stop functionality to minimize wear and extend the lifespan of gate components, along with adjustable speed control for precise operation. Built with rugged, weather-resistant materials, it is suitable for residential, commercial, and light industrial applications. Integrated safety features such as obstacle detection, auto-reverse, and manual override provide enhanced security and user convenience, making it a dependable solution for modern gate automation.\n",
+              "characteristics": [
+                {
+                  "icon": "check",
+                  "label": "Single or dual operation mode"
+                },
+                {
+                  "icon": "check",
+                  "label": "Overtime protection"
+                },
+                {
+                  "icon": "check",
+                  "label": "Adjestable closing time differance"
+                },
+                {
+                  "icon": "check",
+                  "label": "Backup power interface (optional)"
+                },
+                {
+                  "icon": "check",
+                  "label": "Overload protection"
+                },
+                {
+                  "icon": "check",
+                  "label": "Infrared sensor interface"
+                },
+                {
+                  "icon": "check",
+                  "label": "Opatoinal automatic closing"
+                }
+              ],
+              "shortDescription": "Heavy-duty DC roller gate motor engineered for smooth, efficient operation of gates up to 600 kg per leaf."
+            },
+            {
+              "id": "SENTINAL COSSW-600",
+              "name": "SENTINAL COSSW-600",
+              "slug": "SENTINAL COSSW-600",
+              "specs": [
+                {
+                  "param": "Model No",
+                  "value": "CALARM 650"
+                },
+                {
+                  "param": "Voltage",
+                  "value": "Dc24V"
+                },
+                {
+                  "param": "Power",
+                  "value": "100W"
+                },
+                {
+                  "param": "Max.gate weight per leaf",
+                  "value": "650KG"
+                },
+                {
+                  "param": "Max.gate length per leaf",
+                  "value": "3-5m"
+                },
+                {
+                  "param": "Travel",
+                  "value": "10SEC"
+                },
+                {
+                  "param": "Limit switch",
+                  "value": "Electrical limit switch"
+                },
+                {
+                  "param": "Noise",
+                  "value": "≤ 56db"
+                },
+                {
+                  "param": "Temperature",
+                  "value": "-45⁰ C - + 65⁰ C"
+                },
+                {
+                  "param": "Protection class",
+                  "value": "IP44"
+                },
+                {
+                  "param": "Certification",
+                  "value": "CCC, CE"
+                }
+              ],
+              "images": [
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1RCokzrmhqIYM66F1Zu_YZFf_z0ttDjYf"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1MYVIefiadOIOdnElbdOkXPJp5Zo7I3iV"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1ZHbHEHTUhlVVZtkJbytiOoP5hVpatluy"
+                }
+              ],
+              "datasheets": [],
+              "highlights": [],
+              "description": "A heavy-duty aluminium-bodied DC roller gate motor engineered for smooth, reliable, and energy-efficient automation of roller and shutter gates, capable of handling loads up to 600 kg per leaf. The robust aluminium housing offers excellent durability, corrosion resistance, and efficient heat dissipation, ensuring long-lasting performance even in demanding environments. Powered by a high-quality DC motor, it delivers quiet operation with low power consumption and supports battery backup for uninterrupted use during power failures. The system features soft start and stop technology to reduce mechanical stress, along with adjustable speed control for precise and controlled movement. Designed for versatility, it is suitable for residential, commercial, and light industrial applications. Integrated safety features such as obstacle detection, auto-reverse functionality, and manual override enhance user safety and convenience, making it a dependable and modern solution for automated gate systems.",
+              "characteristics": [
+                {
+                  "icon": "check",
+                  "label": "Soft start and slow stop"
+                },
+                {
+                  "icon": "check",
+                  "label": "Automatically stop against extra resistance"
+                },
+                {
+                  "icon": "check",
+                  "label": "Optional operation mode for single or dual wing"
+                },
+                {
+                  "icon": "check",
+                  "label": "Available for mobile app / bluetooth control"
+                },
+                {
+                  "icon": "check",
+                  "label": "Interface for cardreader and underground detecteor"
+                },
+                {
+                  "icon": "check",
+                  "label": "Large opening angle<180"
+                },
+                {
+                  "icon": "check",
+                  "label": "Backup power supply"
+                }
+              ],
+              "shortDescription": "Heavy-duty aluminium-bodied DC roller gate motor designed for smooth, efficient operation of gates up to 600 kg per leaf."
+            },
+            {
+              "id": "AEGIES CJOSW-650",
+              "name": "AEGIES CJOSW-650",
+              "slug": "AEGIES CJOSW-650",
+              "specs": [
+                {
+                  "param": "Unit Model",
+                  "value": "CJOSW-650"
+                },
+                {
+                  "param": "Power Supply",
+                  "value": "AC220V/50Hz; AC110V/60Hz"
+                },
+                {
+                  "param": "Motor Power",
+                  "value": "40Wx2"
+                },
+                {
+                  "param": "Remote control mode",
+                  "value": "Single/Four button mode"
+                },
+                {
+                  "param": "Max.Single-Leaf Weight",
+                  "value": "600kg"
+                },
+                {
+                  "param": "Max.Single-Leaf Length",
+                  "value": "4.0m"
+                },
+                {
+                  "param": "Max. stroke of the screw rod",
+                  "value": "32cm"
+                },
+                {
+                  "param": "Gate Moving Speed",
+                  "value": "18-22 S/90°"
+                },
+                {
+                  "param": "Remote control distance",
+                  "value": "≥30m"
+                },
+                {
+                  "param": "Recording of Up Remotes",
+                  "value": "32"
+                },
+                {
+                  "param": "Remote Frequency",
+                  "value": "433.92MHz"
+                },
+                {
+                  "param": "Work Duty",
+                  "value": "S2 30 min"
+                },
+                {
+                  "param": "Working Temperature",
+                  "value": "-40°C~55°C"
+                },
+                {
+                  "param": "Package Weight",
+                  "value": "18KG"
+                }
+              ],
+              "images": [
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=10LeY-VgxP4fFoXthFujWGT5fXi7RtEdK&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=10p2P5clPsBE6etMmOTtwkDTbod0duAOP&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1oPns-5CU_Lf_zQiEcP8TsLh2cwXD4RPJ&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=11yj4DlsrekNgbio-4zHnlUXDJQJoyWNn&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1hOhtGrFMBI8jxrYii-4vh6h11Z2Jbp1J&sz=w1000"
+                }
+              ],
+              "specsHtml": "",
+              "specsMode": "list",
+              "datasheets": [
+                {
+                  "file": "https://drive.google.com/uc?export=download&id=1uPXbJbhRp6lezcszUme_T3hV4VNa_BE6",
+                  "name": "INSTALLATION DIGRAM",
+                  "type": "drawing"
+                }
+              ],
+              "highlights": [],
+              "description": "A compact and “cute” design fiber-bodied DC roller gate motor engineered for smooth, efficient, and reliable automation of roller and sliding gates, capable of handling loads up to 600 kg per leaf. The lightweight yet strong fiber-reinforced body offers excellent durability, corrosion resistance, and easy installation while maintaining a modern, aesthetically pleasing design. Powered by a high-performance DC motor, it ensures quiet operation with low energy consumption and supports battery backup for uninterrupted functionality during power outages. The system is designed with soft start and stop technology to reduce wear and extend component life, along with adjustable speed control for precise gate movement. Suitable for residential, apartment, and light commercial applications, it also includes essential safety features such as obstacle detection, auto-reverse, and manual override for emergency access, making it a dependable, safe, and user-friendly gate automation solution.\n",
+              "characteristics": [
+                {
+                  "icon": "check",
+                  "label": "Gear driven with self - locking, dual - windproof, no extra electric lock needed."
+                },
+                {
+                  "icon": "check",
+                  "label": "Manual release on power off."
+                },
+                {
+                  "icon": "check",
+                  "label": "Single/double door modes."
+                },
+                {
+                  "icon": "check",
+                  "label": "Soft start & slow stop, obstacle detection, automatic closing."
+                },
+                {
+                  "icon": "check",
+                  "label": "Low power consumption mode."
+                },
+                {
+                  "icon": "check",
+                  "label": "WIFI Function. (Optional)"
+                }
+              ],
+              "shortDescription": "Compact lightweight fiber-bodied DC roller gate motor designed for smooth and reliable operation of gates up to 600 kg per leaf."
+            },
+            {
+              "id": "TITAN CQNSW-90",
+              "name": "TITAN CQNSW-90",
+              "slug": "TITAN CQNSW-90",
+              "specs": [
+                {
+                  "param": "Model",
+                  "value": "CQNSW-90"
+                },
+                {
+                  "param": "PowerSupply",
+                  "value": "DC24V"
+                },
+                {
+                  "param": "Motor",
+                  "value": "DC"
+                },
+                {
+                  "param": "Door OpeningAnale",
+                  "value": "360°"
+                },
+                {
+                  "param": "Motor Speed",
+                  "value": "1440RPM"
+                },
+                {
+                  "param": "Rated Power",
+                  "value": "120W"
+                },
+                {
+                  "param": "Rated Current",
+                  "value": "5A"
+                },
+                {
+                  "param": "Torque",
+                  "value": "6N/M"
+                },
+                {
+                  "param": "Operating Ambient Temperature",
+                  "value": "-50°C+50°C"
+                },
+                {
+                  "param": "Weight",
+                  "value": "11KG"
+                },
+                {
+                  "param": "Thermal Protection",
+                  "value": "110°C"
+                },
+                {
+                  "param": "A Maximum Length (M)",
+                  "value": "8"
+                },
+                {
+                  "param": "With The Door Weight(KG)",
+                  "value": "600"
+                },
+                {
+                  "param": "The Number Of Gates(FAN)",
+                  "value": "2"
+                },
+                {
+                  "param": "Ground drop(MM)",
+                  "value": "90"
+                }
+              ],
+              "images": [
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1mX4f3FBjskE4FcnFv62O_VA6qlGkqQW9"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=164Q0kX76YIzBpVJtM8vlF3C1JTCZF1QL"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1HQDQXdOBfWSxemhGUtVlLpEEq5FTHxMe"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1TYxDSR1MkWEjFfS8nYPqJor6KB52t81S"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=13KnRBaR7n0pUAGFNlnM5cSAc5UZSG0zt"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1HHft64ycdVlrPpgJN29Zag0Ac4849moC"
+                }
+              ],
+              "datasheets": [],
+              "highlights": [],
+              "description": "A compact, stylish “cute” roller gate DC motor engineered for powerful and efficient automation of heavy-duty roller and sliding gates, capable of handling loads up to 800 kg per leaf. Built with a strong alloy body, it offers superior strength, durability, and resistance to wear and harsh weather conditions while maintaining a sleek, modern appearance. The high-performance DC motor ensures smooth, quiet operation with low energy consumption and supports battery backup for uninterrupted functionality during power outages. Designed with soft start and stop technology, it minimizes mechanical stress and extends the lifespan of gate components, while adjustable speed control allows precise and controlled movement. Ideal for residential, commercial, and light industrial applications, the system also includes advanced safety features such as obstacle detection, auto-reverse, and manual override, providing a secure, reliable, and user-friendly gate automation solution.\n",
+              "characteristics": [
+                {
+                  "icon": "check",
+                  "label": "Reasonable force"
+                },
+                {
+                  "icon": "check",
+                  "label": "Unique chute mechanism"
+                },
+                {
+                  "icon": "check",
+                  "label": "Large opening angle"
+                },
+                {
+                  "icon": "check",
+                  "label": "Automatic locking device"
+                },
+                {
+                  "icon": "check",
+                  "label": "Manual function"
+                },
+                {
+                  "icon": "check",
+                  "label": "Automatic closing function"
+                },
+                {
+                  "icon": "check",
+                  "label": "Start slowly and stop slowly"
+                },
+                {
+                  "icon": "check",
+                  "label": "Stop when opening the door and retreat when closing the door"
+                }
+              ],
+              "shortDescription": "The Ground Wheel Rolling Swing Gate Opener is suitable for a range of applications, including residential properties, commercial establishments, and industrial facilities where a reliable and adaptable gate automation solution is essential"
+            },
+            {
+              "id": "AURA CSWTW-90",
+              "name": "AURA CSWTW-90",
+              "slug": "AURA CSWTW-90",
+              "specs": [
+                {
+                  "param": "Model",
+                  "value": "CSWTW-90"
+                },
+                {
+                  "param": "PowerSupply",
+                  "value": "DC24V"
+                },
+                {
+                  "param": "Motor",
+                  "value": "DC"
+                },
+                {
+                  "param": "Door OpeningAnale",
+                  "value": "360°"
+                },
+                {
+                  "param": "Motor Speed",
+                  "value": "1440RPM"
+                },
+                {
+                  "param": "Rated Power",
+                  "value": "240W"
+                },
+                {
+                  "param": "Rated Current",
+                  "value": "8A"
+                },
+                {
+                  "param": "Torque",
+                  "value": "12N/M"
+                },
+                {
+                  "param": "Operating Ambient Temperature",
+                  "value": "-50°C+50°C"
+                },
+                {
+                  "param": "Weight",
+                  "value": "22KG"
+                },
+                {
+                  "param": "Thermal Protection",
+                  "value": "110°C"
+                },
+                {
+                  "param": "A Maximum Length (M)",
+                  "value": "8"
+                },
+                {
+                  "param": "With The Door Weight(KG)",
+                  "value": "1500"
+                },
+                {
+                  "param": "The Number Of Gates(FAN)",
+                  "value": "2"
+                },
+                {
+                  "param": "Ground drop(MM)",
+                  "value": "90"
+                }
+              ],
+              "images": [
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=18LkfVlT_rruM1knXI01-8XquKllV_oVy"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1xijKOWwjNnsaQnsitW4JYdkpd_BuC1FY"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1FE8jndr7_yyXg2Ggt509wZV6YNfzhal6"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=16ymyPd5ipuYIDDs6V_-y1JloxgHRcpj3"
+                }
+              ],
+              "datasheets": [],
+              "highlights": [],
+              "description": "A high-capacity roller gate DC motor engineered for heavy-duty automation of large roller and sliding gates, capable of handling loads up to 1500 kg per leaf. Constructed with a strong alloy body, it delivers exceptional strength, durability, and resistance to corrosion and harsh environmental conditions, ensuring long-term reliability. The powerful DC motor provides smooth, quiet, and energy-efficient operation, with support for battery backup to maintain functionality during power outages. Designed with advanced soft start and stop technology, it reduces mechanical stress and extends the lifespan of both the motor and gate components, while adjustable speed control allows precise and stable movement. Ideal for industrial, commercial, and high-security applications, it is equipped with essential safety features such as obstacle detection, auto-reverse functionality, and manual override for emergency use, making it a robust and dependable solution for demanding gate automation needs.",
+              "characteristics": [
+                {
+                  "icon": "check",
+                  "label": "Reasonable force"
+                },
+                {
+                  "icon": "check",
+                  "label": "Unique chute mechanism"
+                },
+                {
+                  "icon": "check",
+                  "label": "Large opening angle"
+                },
+                {
+                  "icon": "check",
+                  "label": "Automatic locking device"
+                },
+                {
+                  "icon": "check",
+                  "label": "Manual function"
+                },
+                {
+                  "icon": "check",
+                  "label": "Start slowly and stop slowly"
+                },
+                {
+                  "icon": "check",
+                  "label": "Stop when opening the door and retreat when closing the door"
+                },
+                {
+                  "icon": "check",
+                  "label": "After power failure, the clutch can be disengaged to realize manual door opening"
+                },
+                {
+                  "icon": "check",
+                  "label": "Can be connected to external security equipment such as police lights and infrared devices"
+                },
+                {
+                  "icon": "check",
+                  "label": "Can be connected to an external access control system to achieve automatic identification and access control; optional storage battery or solar panel as backup power supply"
+                }
+              ],
+              "shortDescription": "The Heavy Duty Dual-Wheel Dual-Motor Roller Automatic Swing Gate Opener is tailored for industrial complexes, commercial facilities, and properties with large and heavy swing gates that require a reliable and powerful automation solution."
             }
           ]
         },
         {
-          id: "sliding-gate-operators",
-          name: "Sliding Gate Operators",
-          slug: "sliding-gate-operators",
-          description: "High-performance sliding gate systems for residential and commercial applications.",
-          heroImage: "https://images.unsplash.com/photo-1558002038-1091a16606f3?auto=format&fit=crop&w=1920&q=80",
-          heroSubtitle: "Powerful sliding gate automation for any property.",
-          pageFile: "sliding-gate-operators.html",
-          items: []
+          "id": "sliding-gate-operators",
+          "name": "Sliding Gate Operators",
+          "slug": "sliding-gate-operators",
+          "pageFile": "sliding-gate-operators.html",
+          "heroImage": "https://images.unsplash.com/photo-1558002038-1091a16606f3?auto=format&fit=crop&w=1920&q=80",
+          "description": "High-performance sliding gate systems for residential and commercial applications.",
+          "heroSubtitle": "Powerful sliding gate automation for any property.",
+          "items": [
+            {
+              "id": "DEIMOS CJSL1000MG",
+              "name": "DEIMOS CJSL1000MG",
+              "slug": "DEIMOS CJSL1000MG",
+              "specs": [
+                {
+                  "param": "Unit Model",
+                  "value": "CJSL1000MG"
+                },
+                {
+                  "param": "Power Supply",
+                  "value": "110VAC/60Hz; 220VAC/50Hz"
+                },
+                {
+                  "param": "Running Speed",
+                  "value": "12m/min"
+                },
+                {
+                  "param": "Limit Switch",
+                  "value": "Mechanical/Magnetic"
+                },
+                {
+                  "param": "Noise",
+                  "value": "<56dB"
+                },
+                {
+                  "param": "Working Duty",
+                  "value": "S2. 20min"
+                },
+                {
+                  "param": "Working Temperature",
+                  "value": "-20°℃-+70°C"
+                },
+                {
+                  "param": "Remote Distance",
+                  "value": ">30m"
+                },
+                {
+                  "param": "Remote Mode",
+                  "value": "Single/ Three button"
+                },
+                {
+                  "param": "Remote Up Pairing",
+                  "value": "25"
+                },
+                {
+                  "param": "Remote Frequency",
+                  "value": "433.92 MHz"
+                }
+              ],
+              "images": [
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1GmgW5SEAcdR6eb3InDwmMXmusxTfRxwP"
+                },
+                {
+                  "alt": "uc",
+                  "url": "https://drive.google.com/uc?export=view&id=1WCLTQL6iJwitEAtvISI7V73O_v1to5c-"
+                }
+              ],
+              "datasheets": [],
+              "highlights": [],
+              "description": "A high-performance sliding gate AC motor designed specifically for residential use, engineered to effortlessly operate gates weighing up to 1000 kg with smooth, quiet, and reliable performance. Built with durability in mind, it features a robust motor housing, weather-resistant components, and advanced safety mechanisms such as obstacle detection and auto-stop functionality to ensure secure operation for homes. The system supports easy installation and user-friendly controls, often compatible with remote access, keypads, and smart home integration. Its efficient power consumption, low maintenance requirements, and consistent performance make it an ideal solution for homeowners seeking a dependable and long-lasting automated gate system.",
+              "characteristics": [
+                {
+                  "icon": "check",
+                  "label": "Soft start and slow stop."
+                },
+                {
+                  "icon": "check",
+                  "label": "Automatic reverse after encountering obstacles."
+                },
+                {
+                  "icon": "check",
+                  "label": "Motor output force, stall force, slow stop distance are adjustable."
+                },
+                {
+                  "icon": "check",
+                  "label": "Automatic close with waiting time adjustable."
+                },
+                {
+                  "icon": "check",
+                  "label": "Partial opening for pedestrian passes."
+                },
+                {
+                  "icon": "check",
+                  "label": "AC motor, built-in an intelligent control board."
+                },
+                {
+                  "icon": "check",
+                  "label": "Can be opened by manual release key when the power is off."
+                },
+                {
+                  "icon": "check",
+                  "label": "External security device and access control system can be connected."
+                },
+                {
+                  "icon": "check",
+                  "label": "Customized products available."
+                }
+              ],
+              "shortDescription": "Heavy-duty AC motor designed for sliding gates, capable of smoothly lifting and operating loads up to 1000 kg."
+            },
+            {
+              "id": "TITANUS CJSLGT",
+              "name": "TITANUS CJSLGT",
+              "slug": "TITANUS CJSLGT",
+              "specs": [
+                {
+                  "param": "Unit Model",
+                  "value": "CJSLGT"
+                },
+                {
+                  "param": "Power Supply",
+                  "value": "110VAC/60Hz; 220VAC/50Hz"
+                },
+                {
+                  "param": "Running Speed",
+                  "value": "11-13m/min"
+                },
+                {
+                  "param": "Limit Switch",
+                  "value": "Mechanical/Magnetic"
+                },
+                {
+                  "param": "Noise",
+                  "value": "<60dB"
+                },
+                {
+                  "param": "Working Duty",
+                  "value": "-20°℃-+70°℃"
+                },
+                {
+                  "param": "Remote Distance",
+                  "value": ">30m"
+                },
+                {
+                  "param": "Remote Mode",
+                  "value": "Single/Three button"
+                },
+                {
+                  "param": "Remote Up Pairing",
+                  "value": "40"
+                },
+                {
+                  "param": "Remote Frequency",
+                  "value": "433.92 MHz"
+                }
+              ],
+              "images": [
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1D_WwTKRir_YWaCTC3d5oIe5vTuMOzq8t&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1d5e0DjSpcIdd3fJJV5qyWbGesWlRFGUm&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1S533I7nbpFLh1kBldqgDvQlhhwR7wUht&sz=w1000"
+                }
+              ],
+              "specsHtml": "",
+              "specsMode": "list",
+              "datasheets": [],
+              "highlights": [],
+              "description": "A heavy-duty sliding gate AC motor engineered for both residential and commercial applications, designed to effortlessly operate gates weighing up to 1500 kg with smooth, powerful, and consistent performance. Built with a robust, industrial-grade motor and high-quality gear system, it ensures long-lasting durability even under frequent use. The unit features weather-resistant construction for reliable operation in various climates, along with advanced safety functions such as obstacle detection, auto-reverse, and overload protection to enhance user safety. It supports a wide range of access options including remote controls, keypads, RFID systems, and smart automation integration, making it versatile for homes, apartments, warehouses, and business premises. With energy-efficient operation, low maintenance requirements, and quiet performance, this motor provides a secure, convenient, and dependable gate automation solution.\n",
+              "characteristics": [
+                {
+                  "icon": "check",
+                  "label": "Soft start and slow stop."
+                },
+                {
+                  "icon": "check",
+                  "label": "Automatic reverse after encountering obstacles."
+                },
+                {
+                  "icon": "check",
+                  "label": "Motor output force, stall force, slow stop distance are adjustable."
+                },
+                {
+                  "icon": "check",
+                  "label": "Automatic close with waiting time adjustable."
+                },
+                {
+                  "icon": "check",
+                  "label": "Partial opening for pedestrian passes."
+                },
+                {
+                  "icon": "check",
+                  "label": "AC motor, built-in an intelligent control board."
+                },
+                {
+                  "icon": "check",
+                  "label": "Can be opened by manual release key when the power is off."
+                },
+                {
+                  "icon": "check",
+                  "label": "External security device and access control system can be connected."
+                },
+                {
+                  "icon": "check",
+                  "label": "Customized products available."
+                }
+              ],
+              "shortDescription": "Heavy-duty sliding gate AC motor built for residential and commercial use, delivering smooth and reliable operation for gates up to 1500 kg."
+            },
+            {
+              "id": "ASTRA CJSLPY",
+              "name": "ASTRA CJSLPY",
+              "slug": "ASTRA CJSLPY",
+              "specs": [
+                {
+                  "param": "Unit model",
+                  "value": "CJSLPY"
+                },
+                {
+                  "param": "Power Supply",
+                  "value": "AC220/50Hz; AC110V/60Hz"
+                },
+                {
+                  "param": "Maximum Loading wight",
+                  "value": "1000KG"
+                },
+                {
+                  "param": "Motor power",
+                  "value": "400W"
+                },
+                {
+                  "param": "OutPut Shaft Height",
+                  "value": "50mm"
+                },
+                {
+                  "param": "Limit Switch",
+                  "value": "Magnetic limit switch"
+                },
+                {
+                  "param": "Gate Moving  Speed",
+                  "value": "11~13m/min"
+                },
+                {
+                  "param": "Remote Control range",
+                  "value": ">30m"
+                },
+                {
+                  "param": "Recording of Up Remotes",
+                  "value": "20"
+                },
+                {
+                  "param": "Remote Frequency",
+                  "value": "433.92MHz"
+                },
+                {
+                  "param": "Working Duty",
+                  "value": "S2,20min"
+                },
+                {
+                  "param": "Working noise",
+                  "value": "<60dB"
+                },
+                {
+                  "param": "Working Temperature",
+                  "value": "-20 C~70 C"
+                },
+                {
+                  "param": "Driving Mode",
+                  "value": "Gear/Chain"
+                },
+                {
+                  "param": "Package Weight",
+                  "value": "15.00KG"
+                }
+              ],
+              "images": [
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1TkWP5mqH3GM_7hBLHr6nGSYKDO3hQtZa&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1M9DFqWLr2JgX-SZz_yPB_i1pCZMhBEbX&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1uiFM-bQbRI6BkJ1sL0ZYN3KDdN6WqneO&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1sc_X7spCqx_Yp49HhnJ_PJT3y_jB2M_w&sz=w1000"
+                }
+              ],
+              "datasheets": [],
+              "highlights": [],
+              "description": "The AC Sliding Gate Motor is a powerful and reliable automation solution designed for smooth, secure, and efficient operation of sliding gates in residential, commercial, and industrial applications. Engineered with high-performance AC motor technology, it delivers consistent torque and long-lasting durability, making it suitable for heavy-duty daily use.\nBuilt with a robust weather-resistant body, the motor ensures dependable performance in various environmental conditions. It features smooth and low-noise operation, providing convenience and enhanced security for homes, offices, factories, warehouses, apartments, and gated communities.\nThe system supports automatic opening and closing with remote control access, reducing manual effort while improving safety and access management. Advanced safety features such as obstacle detection, manual release during power failure, limit switch control, and overload protection ensure secure and uninterrupted operation.\nDesigned for easy installation and minimal maintenance, the AC Sliding Gate Motor is compatible with a wide range of gate sizes and weights. Its efficient performance, strong build quality, and user-friendly functionality make it an ideal choice for modern gate automation systems.\n\n",
+              "characteristics": [
+                {
+                  "icon": "check",
+                  "label": "AC motor with built-in control unit"
+                },
+                {
+                  "icon": "check",
+                  "label": "Keypad/external button interface"
+                },
+                {
+                  "icon": "check",
+                  "label": "Alarm lamp,photo beam&safety beam interface."
+                },
+                {
+                  "icon": "check",
+                  "label": "Auto-close function."
+                },
+                {
+                  "icon": "check",
+                  "label": "Soft start and slow stop function.(smart version)"
+                },
+                {
+                  "icon": "check",
+                  "label": "Auto reverse function when hitting obstacle during gate closing.(smart version)"
+                },
+                {
+                  "icon": "check",
+                  "label": "Manual relese key design for emergency purpose"
+                },
+                {
+                  "icon": "check",
+                  "label": "Whole series chain driven availabe"
+                },
+                {
+                  "icon": "check",
+                  "label": "Wi FI Function.(Opational)"
+                }
+              ],
+              "shortDescription": "Reliable AC sliding gate motor designed for smooth, powerful, and secure automatic gate operation. Ideal for residential and commercial gates with durable performance, low noise, and easy installation."
+            }
+          ]
         }
       ]
     },
-
-    // ── ROLLING SHUTTERS ──────────────────────────────────────
     {
-      id: "rolling-shutters",
-      name: "Rolling Shutters",
-      slug: "rolling-shutters",
-      description: "Enhance your privacy and security with our advanced rolling shutter and curtain automation solutions.",
-      heroTitle: "Smart Rolling Shutters,",
-      heroSubtitle: "Specialized for Control.",
-      heroImage: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1920&q=80",
-      pageFile: "rolling-shutters.html",
-      subcategories: [
+      "id": "rolling-shutters",
+      "name": "Rolling Shutters",
+      "slug": "rolling-shutters",
+      "pageFile": "rolling-shutters.html",
+      "heroImage": "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1920&q=80",
+      "heroTitle": "Smart Rolling Shutters,",
+      "description": "Enhance your privacy and security with our advanced rolling shutter and curtain automation solutions.",
+      "heroSubtitle": "Specialized for Control.",
+      "subcategories": [
         {
-          id: "rolling-shutter-operators",
-          name: "Rolling Shutter Operators",
-          slug: "rolling-shutter-operators",
-          description: "Advanced tubular and central motor systems for rolling shutters and curtains.",
-          heroImage: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1920&q=80",
-          heroSubtitle: "Precision tubular motors for reliable shutter control.",
-          pageFile: "rolling-shutter-operators.html",
-          items: []
+          "id": "rolling-shutter-operators",
+          "name": "Rolling Shutter Operators",
+          "slug": "rolling-shutter-operators",
+          "pageFile": "rolling-shutter-operators.html",
+          "heroImage": "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1920&q=80",
+          "description": "Advanced tubular and central motor systems.",
+          "heroSubtitle": "Precision tubular motors for reliable shutter control.",
+          "items": [
+            {
+              "id": "CALSITO CRS",
+              "name": "CALSITO CRS",
+              "slug": "CALSITO CRS",
+              "specs": [],
+              "images": [
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1usOGRrL6K-Rn05ad40iPSw8rbGyLibqT&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1YZ7LPnOXcQ1JF7uyZ98tjGjJYGISg-xy&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1Q5pct0SKUw0CmUb9H5K-QrOCLIFOQhj1&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1s4a_lyaRRK9uRVH8m-SYRorywcgCUdcr&sz=w1000"
+                },
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=1l-GOi99Ag_Q1AsCvGGMgqXIVYkmH_Cm2&sz=w1000"
+                }
+              ],
+              "specsHtml": "<table class=\"specs-table\">\n    <caption>Technical Specifications</caption>\n    <thead>\n        <tr>\n            <th>Model<br>Number</th>\n            <th>Max<br>Lift<br>(Kg)</th>\n            <th>Max<br>Lift Height<br>(m)</th>\n            <th>Power<br>(W)</th>\n            <th>Output<br>Torque<br>(Nm)</th>\n            <th>Current<br>Rating<br>(A)</th>\n            <th>Speed<br>(rpm)</th>\n            <th>Temperature<br>Range.</th>\n            <th>Ingress<br>Protection</th>\n            <th>Motor<br>Dimensions With<br>(LxWxH) mm</th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr class=\"sub-header\">\n            <td colspan=\"10\">230 VAC, 50 Hz</td>\n        </tr>\n        <tr>\n            <td>RS-300-1P</td>\n            <td>300</td>\n            <td>4.5</td>\n            <td>250</td>\n            <td>168</td>\n            <td>2.5</td>\n            <td>4</td>\n            <td>-20 °C - +60 °C</td>\n            <td>IP 44</td>\n            <td>490 x 280 x 485</td>\n        </tr>\n        <tr>\n            <td>R5-400-1P</td>\n            <td>400</td>\n            <td>4.5</td>\n            <td>250</td>\n            <td>345</td>\n            <td>2.5</td>\n            <td>4</td>\n            <td>-20 °C - +60 °C</td>\n            <td>IP 44</td>\n            <td>490 x 280 x 485</td>\n        </tr>\n        <tr>\n            <td>R5-500-1P</td>\n            <td>500</td>\n            <td>6</td>\n            <td>370</td>\n            <td>412</td>\n            <td>3.5</td>\n            <td>5.2</td>\n            <td>-20 °C - +60 °C</td>\n            <td>IP 44</td>\n            <td>490 x 280 x 485</td>\n        </tr>\n        <tr>\n            <td>R5-600-1P</td>\n            <td>600</td>\n            <td>6</td>\n            <td>370</td>\n            <td>412</td>\n            <td>3.5</td>\n            <td>5.9</td>\n            <td>-20 °C - +60 °C</td>\n            <td>IP 44</td>\n            <td>490 x 280 x 485</td>\n        </tr>\n        <tr>\n            <td>R5-700-1P</td>\n            <td>700</td>\n            <td>7</td>\n            <td>380</td>\n            <td>412</td>\n            <td>3.8</td>\n            <td>5</td>\n            <td>-20 °C - +60 °C</td>\n            <td>IP 44</td>\n            <td>490 x 280 x 513</td>\n        </tr>\n        <tr>\n            <td>R5-800-1P</td>\n            <td>800</td>\n            <td>8</td>\n            <td>400</td>\n            <td>650</td>\n            <td>4.2</td>\n            <td>4.8</td>\n            <td>-20 °C - +60 °C</td>\n            <td>IP 44</td>\n            <td>600 x 320 x 550</td>\n        </tr>\n        <tr>\n            <td>R5-1000-1P</td>\n            <td>1000</td>\n            <td>10</td>\n            <td>550</td>\n            <td>810</td>\n            <td>5.8</td>\n            <td>4.2</td>\n            <td>-20 °C - +60 °C</td>\n            <td>IP 44</td>\n            <td>635 x 335 x 550</td>\n        </tr>\n        <tr class=\"sub-header\">\n            <td colspan=\"10\">440 VAC, 50 Hz</td>\n        </tr>\n        <tr>\n            <td>R5-800-3P</td>\n            <td>800</td>\n            <td>8</td>\n            <td>370</td>\n            <td>650</td>\n            <td>1.3</td>\n            <td>4.8</td>\n            <td>-20 °C - +60 °C</td>\n            <td>IP 44</td>\n            <td>600 x 320 x 550</td>\n        </tr>\n        <tr>\n            <td>R5-1000-3P</td>\n            <td>1000</td>\n            <td>10</td>\n            <td>550</td>\n            <td>810</td>\n            <td>1.8</td>\n            <td>4.2</td>\n            <td>-20 °C - +60 °C</td>\n            <td>IP 44</td>\n            <td>635 x 335 x 550</td>\n        </tr>\n    </tbody>\n</table>",
+              "specsMode": "html",
+              "datasheets": [
+                {
+                  "file": "https://drive.google.com/uc?export=download&id=1uiDAY6Fift2nxLJ0_6YRuYMhPVP_ET7W",
+                  "name": "CALATOUGE",
+                  "type": "brochure"
+                },
+                {
+                  "file": "https://drive.google.com/uc?export=download&id=1oMIgze6Ss6cwMv4PS1nzX9TNUtARYoJr",
+                  "name": "INSTALLATION DIAGRAM",
+                  "type": "drawing"
+                }
+              ],
+              "highlights": [
+                "Heavy-duty industrial performance",
+                "Smooth and silent operation",
+                "Enhanced operational safety features",
+                "Reliable performance during power failure",
+                "Suitable for commercial and industrial shutters",
+                "Durable construction for long service life",
+                "Ideal for locations with limited installation space"
+              ],
+              "description": "<p>\nIndustrial roller shutter drives are engineered to deliver reliable, smooth, and efficient performance for commercial and industrial applications. Built with 100% copper winding, these drives ensure higher load capacity, enhanced durability, and long service life.\n</p>\n\n<p>\nThe drive system operates with low noise and minimal vibration while consuming very little power, making it energy-efficient and suitable for continuous operation. Its compact design allows installation even in locations where side margins are limited, as the drive can be mounted parallel to the roller shaft.\n</p>\n\n<p>\nManufactured using high-quality steel gearbox components, the system provides robust performance and dependable operation under demanding conditions. The inbuilt mechanical limit switch accurately controls the shutter position during both upward and downward movement, ensuring safe and precise operation.\n</p>\n\n<p>\nFor added safety, a specially designed safety lever near the sprocket automatically locks movement in the event of transmission chain failure. The system also includes an emergency manual hand chain operation, allowing uninterrupted usage during power failure situations.\n</p>\n\n<p>\nEasy assembly, simple operation, space-saving construction, and industrial-grade reliability make these roller shutter drives a preferred choice across various industries.\n</p>",
+              "characteristics": [
+                {
+                  "icon": "check",
+                  "label": "100% copper winding for higher efficiency and durability"
+                },
+                {
+                  "icon": "check",
+                  "label": "Low noise and vibration-free performance"
+                },
+                {
+                  "icon": "check",
+                  "label": "Energy-efficient operation with low power consumption"
+                },
+                {
+                  "icon": "check",
+                  "label": "Compact and space-saving design"
+                },
+                {
+                  "icon": "check",
+                  "label": "High-quality steel gearbox construction"
+                },
+                {
+                  "icon": "check",
+                  "label": "Parallel shaft mounting for limited side-space applications"
+                },
+                {
+                  "icon": "check",
+                  "label": "Inbuilt mechanical limit switch for precise positioning"
+                },
+                {
+                  "icon": "check",
+                  "label": "Safety locking lever for chain-break protection"
+                },
+                {
+                  "icon": "check",
+                  "label": "Emergency manual hand chain operation"
+                },
+                {
+                  "icon": "check",
+                  "label": "Easy installation and user-friendly operation"
+                }
+              ],
+              "shortDescription": "High-performance industrial roller shutter drive engineered for durability, smooth operation, and enhanced safety. Designed with 100% copper winding, low-noise performance, compact installation, and emergency manual operation for reliable everyday use."
+            },
+            {
+              "id": "CALISTO CTM",
+              "name": "CALISTO CTM",
+              "slug": "CALISTO CTM",
+              "specs": [],
+              "images": [
+                {
+                  "alt": "thumbnail",
+                  "url": "https://drive.google.com/thumbnail?id=18ziVkVLMyk2GniKSaU6MUuKFu4P2zgSs&sz=w1000"
+                }
+              ],
+              "specsHtml": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>CALISTO Motor Specifications</title>\n\n<style>\n    body{\n        font-family: Arial, sans-serif;\n        background:#f4f4f4;\n        padding:40px;\n    }\n\n    .datasheet{\n        max-width:1100px;\n        margin:auto;\n        background:#ffffff;\n        padding:30px;\n        border-radius:12px;\n        box-shadow:0 4px 12px rgba(0,0,0,0.08);\n    }\n\n    .logo{\n        font-size:48px;\n        font-weight:700;\n        color:#0A4DB3;\n        margin-bottom:10px;\n        letter-spacing:2px;\n    }\n\n    h2{\n        color:#1a1a1a;\n        margin-bottom:25px;\n        font-size:32px;\n    }\n\n    table{\n        width:100%;\n        border-collapse:collapse;\n        overflow:hidden;\n        border-radius:10px;\n    }\n\n    thead{\n        background:#162B8C;\n        color:#ffffff;\n    }\n\n    thead th{\n        padding:18px 12px;\n        font-size:18px;\n        text-align:center;\n    }\n\n    tbody tr:nth-child(even){\n        background:#f1f1f1;\n    }\n\n    tbody tr:nth-child(odd){\n        background:#ffffff;\n    }\n\n    tbody td{\n        padding:16px 12px;\n        text-align:center;\n        font-size:17px;\n        color:#333;\n        border-bottom:1px solid #ddd;\n    }\n\n    .footer{\n        margin-top:20px;\n        color:#666;\n        font-size:14px;\n        text-align:right;\n    }\n</style>\n</head>\n\n<body>\n\n<div class=\"datasheet\">\n\n    <div class=\"logo\">CALISTO</div>\n\n    <h2>Technical Specifications</h2>\n\n    <table>\n        <thead>\n            <tr>\n                <th>Model Number</th>\n                <th>Voltage</th>\n                <th>Frequency</th>\n                <th>Output Torque</th>\n                <th>Nominal Speed</th>\n                <th>Unit Weight</th>\n                <th>Separate Motor Packing Dimension (L×W×H) mm</th>\n            </tr>\n        </thead>\n\n        <tbody>\n            <tr>\n                <td>RS59</td>\n                <td>230V</td>\n                <td>50 Hz</td>\n                <td>140 NM</td>\n                <td>7 rpm</td>\n                <td>14 KG</td>\n                <td>600 x 200 x 200</td>\n            </tr>\n        </tbody>\n    </table>\n</div>\n</body>\n</html>",
+              "specsMode": "html",
+              "datasheets": [
+                {
+                  "file": "https://drive.google.com/uc?export=download&id=1G9Fbw2MLLJPx6ll_ptlkf4MDxyZbGuBz",
+                  "name": "TUBLAR BROCHURE",
+                  "type": "brochure"
+                },
+                {
+                  "file": "https://drive.google.com/uc?export=download&id=1cx2DI5M6WPlqcNjEf-tkytirQWGB6vRB",
+                  "name": "TECHNICAL DRAWING",
+                  "type": "drawing"
+                },
+                {
+                  "file": "https://drive.google.com/uc?export=download&id=1IHGyJAhJ_IkbdIzo4ovUE2oiadgzG8Qh",
+                  "name": "USER MANUAL",
+                  "type": "manual"
+                }
+              ],
+              "highlights": [],
+              "description": "A tubular motor for residential shutters is a compact and efficient electric drive system designed to automate the operation of rolling shutters, garage shutters, and window shutters in homes. The motor is installed inside the shutter’s rolling tube, providing a clean and space-saving solution while ensuring smooth, quiet, and reliable opening and closing. Tubular motors enhance convenience, security, and energy efficiency by allowing users to control shutters through wall switches, remote controls, smart home systems, or mobile apps. Built with durable materials and advanced safety features such as overload protection and obstacle detection, these motors are suitable for daily residential use and can handle various shutter sizes and weights. Their low-noise operation, easy installation, and minimal maintenance make tubular motors an ideal choice for modern automated residential shutter systems.\n",
+              "characteristics": [
+                {
+                  "icon": "check",
+                  "label": "Simple design and space saving very compact model."
+                },
+                {
+                  "icon": "check",
+                  "label": "Easy to installation and smooth running operation."
+                },
+                {
+                  "icon": "check",
+                  "label": "Drives are very secure and stable."
+                },
+                {
+                  "icon": "check",
+                  "label": "Wireless controlled operation ensures simple operation."
+                },
+                {
+                  "icon": "check",
+                  "label": "Below 55DB level are compatible with tublar drive controll system."
+                },
+                {
+                  "icon": "check",
+                  "label": "Motors fitted with barrels makes easier to accomodate in less space whare limited space is required for motor installation and this are also easier to clad aestheticallt."
+                },
+                {
+                  "icon": "check",
+                  "label": "Mechanical limit switches with accurate limit positions stop the shutter automatically upon completion of opening or closing."
+                }
+              ],
+              "shortDescription": "A tubular motor is a compact electric motor installed inside a residential rolling shutter tube to automate smooth, quiet opening and closing with remote or switch control."
+            }
+          ]
         },
         {
-          id: "curtain-operators",
-          name: "Curtain Operators",
-          slug: "curtain-operators",
-          description: "Motorized curtain and drapery systems with remote control.",
-          heroImage: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
-          heroSubtitle: "Elegant motorized curtain systems for modern interiors.",
-          pageFile: "curtain-operators.html",
-          items: []
+          "id": "curtain-operators",
+          "name": "Curtain Operators",
+          "slug": "curtain-operators",
+          "pageFile": "curtain-operators.html",
+          "heroImage": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
+          "description": "Motorized curtain and drapery systems with remote control.",
+          "heroSubtitle": "Elegant motorized curtain systems for modern interiors.",
+          "items": []
         }
       ]
     },
-
-    // ── AUTOMATIC DOORS ───────────────────────────────────────
     {
-      id: "automatic-doors",
-      name: "Automatic Doors",
-      slug: "automatic-doors",
-      description: "Smart door automation for residential, commercial, and industrial spaces.",
-      heroTitle: "Automatic Door Systems,",
-      heroSubtitle: "Opening New Possibilities.",
-      heroImage: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80",
-      pageFile: "automatic-doors.html",
-      subcategories: [
+      "id": "automatic-doors",
+      "name": "Automatic Doors",
+      "slug": "automatic-doors",
+      "pageFile": "automatic-doors.html",
+      "heroImage": "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80",
+      "heroTitle": "Automatic Door Systems,",
+      "description": "Smart door automation for residential, commercial, and industrial spaces.",
+      "heroSubtitle": "Opening New Possibilities.",
+      "subcategories": [
         {
-          id: "sliding-door-operators",
-          name: "Sliding Door Operators",
-          slug: "sliding-door-operators",
-          description: "Smooth, quiet automatic sliding door systems for commercial and residential use.",
-          heroImage: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80",
-          heroSubtitle: "Touch-free access with precision sliding door automation.",
-          pageFile: "sliding-door-operators.html",
-          items: []
+          "id": "sliding-door-operators",
+          "name": "Sliding Door Operators",
+          "slug": "sliding-door-operators",
+          "pageFile": "sliding-door-operators.html",
+          "heroImage": "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80",
+          "description": "Smooth, quiet automatic sliding door systems.",
+          "heroSubtitle": "Touch-free access with precision sliding door automation.",
+          "items": []
         },
         {
-          id: "swing-door-operators",
-          name: "Swing Door Operators",
-          slug: "swing-door-operators",
-          description: "Automated swing door systems for accessible and hygienic entry points.",
-          heroImage: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80",
-          heroSubtitle: "Reliable automated swing doors for every environment.",
-          pageFile: "swing-door-operators.html",
-          items: []
+          "id": "swing-door-operators",
+          "name": "Swing Door Operators",
+          "slug": "swing-door-operators",
+          "pageFile": "swing-door-operators.html",
+          "heroImage": "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80",
+          "description": "Automated swing door systems for accessible entry points.",
+          "heroSubtitle": "Reliable automated swing doors for every environment.",
+          "items": []
         }
       ]
     },
-
-    // ── WINDOW SYSTEMS ────────────────────────────────────────
     {
-      id: "window-systems",
-      name: "Window Systems",
-      slug: "window-systems",
-      description: "Intelligent window automation for comfort, ventilation, and energy efficiency.",
-      heroTitle: "Window Automation,",
-      heroSubtitle: "Comfort at Your Command.",
-      heroImage: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
-      pageFile: "window-systems.html",
-      subcategories: [
+      "id": "window-systems",
+      "name": "Window Systems",
+      "slug": "window-systems",
+      "pageFile": "window-systems.html",
+      "heroImage": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
+      "heroTitle": "Window Automation,",
+      "description": "Intelligent window automation for comfort, ventilation, and energy efficiency.",
+      "heroSubtitle": "Comfort at Your Command.",
+      "subcategories": [
         {
-          id: "window-operators",
-          name: "Window Operators",
-          slug: "window-operators",
-          description: "Motorized window openers for roof, awning, casement, and tilt-and-turn windows.",
-          heroImage: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
-          heroSubtitle: "Smart window control for ventilation and energy efficiency.",
-          pageFile: "window-operators.html",
-          items: []
+          "id": "window-operators",
+          "name": "Window Operators",
+          "slug": "window-operators",
+          "pageFile": "window-operators.html",
+          "heroImage": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
+          "description": "Motorized window openers for roof, awning, and casement windows.",
+          "heroSubtitle": "Smart window control for ventilation and energy efficiency.",
+          "items": []
         },
         {
-          id: "awning-operators",
-          name: "Awning Operators",
-          slug: "awning-operators",
-          description: "Motorized awning and blind systems for outdoor comfort and sun control.",
-          heroImage: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
-          heroSubtitle: "Automated awnings for shade, comfort, and style.",
-          pageFile: "awning-operators.html",
-          items: []
+          "id": "awning-operators",
+          "name": "Awning Operators",
+          "slug": "awning-operators",
+          "pageFile": "awning-operators.html",
+          "heroImage": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1920&q=80",
+          "description": "Motorized awning and blind systems for outdoor comfort.",
+          "heroSubtitle": "Automated awnings for shade, comfort, and style.",
+          "items": []
         }
       ]
     },
-
-    // ── HARDWARE & COMPONENTS ─────────────────────────────────
     {
-      id: "hardware",
-      name: "Hardware & Components",
-      slug: "hardware",
-      description: "High-quality hardware components designed for durability, precision, and reliable performance across all your automation needs.",
-      heroTitle: "Hardware & Components,",
-      heroSubtitle: "Built for Strength and Precision.",
-      heroImage: "https://media.istockphoto.com/id/2208802495/photo/metal-roller-brackets-and-pulleys-for-sliding-gates.jpg?s=612x612&w=0&k=20&c=rTFgdf-hRI-yc8LyU6-umSm4w7VP3UMmZ3Hl7JUoeHQ=",
-      pageFile: "hardware.html",
-      subcategories: []
+      "id": "hardware",
+      "name": "Hardware & Components",
+      "slug": "hardware",
+      "description": "High-quality hardware components designed for durability, precision, and reliable performance across all your automation needs.",
+      "heroTitle": "Hardware & Components,",
+      "heroSubtitle": "Built for Strength and Precision.",
+      "heroImage": "https://media.istockphoto.com/id/2208802495/photo/metal-roller-brackets-and-pulleys-for-sliding-gates.jpg?s=612x612&w=0&k=20&c=rTFgdf-hRI-yc8LyU6-umSm4w7VP3UMmZ3Hl7JUoeHQ=",
+      "pageFile": "hardware.html",
+      "subcategories": []
     },
-
-    // ── CONTROLS & ACCESSORIES ────────────────────────────────
     {
-      id: "controls",
-      name: "Controls & Accessories",
-      slug: "controls",
-      description: "Enhance functionality with our smart remotes, sensors, and intelligent access control accessories.",
-      heroTitle: "Controls & Accessories,",
-      heroSubtitle: "Smart Access at Your Fingertips.",
-      heroImage: "https://img.freepik.com/premium-photo/automatic-pick-place-machine-quickly-installs-components-generic-circuit-board-electronics_629685-4733.jpg",
-      pageFile: "controls.html",
-      subcategories: []
+      "id": "controls",
+      "name": "Controls & Accessories",
+      "slug": "controls",
+      "description": "Enhance functionality with our smart remotes, sensors, and intelligent access control accessories.",
+      "heroTitle": "Controls & Accessories,",
+      "heroSubtitle": "Smart Access at Your Fingertips.",
+      "heroImage": "https://img.freepik.com/premium-photo/automatic-pick-place-machine-quickly-installs-components-generic-circuit-board-electronics_629685-4733.jpg",
+      "pageFile": "controls.html",
+      "subcategories": []
     }
   ]
 };
 
-// ── API Cache ────────────────────────────────────────────────
-// Caches API response for 60 seconds to avoid excessive calls
+// In-memory runtime cache
 let _apiCache = null;
 let _apiCacheTime = 0;
-const API_CACHE_TTL = 60 * 1000; // 60 seconds
+const CACHE_TTL_MS = 60 * 1000; // 1 minute
 
-// ── Detect base URL for API calls ───────────────────────────
-function _getApiBase() {
-  // If running on Vercel (or same domain), use relative path
-  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    // Get origin (handles both root and subdirectory deployments)
-    return window.location.origin;
-  }
-  // Local dev — try Vercel dev server or fallback
-  return window.location.origin;
-}
-
-// ── Load from API (async) ────────────────────────────────────
+// ── Async loader: fetches fresh data from server API ─────────
 async function loadProductsFromAPI() {
-  // Return cache if fresh
-  if (_apiCache && (Date.now() - _apiCacheTime) < API_CACHE_TTL) {
+  if (_apiCache && Date.now() - _apiCacheTime < CACHE_TTL_MS) {
     return _apiCache;
   }
 
   try {
-    const resp = await fetch(`${_getApiBase()}/api/products?t=${Date.now()}`, {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' }
-    });
-
-    if (!resp.ok) throw new Error(`API returned ${resp.status}`);
-
-    const data = await resp.json();
-    if (data && data.categories) {
+    const res = await fetch('/api/products');
+    if (res.ok) {
+      const data = await res.json();
       _apiCache = data;
       _apiCacheTime = Date.now();
+      saveProductsData(data);
       return data;
     }
   } catch (err) {
-    console.warn('Calisto: Could not load products from API, using fallback.', err.message);
+    console.warn('Calisto: Could not load products from server API, using bundled data.', err.message);
   }
 
   return null;
 }
 
-// ── Synchronous fallback (original behavior) ─────────────────
+// ── Synchronous accessor ─────────────────────────────────────
 function loadProductsData() {
-  // If we have a cached API response, use it
   if (_apiCache) return _apiCache;
 
-  // Fallback to localStorage (for backward compatibility)
-  const saved = localStorage.getItem('calisto_products');
+  const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('calisto_products') : null;
   if (saved) {
-    try { return JSON.parse(saved); } catch(e) {}
+    try {
+      const parsed = JSON.parse(saved);
+      if (parsed && Array.isArray(parsed.categories)) {
+        // If saved catalog has at least as many items as bundled, use it; otherwise use bundled
+        const countItems = d => (d.categories || []).reduce((acc, c) => acc + (c.subcategories || []).reduce((a, s) => a + (s.items || []).length, 0), 0);
+        if (countItems(parsed) >= countItems(CALISTO_PRODUCTS)) {
+          return parsed;
+        }
+      }
+    } catch(e) {}
   }
 
   return CALISTO_PRODUCTS;
 }
 
-// ── Initialize: fetch from API as soon as the script loads ───
-// This pre-warms the cache so loadProductsData() returns API data
-(async function initProductsData() {
-  const apiData = await loadProductsFromAPI();
-  if (apiData) {
-    _apiCache = apiData;
-    _apiCacheTime = Date.now();
-    saveProductsData(apiData); // Keep localStorage updated
-    // Trigger re-render if any page is already loaded
-    if (typeof window._onProductsLoaded === 'function') {
-      window._onProductsLoaded(apiData);
+// ── Initialize: fetch from Server API on load ─────────────────
+if (typeof window !== 'undefined') {
+  (async function initProductsData() {
+    const apiData = await loadProductsFromAPI();
+    if (apiData) {
+      _apiCache = apiData;
+      _apiCacheTime = Date.now();
+      saveProductsData(apiData); // Keep localStorage updated
+      if (typeof window._onProductsLoaded === 'function') {
+        window._onProductsLoaded(apiData);
+      }
     }
-  }
-})();
+  })();
+}
 
 // ── Helpers ──────────────────────────────────────────────────
 function getCategoryBySlug(slug) {
-  return loadProductsData().categories.find(c => c.slug === slug);
+  const norm = s => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const target = norm(slug);
+  return loadProductsData().categories.find(c => c.slug === slug || norm(c.slug) === target);
 }
 
 function getSubcategoryBySlug(categorySlug, subcatSlug) {
   const cat = getCategoryBySlug(categorySlug);
-  if (!cat) return null;
-  return cat.subcategories.find(s => s.slug === subcatSlug);
+  if (!cat || !cat.subcategories) return null;
+  const norm = s => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const target = norm(subcatSlug);
+  return cat.subcategories.find(s => s.slug === subcatSlug || norm(s.slug) === target);
 }
 
 function getItemBySlug(categorySlug, subcatSlug, itemSlug) {
   const subcat = getSubcategoryBySlug(categorySlug, subcatSlug);
-  if (!subcat) return null;
-  return subcat.items.find(i => i.slug === itemSlug);
+  if (!subcat || !subcat.items) return null;
+  const norm = s => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const target = norm(itemSlug);
+  return subcat.items.find(i =>
+    i.slug === itemSlug ||
+    i.id === itemSlug ||
+    i.name === itemSlug ||
+    norm(i.slug) === target ||
+    norm(i.id) === target ||
+    norm(i.name) === target
+  );
 }
 
 function saveProductsData(data) {
-  localStorage.setItem('calisto_products', JSON.stringify(data));
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('calisto_products', JSON.stringify(data));
+  }
 }
