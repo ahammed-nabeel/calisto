@@ -59,7 +59,7 @@ function renderCategoryPage(categorySlug) {
     card.className = 'automation-card';
     card.innerHTML = `
       <div class="icon-box" style="width:100%;height:160px;margin-bottom:1.5rem;overflow:hidden;border-radius:12px;">
-        <img src="${displayImg}" alt="${sc.name}" style="width:100%;height:100%;object-fit:cover;">
+        <img src="${displayImg}" alt="${sc.name}" style="width:100%;height:100%;object-fit:contain;">
       </div>
       <h3>${sc.name}</h3>
       <ul class="automation-list">
@@ -118,7 +118,7 @@ function renderSubcategoryPage(categorySlug, subcategorySlug) {
     card.className = 'automation-card';
     card.innerHTML = `
       <div class="icon-box" style="width:100%;height:180px;margin-bottom:1.5rem;overflow:hidden;border-radius:12px;">
-        <img src="${mainImg}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;">
+        <img src="${mainImg}" alt="${item.name}" style="width:100%;height:100%;object-fit:contain;">
       </div>
       <h3>${item.name}</h3>
       <ul class="automation-list">
